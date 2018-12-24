@@ -1,0 +1,33 @@
+{
+  "presets": [
+    "react",
+    [
+      "env",
+      {
+        "modules": false
+      }
+    ]
+  ],
+  "plugins": [
+    [
+      "transform-class-properties"
+    ]
+  ],
+  "env": {
+    "commonjs": {
+      "presets": [
+        [
+          "env",
+          {
+            "modules": "commonjs"
+          }
+        ]
+      ],
+      "plugins": [
+        [
+          "transform-class-properties"
+        ]
+      ]
+    }
+  }
+}

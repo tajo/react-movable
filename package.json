@@ -1,0 +1,71 @@
+{
+  "name": "react-movable",
+  "version": "0.0.1",
+  "description": "Drag and drop.",
+  "main": "lib/index.js",
+  "module": "es/index.js",
+  "jsnext:main": "es/index.js",
+  "browserslist": "last 2 versions",
+  "files": [
+    "*.md",
+    "LICENSE",
+    "lib",
+    "es"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/tajo/react-movable"
+  },
+  "author": "Vojtech Miksu <vojtech@miksu.cz>",
+  "license": "MIT",
+  "scripts": {
+    "build": "npm run clean && npm run build-es && npm run build-cjs",
+    "build-es": "babel ./src --out-dir ./es",
+    "build-cjs": "BABEL_ENV=commonjs babel ./src --out-dir ./lib",
+    "build:examples": "cross-env webpack",
+    "clean": "rimraf es lib build",
+    "prepublish": "cross-env NODE_ENV=production npm run build",
+    "lint": "eslint webpack.config.js src/**/*.js",
+    "format": "prettier --write \"**/*.js\"",
+    "test": "cross-env BABEL_ENV=commonjs jest --no-cache",
+    "react": "enzyme-adapter-react-install 16"
+  },
+  "tags": [
+    "react"
+  ],
+  "keywords": [
+    "react",
+    "react-component",
+    "drag",
+    "drop",
+    "list"
+  ],
+  "dependencies": {
+    "@babel/core": "^7.2.2",
+    "prop-types": "^15.5.8",
+    "react-test-renderer": "^16.3.1"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.8.0",
+    "babel-core": "^6.8.0",
+    "babel-eslint": "^10.0.1",
+    "babel-jest": "^23.6.0",
+    "babel-loader": "^8.0.4",
+    "babel-plugin-transform-class-properties": "^6.24.1",
+    "babel-preset-env": "^1.6.1",
+    "babel-preset-react": "^6.3.13",
+    "cross-env": "^5.0.1",
+    "eslint": "^5.11.0",
+    "eslint-plugin-prettier": "^3.0.0",
+    "jest": "^23.6.0",
+    "prettier": "^1.5.3",
+    "react": "^16.3.0",
+    "react-dom": "^16.3.0",
+    "rimraf": "^2.5.0",
+    "webpack": "^4.5.0",
+    "webpack-cli": "^3.1.2"
+  },
+  "peerDependencies": {
+    "react": "^16.3.0-0 || ^17.0.0-0"
+  }
+}
