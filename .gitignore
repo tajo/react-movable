@@ -3,3 +3,5 @@ build
 npm-debug.log
 lib
 es
+yarn-error.log
+
