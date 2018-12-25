@@ -11,12 +11,9 @@ module.exports = {
     filename: 'bundle.js'
   },
   module: {
-    rules: [
-      {
-        test: /\.js$/,
-        exclude: /node_modules/,
-        loader: 'babel-loader'
-      }
-    ]
+    rules: [{ test: /\.tsx?$/, loader: 'awesome-typescript-loader' }]
+  },
+  resolve: {
+    extensions: ['.ts', '.tsx', '.js', '.json']
   }
 };

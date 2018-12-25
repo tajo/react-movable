@@ -1,6 +1,7 @@
 {
   "presets": [
-    "react",
+    "@babel/preset-typescript",
+    "@babel/preset-react",
     [
       "env",
       {
@@ -8,11 +9,7 @@
       }
     ]
   ],
-  "plugins": [
-    [
-      "transform-class-properties"
-    ]
-  ],
+  "plugins": [["transform-class-properties"]],
   "env": {
     "commonjs": {
       "presets": [
@@ -23,11 +20,7 @@
           }
         ]
       ],
-      "plugins": [
-        [
-          "transform-class-properties"
-        ]
-      ]
+      "plugins": [["transform-class-properties"]]
     }
   }
 }
