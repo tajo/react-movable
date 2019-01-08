@@ -1,20 +1,31 @@
 import * as React from 'react';
 
-interface IListProps {
-  //children: (props: IListRenderProps) => React.ReactNode;
-  render: any;
-  values: string[];
-  onChange: any;
+export interface IBaseItemProps {
+  index: number;
+  isDragged: boolean;
+  beforeDropzone: boolean;
+  afterDropzone: boolean;
+  ghostItemStyle: {
+    top: number;
+    left: number;
+    width: number;
+    height: number;
+  };
+  onMouseStart: (e: React.MouseEvent, index: number) => void;
+  onTouchStart: (e: React.TouchEvent, index: number) => void;
+  setItemRef: (ref: React.RefObject<HTMLElement>, index: number) => void;
+  setGhostRef: (ref: React.RefObject<HTMLElement>) => void;
+}
+interface IListProps<Value> {
+  render: (
+    items: { value: Value; itemProps: IBaseItemProps }[]
+  ) => React.ReactNode;
+  values: Value[];
+  onChange: (meta: { oldIndex: number; newIndex: number }) => void;
 }
 
-export const events = {
-  start: ['touchstart', 'mousedown'],
-  move: ['touchmove', 'mousemove'],
-  end: ['touchend', 'touchcancel', 'mouseup']
-};
-
-class List extends React.Component<IListProps> {
-  items: any[] = [];
+class List<Value = string> extends React.Component<IListProps<Value>> {
+  items: React.RefObject<HTMLElement>[] = [];
   ghostRef = React.createRef<HTMLElement>();
   state = {
     itemDragged: -1,
@@ -27,10 +38,31 @@ class List extends React.Component<IListProps> {
     targetWidth: 0
   };
 
-  onStart = (e: React.MouseEvent, index: number) => {
-    document.addEventListener('mousemove', this.onMove);
+  onMouseStart = (e: React.MouseEvent, index: number) => {
+    if (e.button !== 0) return;
+    document.addEventListener('mousemove', this.onMouseMove);
     document.addEventListener('mouseup', this.onEnd);
-    const target = e.target as HTMLElement;
+    this.onStart(e.target as HTMLElement, e.pageX, e.pageY, index);
+  };
+
+  onTouchStart = (e: React.TouchEvent, index: number) => {
+    document.addEventListener('touchmove', this.onTouchMove);
+    document.addEventListener('touchend', this.onEnd);
+    document.addEventListener('touchcancel', this.onEnd);
+    this.onStart(
+      e.target as HTMLElement,
+      e.touches[0].pageX,
+      e.touches[0].pageY,
+      index
+    );
+  };
+
+  onStart = (
+    target: HTMLElement,
+    pageX: number,
+    pageY: number,
+    index: number
+  ) => {
     const targetRect = target.getBoundingClientRect() as DOMRect;
     this.setState({
       itemDragged: index,
@@ -38,19 +70,24 @@ class List extends React.Component<IListProps> {
       targetY: targetRect.y,
       targetHeight: targetRect.height,
       targetWidth: targetRect.width,
-      initialX: e.pageX,
-      initialY: e.pageY
+      initialX: pageX,
+      initialY: pageY
     });
   };
 
-  onMove = (e: MouseEvent) => {
+  onMouseMove = (e: MouseEvent) => this.onMove(e.pageX, e.pageY);
+
+  onTouchMove = (e: TouchEvent) =>
+    this.onMove(e.touches[0].pageX, e.touches[0].pageY);
+
+  onMove = (pageX: number, pageY: number) => {
     if (this.state.itemDragged === -1) return null;
     const ghostEl = this.ghostRef.current as HTMLElement;
-    const translate = `translate3d(${e.pageX -
-      this.state.initialX}px, ${e.pageY - this.state.initialY}px, 0px)`;
+    const translate = `translate3d(${pageX - this.state.initialX}px, ${pageY -
+      this.state.initialY}px, 0px)`;
     ghostEl.style.transform = translate;
     for (let i = this.items.length - 1; i >= 0; i--) {
-      if (e.pageY > this.items[i].current.offsetTop) {
+      if (pageY > this.items[i].current!.offsetTop) {
         this.setState({ afterIndex: i });
         return;
       }
@@ -58,12 +95,12 @@ class List extends React.Component<IListProps> {
     this.setState({ afterIndex: -1 });
   };
 
-  onEnd = (e: MouseEvent) => {
-    document.removeEventListener('mousemove', this.onMove);
+  onEnd = () => {
+    document.removeEventListener('mousemove', this.onMouseMove);
+    document.removeEventListener('touchmove', this.onTouchMove);
     document.removeEventListener('mouseup', this.onEnd);
-    console.log(
-      `start: ${this.state.itemDragged}, end: ${this.state.afterIndex}`
-    );
+    document.removeEventListener('touchup', this.onEnd);
+    document.removeEventListener('touchcancel', this.onEnd);
     this.state.afterIndex > -1 &&
       this.props.onChange({
         oldIndex: this.state.itemDragged,
@@ -75,16 +112,17 @@ class List extends React.Component<IListProps> {
   render() {
     return this.props.render(
       this.props.values.map((value, index) => {
-        const itemProps = {
+        const itemProps: IBaseItemProps = {
           index,
           isDragged: index === this.state.itemDragged,
-          onStart: this.onStart,
+          onMouseStart: this.onMouseStart,
+          onTouchStart: this.onTouchStart,
           beforeDropzone: index === this.state.afterIndex,
           afterDropzone: index - 1 === this.state.afterIndex,
-          setItemRef: (ref: any, index: number) => {
+          setItemRef: (ref, index) => {
             this.items[index] = ref;
           },
-          setGhostRef: (ref: any) => {
+          setGhostRef: ref => {
             this.ghostRef = ref;
           },
           ghostItemStyle: {

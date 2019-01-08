@@ -20,7 +20,7 @@ const placeholderItemStyles = {
   backgroundColor: 'yellow'
 };
 
-export default class App extends React.Component {
+export default class App extends React.Component<{}, { items: string[] }> {
   state = {
     items: ['Item 1', 'Item 2', 'Item 3']
   };
@@ -28,55 +28,50 @@ export default class App extends React.Component {
     return (
       <List
         values={this.state.items}
-        onChange={({ oldIndex, newIndex }: { oldIndex: any; newIndex: any }) =>
-          this.setState((prevState: any) => ({
+        onChange={({ oldIndex, newIndex }) =>
+          this.setState((prevState: { items: string[] }) => ({
             items: arrayMove(prevState.items, oldIndex, newIndex)
           }))
         }
-        render={(items: any) => (
+        render={items => (
           <ul style={{ padding: 0 }}>
-            {items.map(
-              ({ value, itemProps }: { value: any; itemProps: any }) => (
-                <Item
-                  render={(props: any) => {
-                    return (
-                      <li
-                        {...props}
-                        style={{
-                          ...itemStyles,
-                          ...props.style,
-                          backgroundColor: itemProps.beforeDropzone
-                            ? 'red'
-                            : '#CCC'
-                        }}
-                      >
-                        {value}
-                      </li>
-                    );
-                  }}
-                  renderGhost={(props: any) => (
-                    <li
-                      {...props}
-                      style={{ ...ghostItemStyles, ...props.style }}
-                    >
-                      {value}
-                    </li>
-                  )}
-                  renderPlaceholder={(props: any) => (
+            {items.map(({ value, itemProps }) => (
+              <Item
+                render={props => {
+                  return (
                     <li
                       {...props}
                       style={{
-                        ...placeholderItemStyles,
-                        ...props.style
+                        ...itemStyles,
+                        ...props.style,
+                        backgroundColor: itemProps.beforeDropzone
+                          ? 'red'
+                          : '#CCC'
                       }}
                     >
                       {value}
                     </li>
-                  )}
-                  {...itemProps}
-                />
-              )
-            )}
+                  );
+                }}
+                renderGhost={props => (
+                  <li {...props} style={{ ...ghostItemStyles, ...props.style }}>
+                    {value}
+                  </li>
+                )}
+                renderPlaceholder={props => (
+                  <li
+                    {...props}
+                    style={{
+                      ...placeholderItemStyles,
+                      ...props.style
+                    }}
+                  >
+                    {value}
+                  </li>
+                )}
+                {...itemProps}
+              />
+            ))}
           </ul>
         )}
       />

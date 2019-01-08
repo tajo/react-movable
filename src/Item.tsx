@@ -1,22 +1,18 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
+import { IBaseItemProps } from './List';
 
 interface IItemRenderProps {
   onMouseDown: (e: React.MouseEvent) => void;
-  ref?: React.RefObject<any>;
-  style: any;
+  onTouchStart: (e: React.TouchEvent) => void;
+  ref: React.RefObject<any>;
+  style: React.CSSProperties;
 }
-interface IItemProps {
+
+interface IItemProps extends IBaseItemProps {
   render: (itemProps: IItemRenderProps) => React.ReactNode;
   renderGhost: (itemProps: IItemRenderProps) => React.ReactNode;
   renderPlaceholder: (itemProps: IItemRenderProps) => React.ReactNode;
-  registerItem?: any;
-  onStart?: any;
-  ghostItemStyle?: any;
-  isDragged?: any;
-  index?: number;
-  setGhostRef: any;
-  setItemRef: any;
 }
 
 class Item extends React.Component<IItemProps> {
@@ -25,7 +21,7 @@ class Item extends React.Component<IItemProps> {
   componentDidMount() {
     this.props.setItemRef(this.itemRef, this.props.index);
   }
-  componentDidUpdate(prevProps: any) {
+  componentDidUpdate(prevProps: IItemProps) {
     if (this.props.isDragged && !prevProps.isDragged) {
       this.props.setGhostRef(this.ghostRef);
     }
@@ -33,9 +29,15 @@ class Item extends React.Component<IItemProps> {
   render() {
     const renderProps = {
       onMouseDown: (e: React.MouseEvent) =>
-        this.props.onStart(e, this.props.index),
+        this.props.onMouseStart(e, this.props.index),
+      onTouchStart: (e: React.TouchEvent) =>
+        this.props.onTouchStart(e, this.props.index),
       ref: this.itemRef,
-      style: { userDrag: 'none', userSelect: 'none', boxSizing: 'border-box' }
+      style: {
+        userDrag: 'none',
+        userSelect: 'none',
+        boxSizing: 'border-box'
+      } as React.CSSProperties
     };
     const itemGhostProps = {
       ...renderProps,
@@ -48,7 +50,7 @@ class Item extends React.Component<IItemProps> {
         left: this.props.ghostItemStyle.left,
         width: this.props.ghostItemStyle.width,
         height: this.props.ghostItemStyle.height
-      }
+      } as React.CSSProperties
     };
     return (
       <React.Fragment>
