@@ -9,6 +9,7 @@ interface IItemRenderProps {
 interface IItemProps {
   render: (itemProps: IItemRenderProps) => React.ReactNode;
   renderGhost: (itemProps: IItemRenderProps) => React.ReactNode;
+  renderPlaceholder: (itemProps: IItemRenderProps) => React.ReactNode;
   registerItem?: any;
   onStart?: any;
   ghostItemStyle?: any;
@@ -51,7 +52,9 @@ class Item extends React.Component<IItemProps> {
     };
     return (
       <React.Fragment>
-        {this.props.render(renderProps)}
+        {this.props.isDragged && this.props.renderPlaceholder
+          ? this.props.renderPlaceholder(renderProps)
+          : this.props.render(renderProps)}
         {this.props.isDragged &&
           ReactDOM.createPortal(
             this.props.renderGhost(itemGhostProps),

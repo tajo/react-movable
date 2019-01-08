@@ -1,10 +1,10 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
-import { List, Item } from '../src/index';
+import { List, Item, arrayMove } from '../src/index';
 
 const itemStyles = {
   padding: '1em',
-  backgroundColor: '#CCC',
+  margin: '0.5em',
   listStyleType: 'none'
 };
 
@@ -15,44 +15,71 @@ const ghostItemStyles = {
   listStyleType: 'none'
 };
 
-const MyItem: React.SFC<any> = ({ children, ...restProps }) => (
-  <Item
-    render={(props: any) => {
-      return (
-        <li
-          {...props}
-          style={{
-            ...itemStyles,
-            ...props.style,
-            borderTop: restProps.afterDropzone ? '5px solid red' : 0,
-            borderBottom: restProps.beforeDropzone ? '5px solid red' : 0,
-            marginTop: restProps.afterDropzone ? '0px' : '10px',
-            marginBottom: restProps.beforeDropzone ? '0px' : '10px'
-          }}
-        >
-          {children}
-        </li>
-      );
-    }}
-    renderGhost={(props: any) => (
-      <li {...props} style={{ ...ghostItemStyles, ...props.style }}>
-        {children}
-      </li>
-    )}
-    {...restProps}
-  />
-);
+const placeholderItemStyles = {
+  ...itemStyles,
+  backgroundColor: 'yellow'
+};
 
 export default class App extends React.Component {
+  state = {
+    items: ['Item 1', 'Item 2', 'Item 3']
+  };
   render() {
     return (
       <List
-        render={(children: any) => <ul style={{ padding: 0 }}>{children}</ul>}
-      >
-        <MyItem>Item 1</MyItem>
-        <MyItem>Item 2</MyItem>
-        <MyItem>Item 3</MyItem>
-      </List>
+        values={this.state.items}
+        onChange={({ oldIndex, newIndex }: { oldIndex: any; newIndex: any }) =>
+          this.setState((prevState: any) => ({
+            items: arrayMove(prevState.items, oldIndex, newIndex)
+          }))
+        }
+        render={(items: any) => (
+          <ul style={{ padding: 0 }}>
+            {items.map(
+              ({ value, itemProps }: { value: any; itemProps: any }) => (
+                <Item
+                  render={(props: any) => {
+                    return (
+                      <li
+                        {...props}
+                        style={{
+                          ...itemStyles,
+                          ...props.style,
+                          backgroundColor: itemProps.beforeDropzone
+                            ? 'red'
+                            : '#CCC'
+                        }}
+                      >
+                        {value}
+                      </li>
+                    );
+                  }}
+                  renderGhost={(props: any) => (
+                    <li
+                      {...props}
+                      style={{ ...ghostItemStyles, ...props.style }}
+                    >
+                      {value}
+                    </li>
+                  )}
+                  renderPlaceholder={(props: any) => (
+                    <li
+                      {...props}
+                      style={{
+                        ...placeholderItemStyles,
+                        ...props.style
+                      }}
+                    >
+                      {value}
+                    </li>
+                  )}
+                  {...itemProps}
+                />
+              )
+            )}
+          </ul>
+        )}
+      />
     );
   }
 }

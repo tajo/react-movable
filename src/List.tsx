@@ -2,8 +2,9 @@ import * as React from 'react';
 
 interface IListProps {
   //children: (props: IListRenderProps) => React.ReactNode;
-  children: any;
   render: any;
+  values: string[];
+  onChange: any;
 }
 
 export const events = {
@@ -17,7 +18,7 @@ class List extends React.Component<IListProps> {
   ghostRef = React.createRef<HTMLElement>();
   state = {
     itemDragged: -1,
-    afterIndex: -1,
+    afterIndex: -2,
     initialX: 0,
     initialY: 0,
     targetX: 0,
@@ -49,7 +50,7 @@ class List extends React.Component<IListProps> {
       this.state.initialX}px, ${e.pageY - this.state.initialY}px, 0px)`;
     ghostEl.style.transform = translate;
     for (let i = this.items.length - 1; i >= 0; i--) {
-      if (e.pageY - this.state.initialY > this.items[i].current.offsetTop) {
+      if (e.pageY > this.items[i].current.offsetTop) {
         this.setState({ afterIndex: i });
         return;
       }
@@ -60,34 +61,40 @@ class List extends React.Component<IListProps> {
   onEnd = (e: MouseEvent) => {
     document.removeEventListener('mousemove', this.onMove);
     document.removeEventListener('mouseup', this.onEnd);
-    this.setState({ itemDragged: -1, afterIndex: -1 });
+    console.log(
+      `start: ${this.state.itemDragged}, end: ${this.state.afterIndex}`
+    );
+    this.state.afterIndex > -1 &&
+      this.props.onChange({
+        oldIndex: this.state.itemDragged,
+        newIndex: this.state.afterIndex
+      });
+    this.setState({ itemDragged: -1, afterIndex: -2 });
   };
 
   render() {
     return this.props.render(
-      React.Children.map(this.props.children, (child, index) => {
-        if (React.isValidElement(child)) {
-          return React.cloneElement<any>(child, {
-            index,
-            isDragged: index === this.state.itemDragged,
-            onStart: this.onStart,
-            beforeDropzone: index === this.state.afterIndex,
-            afterDropzone: index - 1 === this.state.afterIndex && index > 0,
-            setItemRef: (ref: any, index: number) => {
-              this.items[index] = ref;
-            },
-            setGhostRef: (ref: any) => {
-              this.ghostRef = ref;
-            },
-            ghostItemStyle: {
-              top: this.state.targetY,
-              left: this.state.targetX,
-              width: this.state.targetWidth,
-              height: this.state.targetHeight
-            }
-          });
-        }
-        return child;
+      this.props.values.map((value, index) => {
+        const itemProps = {
+          index,
+          isDragged: index === this.state.itemDragged,
+          onStart: this.onStart,
+          beforeDropzone: index === this.state.afterIndex,
+          afterDropzone: index - 1 === this.state.afterIndex,
+          setItemRef: (ref: any, index: number) => {
+            this.items[index] = ref;
+          },
+          setGhostRef: (ref: any) => {
+            this.ghostRef = ref;
+          },
+          ghostItemStyle: {
+            top: this.state.targetY,
+            left: this.state.targetX,
+            width: this.state.targetWidth,
+            height: this.state.targetHeight
+          }
+        };
+        return { value, itemProps };
       })
     );
   }
