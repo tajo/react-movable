@@ -23,6 +23,7 @@ interface IListProps<Value> {
   values: Value[];
   onChange: (meta: { oldIndex: number; newIndex: number }) => void;
   transitionDuration: number;
+  lockVertically: boolean;
 }
 
 class List<Value = string> extends React.Component<IListProps<Value>> {
@@ -39,7 +40,7 @@ class List<Value = string> extends React.Component<IListProps<Value>> {
     targetWidth: 0
   };
 
-  static defaultProps = { transitionDuration: 300 };
+  static defaultProps = { transitionDuration: 300, lockVertically: false };
 
   onMouseStart = (e: React.MouseEvent, index: number) => {
     if (e.button !== 0) return;
@@ -86,8 +87,9 @@ class List<Value = string> extends React.Component<IListProps<Value>> {
   onMove = (pageX: number, pageY: number) => {
     if (this.state.itemDragged === -1) return null;
     const ghostEl = this.ghostRef.current as HTMLElement;
-    ghostEl.style.transform = `translate3d(${pageX -
-      this.state.initialX}px, ${pageY - this.state.initialY}px, 0px)`;
+    ghostEl.style.transform = `translate3d(${
+      this.props.lockVertically ? 0 : pageX - this.state.initialX
+    }px, ${pageY - this.state.initialY}px, 0px)`;
     const element = this.items[this.state.itemDragged].current!;
     for (let i = this.items.length - 1; i >= 0; i--) {
       if (pageY > this.items[i].current!.offsetTop) {
