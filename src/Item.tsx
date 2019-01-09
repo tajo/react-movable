@@ -2,19 +2,16 @@ import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import { IBaseItemProps } from './List';
 
-interface IBaseRenderProps {
+interface IRenderProps {
+  onMouseDown?: (e: React.MouseEvent) => void;
+  onTouchStart?: (e: React.TouchEvent) => void;
   ref: React.RefObject<any>;
   style: React.CSSProperties;
 }
 
-interface IItemRenderProps extends IBaseRenderProps {
-  onMouseDown: (e: React.MouseEvent) => void;
-  onTouchStart: (e: React.TouchEvent) => void;
-}
-
 interface IItemProps extends IBaseItemProps {
-  render: (itemProps: IItemRenderProps) => React.ReactNode;
-  renderGhost: (itemProps: IBaseRenderProps) => React.ReactNode;
+  render: (itemProps: IRenderProps) => React.ReactNode;
+  renderGhost?: (itemProps: IRenderProps) => React.ReactNode;
 }
 
 class Item extends React.Component<IItemProps> {
@@ -55,6 +52,7 @@ class Item extends React.Component<IItemProps> {
         ...baseRenderProps.style,
         display: 'block',
         position: 'fixed',
+        marginTop: 0,
         top: this.props.ghostItemStyle.top,
         left: this.props.ghostItemStyle.left,
         width: this.props.ghostItemStyle.width,
@@ -66,7 +64,9 @@ class Item extends React.Component<IItemProps> {
         {this.props.render(renderItemProps)}
         {this.props.isDragged &&
           ReactDOM.createPortal(
-            this.props.renderGhost(renderGhostProps),
+            this.props.renderGhost
+              ? this.props.renderGhost(renderGhostProps)
+              : this.props.render(renderGhostProps),
             document.body
           )}
       </React.Fragment>
