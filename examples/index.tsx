@@ -4,8 +4,10 @@ import { List, Item, arrayMove } from '../src/index';
 
 const itemStyles = {
   padding: '1em',
-  margin: '0.5em',
-  listStyleType: 'none'
+  marginTop: '40px',
+  marginBottom: '8px',
+  listStyleType: 'none',
+  backgroundColor: '#CCC'
 };
 
 const ghostItemStyles = {
@@ -15,14 +17,9 @@ const ghostItemStyles = {
   listStyleType: 'none'
 };
 
-const placeholderItemStyles = {
-  ...itemStyles,
-  backgroundColor: 'yellow'
-};
-
 export default class App extends React.Component<{}, { items: string[] }> {
   state = {
-    items: ['Item 1', 'Item 2', 'Item 3']
+    items: ['Item 1', 'Item 2', 'Item 3', 'Item 4', 'Item 5', 'Item 6']
   };
   render() {
     return (
@@ -37,35 +34,13 @@ export default class App extends React.Component<{}, { items: string[] }> {
           <ul style={{ padding: 0 }}>
             {items.map(({ value, itemProps }) => (
               <Item
-                render={props => {
-                  return (
-                    <li
-                      {...props}
-                      style={{
-                        ...itemStyles,
-                        ...props.style,
-                        backgroundColor: itemProps.beforeDropzone
-                          ? 'red'
-                          : '#CCC'
-                      }}
-                    >
-                      {value}
-                    </li>
-                  );
-                }}
-                renderGhost={props => (
-                  <li {...props} style={{ ...ghostItemStyles, ...props.style }}>
+                render={props => (
+                  <li {...props} style={{ ...itemStyles, ...props.style }}>
                     {value}
                   </li>
                 )}
-                renderPlaceholder={props => (
-                  <li
-                    {...props}
-                    style={{
-                      ...placeholderItemStyles,
-                      ...props.style
-                    }}
-                  >
+                renderGhost={props => (
+                  <li {...props} style={{ ...ghostItemStyles, ...props.style }}>
                     {value}
                   </li>
                 )}

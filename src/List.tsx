@@ -1,10 +1,9 @@
 import * as React from 'react';
+//import { getElementSize } from './utils';
 
 export interface IBaseItemProps {
   index: number;
   isDragged: boolean;
-  beforeDropzone: boolean;
-  afterDropzone: boolean;
   ghostItemStyle: {
     top: number;
     left: number;
@@ -16,6 +15,7 @@ export interface IBaseItemProps {
   setItemRef: (ref: React.RefObject<HTMLElement>, index: number) => void;
   setGhostRef: (ref: React.RefObject<HTMLElement>) => void;
 }
+
 interface IListProps<Value> {
   render: (
     items: { value: Value; itemProps: IBaseItemProps }[]
@@ -86,9 +86,37 @@ class List<Value = string> extends React.Component<IListProps<Value>> {
     const translate = `translate3d(${pageX - this.state.initialX}px, ${pageY -
       this.state.initialY}px, 0px)`;
     ghostEl.style.transform = translate;
+    const element = this.items[this.state.itemDragged].current!;
+    const style = window.getComputedStyle(element);
     for (let i = this.items.length - 1; i >= 0; i--) {
       if (pageY > this.items[i].current!.offsetTop) {
-        this.setState({ afterIndex: i });
+        if (this.state.afterIndex !== i) {
+          this.items[i].current!.style['transition-duration' as any] = '300ms';
+          if (i > this.state.afterIndex) {
+            if (!this.items[i].current!.style.transform) {
+              this.items[
+                i
+              ].current!.style.transform = `translate3d(0px, -${parseInt(
+                style['margin-bottom' as any],
+                10
+              ) + element.getBoundingClientRect().height}px, 0px)`;
+            } else {
+              this.items[i - 1].current!.style.transform = null;
+            }
+          } else {
+            if (!this.items[i].current!.style.transform) {
+              this.items[
+                i
+              ].current!.style.transform = `translate3d(0px, ${parseInt(
+                style['margin-top' as any],
+                10
+              ) + element.getBoundingClientRect().height}px, 0px)`;
+            } else {
+              this.items[i + 1].current!.style.transform = null;
+            }
+          }
+          this.setState({ afterIndex: i });
+        }
         return;
       }
     }
@@ -101,11 +129,15 @@ class List<Value = string> extends React.Component<IListProps<Value>> {
     document.removeEventListener('mouseup', this.onEnd);
     document.removeEventListener('touchup', this.onEnd);
     document.removeEventListener('touchcancel', this.onEnd);
-    this.state.afterIndex > -1 &&
-      this.props.onChange({
-        oldIndex: this.state.itemDragged,
-        newIndex: this.state.afterIndex
-      });
+    if (this.state.afterIndex > -1) {
+      const oldIndex = this.state.itemDragged;
+      const newIndex = this.state.afterIndex;
+      this.props.onChange({ oldIndex, newIndex });
+    }
+    this.items.forEach(item => {
+      item.current!.style.transform = null;
+      item.current!.style['transition-duration' as any] = '0ms';
+    });
     this.setState({ itemDragged: -1, afterIndex: -2 });
   };
 
@@ -117,8 +149,6 @@ class List<Value = string> extends React.Component<IListProps<Value>> {
           isDragged: index === this.state.itemDragged,
           onMouseStart: this.onMouseStart,
           onTouchStart: this.onTouchStart,
-          beforeDropzone: index === this.state.afterIndex,
-          afterDropzone: index - 1 === this.state.afterIndex,
           setItemRef: (ref, index) => {
             this.items[index] = ref;
           },

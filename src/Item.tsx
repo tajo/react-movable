@@ -2,17 +2,19 @@ import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import { IBaseItemProps } from './List';
 
-interface IItemRenderProps {
-  onMouseDown: (e: React.MouseEvent) => void;
-  onTouchStart: (e: React.TouchEvent) => void;
+interface IBaseRenderProps {
   ref: React.RefObject<any>;
   style: React.CSSProperties;
 }
 
+interface IItemRenderProps extends IBaseRenderProps {
+  onMouseDown: (e: React.MouseEvent) => void;
+  onTouchStart: (e: React.TouchEvent) => void;
+}
+
 interface IItemProps extends IBaseItemProps {
   render: (itemProps: IItemRenderProps) => React.ReactNode;
-  renderGhost: (itemProps: IItemRenderProps) => React.ReactNode;
-  renderPlaceholder: (itemProps: IItemRenderProps) => React.ReactNode;
+  renderGhost: (itemProps: IBaseRenderProps) => React.ReactNode;
 }
 
 class Item extends React.Component<IItemProps> {
@@ -27,23 +29,30 @@ class Item extends React.Component<IItemProps> {
     }
   }
   render() {
-    const renderProps = {
-      onMouseDown: (e: React.MouseEvent) =>
-        this.props.onMouseStart(e, this.props.index),
-      onTouchStart: (e: React.TouchEvent) =>
-        this.props.onTouchStart(e, this.props.index),
-      ref: this.itemRef,
+    const baseRenderProps = {
       style: {
         userDrag: 'none',
         userSelect: 'none',
         boxSizing: 'border-box'
       } as React.CSSProperties
     };
-    const itemGhostProps = {
-      ...renderProps,
+    const renderItemProps = {
+      ...baseRenderProps,
+      style: {
+        ...baseRenderProps.style,
+        visibility: this.props.isDragged ? 'hidden' : undefined
+      } as React.CSSProperties,
+      ref: this.itemRef,
+      onMouseDown: (e: React.MouseEvent) =>
+        this.props.onMouseStart(e, this.props.index),
+      onTouchStart: (e: React.TouchEvent) =>
+        this.props.onTouchStart(e, this.props.index)
+    };
+    const renderGhostProps = {
+      ...baseRenderProps,
       ref: this.ghostRef,
       style: {
-        ...renderProps.style,
+        ...baseRenderProps.style,
         display: 'block',
         position: 'fixed',
         top: this.props.ghostItemStyle.top,
@@ -54,12 +63,10 @@ class Item extends React.Component<IItemProps> {
     };
     return (
       <React.Fragment>
-        {this.props.isDragged && this.props.renderPlaceholder
-          ? this.props.renderPlaceholder(renderProps)
-          : this.props.render(renderProps)}
+        {this.props.render(renderItemProps)}
         {this.props.isDragged &&
           ReactDOM.createPortal(
-            this.props.renderGhost(itemGhostProps),
+            this.props.renderGhost(renderGhostProps),
             document.body
           )}
       </React.Fragment>
