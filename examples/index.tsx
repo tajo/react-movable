@@ -4,8 +4,8 @@ import { List, Item, arrayMove } from '../src/index';
 
 const itemStyles = {
   padding: '1em',
-  marginTop: '40px',
-  marginBottom: '8px',
+  marginTop: '0.5em',
+  marginBottom: '0.5em',
   listStyleType: 'none',
   backgroundColor: '#CCC'
 };
@@ -35,12 +35,24 @@ export default class App extends React.Component<{}, { items: string[] }> {
             {items.map(({ value, itemProps }) => (
               <Item
                 render={props => (
-                  <li {...props} style={{ ...itemStyles, ...props.style }}>
+                  <li
+                    {...props}
+                    style={{
+                      ...itemStyles,
+                      ...props.style
+                    }}
+                  >
                     {value}
                   </li>
                 )}
                 renderGhost={props => (
-                  <li {...props} style={{ ...ghostItemStyles, ...props.style }}>
+                  <li
+                    {...props}
+                    style={{
+                      ...ghostItemStyles,
+                      ...props.style
+                    }}
+                  >
                     {value}
                   </li>
                 )}

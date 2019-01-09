@@ -1,5 +1,5 @@
 import * as React from 'react';
-//import { getElementSize } from './utils';
+import { getTranslateOffset } from './utils';
 
 export interface IBaseItemProps {
   index: number;
@@ -22,6 +22,7 @@ interface IListProps<Value> {
   ) => React.ReactNode;
   values: Value[];
   onChange: (meta: { oldIndex: number; newIndex: number }) => void;
+  transitionDuration: number;
 }
 
 class List<Value = string> extends React.Component<IListProps<Value>> {
@@ -37,6 +38,8 @@ class List<Value = string> extends React.Component<IListProps<Value>> {
     targetHeight: 0,
     targetWidth: 0
   };
+
+  static defaultProps = { transitionDuration: 300 };
 
   onMouseStart = (e: React.MouseEvent, index: number) => {
     if (e.button !== 0) return;
@@ -83,23 +86,22 @@ class List<Value = string> extends React.Component<IListProps<Value>> {
   onMove = (pageX: number, pageY: number) => {
     if (this.state.itemDragged === -1) return null;
     const ghostEl = this.ghostRef.current as HTMLElement;
-    const translate = `translate3d(${pageX - this.state.initialX}px, ${pageY -
-      this.state.initialY}px, 0px)`;
-    ghostEl.style.transform = translate;
+    ghostEl.style.transform = `translate3d(${pageX -
+      this.state.initialX}px, ${pageY - this.state.initialY}px, 0px)`;
     const element = this.items[this.state.itemDragged].current!;
-    const style = window.getComputedStyle(element);
     for (let i = this.items.length - 1; i >= 0; i--) {
       if (pageY > this.items[i].current!.offsetTop) {
         if (this.state.afterIndex !== i) {
-          this.items[i].current!.style['transition-duration' as any] = '300ms';
+          this.items[i].current!.style['transition-duration' as any] = `${
+            this.props.transitionDuration
+          }ms`;
           if (i > this.state.afterIndex) {
             if (!this.items[i].current!.style.transform) {
               this.items[
                 i
-              ].current!.style.transform = `translate3d(0px, -${parseInt(
-                style['margin-bottom' as any],
-                10
-              ) + element.getBoundingClientRect().height}px, 0px)`;
+              ].current!.style.transform = `translate3d(0px, -${getTranslateOffset(
+                element
+              )}px, 0px)`;
             } else {
               this.items[i - 1].current!.style.transform = null;
             }
@@ -107,10 +109,9 @@ class List<Value = string> extends React.Component<IListProps<Value>> {
             if (!this.items[i].current!.style.transform) {
               this.items[
                 i
-              ].current!.style.transform = `translate3d(0px, ${parseInt(
-                style['margin-top' as any],
-                10
-              ) + element.getBoundingClientRect().height}px, 0px)`;
+              ].current!.style.transform = `translate3d(0px, ${getTranslateOffset(
+                element
+              )}px, 0px)`;
             } else {
               this.items[i + 1].current!.style.transform = null;
             }
