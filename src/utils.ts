@@ -4,7 +4,8 @@ export function arrayMove<T>(array: T[], from: number, to: number) {
   return array;
 }
 
-export function getTranslateOffset(element: HTMLElement) {
+export function getTranslateOffset(item: React.RefObject<HTMLElement>) {
+  const element = item.current!;
   const style = window.getComputedStyle(element);
   return (
     Math.max(
@@ -12,4 +13,27 @@ export function getTranslateOffset(element: HTMLElement) {
       parseInt(style['margin-bottom' as any], 10)
     ) + element.getBoundingClientRect().height
   );
+}
+
+export function transformItem(
+  item: React.RefObject<HTMLElement>,
+  offsetY: number | null = 0,
+  offsetX: number | null = 0
+) {
+  if (offsetY === null || offsetX === null) {
+    item.current!.style.transform = null;
+    return;
+  }
+  item.current!.style.transform = `translate3d(${offsetX}px, ${offsetY}px, 0px)`;
+}
+
+export function isItemTransformed(item: React.RefObject<HTMLElement>) {
+  return !!item.current!.style.transform;
+}
+
+export function setItemTransition(
+  item: React.RefObject<HTMLElement>,
+  duration: number
+) {
+  item.current!.style['transition-duration' as any] = `${duration}ms`;
 }

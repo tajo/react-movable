@@ -1,9 +1,15 @@
 import * as React from 'react';
-import { getTranslateOffset } from './utils';
+import {
+  getTranslateOffset,
+  transformItem,
+  setItemTransition,
+  isItemTransformed
+} from './utils';
 
 export interface IBaseItemProps {
   index: number;
   isDragged: boolean;
+  isSelected: boolean;
   ghostItemStyle: {
     top: number;
     left: number;
@@ -12,6 +18,7 @@ export interface IBaseItemProps {
   };
   onMouseStart: (e: React.MouseEvent, index: number) => void;
   onTouchStart: (e: React.TouchEvent, index: number) => void;
+  onKeyDown: (e: React.KeyboardEvent, index: number) => void;
   setItemRef: (ref: React.RefObject<HTMLElement>, index: number) => void;
   setGhostRef: (ref: React.RefObject<HTMLElement>) => void;
 }
@@ -32,6 +39,7 @@ class List<Value = string> extends React.Component<IListProps<Value>> {
   state = {
     itemDragged: -1,
     afterIndex: -2,
+    selectedItem: -1,
     initialX: 0,
     initialY: 0,
     targetX: 0,
@@ -86,36 +94,27 @@ class List<Value = string> extends React.Component<IListProps<Value>> {
 
   onMove = (pageX: number, pageY: number) => {
     if (this.state.itemDragged === -1) return null;
-    const ghostEl = this.ghostRef.current as HTMLElement;
-    ghostEl.style.transform = `translate3d(${
+    transformItem(
+      this.ghostRef,
+      pageY - this.state.initialY,
       this.props.lockVertically ? 0 : pageX - this.state.initialX
-    }px, ${pageY - this.state.initialY}px, 0px)`;
-    const element = this.items[this.state.itemDragged].current!;
+    );
+    const offset = getTranslateOffset(this.items[this.state.itemDragged]);
     for (let i = this.items.length - 1; i >= 0; i--) {
       if (pageY > this.items[i].current!.offsetTop) {
         if (this.state.afterIndex !== i) {
-          this.items[i].current!.style['transition-duration' as any] = `${
-            this.props.transitionDuration
-          }ms`;
+          setItemTransition(this.items[i], this.props.transitionDuration);
           if (i > this.state.afterIndex) {
-            if (!this.items[i].current!.style.transform) {
-              this.items[
-                i
-              ].current!.style.transform = `translate3d(0px, -${getTranslateOffset(
-                element
-              )}px, 0px)`;
+            if (isItemTransformed(this.items[i])) {
+              transformItem(this.items[i - 1], null);
             } else {
-              this.items[i - 1].current!.style.transform = null;
+              transformItem(this.items[i], -offset);
             }
           } else {
-            if (!this.items[i].current!.style.transform) {
-              this.items[
-                i
-              ].current!.style.transform = `translate3d(0px, ${getTranslateOffset(
-                element
-              )}px, 0px)`;
+            if (isItemTransformed(this.items[i])) {
+              transformItem(this.items[i + 1], null);
             } else {
-              this.items[i + 1].current!.style.transform = null;
+              transformItem(this.items[i], offset);
             }
           }
           this.setState({ afterIndex: i });
@@ -144,14 +143,31 @@ class List<Value = string> extends React.Component<IListProps<Value>> {
     this.setState({ itemDragged: -1, afterIndex: -2 });
   };
 
+  onKeyDown = (e: React.KeyboardEvent, index: number) => {
+    if (e.key === ' ') {
+      if (this.state.selectedItem === index) {
+        this.setState({ selectedItem: -1 });
+      } else {
+        this.setState({ selectedItem: index });
+      }
+    }
+    if (this.state.selectedItem > -1) {
+      if (e.key === 'ArrowDown') {
+        console.log('arrowdown');
+      }
+    }
+  };
+
   render() {
     return this.props.render(
       this.props.values.map((value, index) => {
         const itemProps: IBaseItemProps = {
           index,
           isDragged: index === this.state.itemDragged,
+          isSelected: index === this.state.selectedItem,
           onMouseStart: this.onMouseStart,
           onTouchStart: this.onTouchStart,
+          onKeyDown: this.onKeyDown,
           setItemRef: (ref, index) => {
             this.items[index] = ref;
           },

@@ -40,6 +40,9 @@ class Item extends React.Component<IItemProps> {
         visibility: this.props.isDragged ? 'hidden' : undefined
       } as React.CSSProperties,
       ref: this.itemRef,
+      tabindex: 0,
+      onKeyDown: (e: React.KeyboardEvent) =>
+        this.props.onKeyDown(e, this.props.index),
       onMouseDown: (e: React.MouseEvent) =>
         this.props.onMouseStart(e, this.props.index),
       onTouchStart: (e: React.TouchEvent) =>

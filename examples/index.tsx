@@ -6,8 +6,7 @@ const itemStyles = {
   padding: '1em',
   marginTop: '0.5em',
   marginBottom: '0.5em',
-  listStyleType: 'none',
-  backgroundColor: '#CCC'
+  listStyleType: 'none'
 };
 
 const ghostItemStyles = {
@@ -39,7 +38,8 @@ export default class App extends React.Component<{}, { items: string[] }> {
                     {...props}
                     style={{
                       ...itemStyles,
-                      ...props.style
+                      ...props.style,
+                      backgroundColor: itemProps.isSelected ? 'yellow' : '#CCC'
                     }}
                   >
                     {value}
