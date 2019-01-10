@@ -36,6 +36,7 @@ interface IListProps<Value> {
 class List<Value = string> extends React.Component<IListProps<Value>> {
   items: React.RefObject<HTMLElement>[] = [];
   ghostRef = React.createRef<HTMLElement>();
+  needle = -1;
   state = {
     itemDragged: -1,
     afterIndex: -2,
@@ -132,29 +133,90 @@ class List<Value = string> extends React.Component<IListProps<Value>> {
     document.removeEventListener('touchup', this.onEnd);
     document.removeEventListener('touchcancel', this.onEnd);
     if (this.state.afterIndex > -1) {
-      const oldIndex = this.state.itemDragged;
-      const newIndex = this.state.afterIndex;
-      this.props.onChange({ oldIndex, newIndex });
+      this.props.onChange({
+        oldIndex: this.state.itemDragged,
+        newIndex: this.state.afterIndex
+      });
     }
     this.items.forEach(item => {
-      item.current!.style.transform = null;
-      item.current!.style['transition-duration' as any] = '0ms';
+      setItemTransition(item, 0);
+      transformItem(item, null);
     });
     this.setState({ itemDragged: -1, afterIndex: -2 });
   };
 
   onKeyDown = (e: React.KeyboardEvent, index: number) => {
+    const selectedItem = this.state.selectedItem;
     if (e.key === ' ') {
-      if (this.state.selectedItem === index) {
+      if (selectedItem === index) {
+        if (selectedItem !== this.needle) {
+          this.items.forEach(item => {
+            setItemTransition(item, 0);
+            transformItem(item, null);
+          });
+          this.props.onChange({
+            oldIndex: selectedItem,
+            newIndex: this.needle
+          });
+          this.items[this.needle].current!.focus();
+        }
         this.setState({ selectedItem: -1 });
+        this.needle = -1;
       } else {
         this.setState({ selectedItem: index });
+        this.needle = index;
       }
     }
-    if (this.state.selectedItem > -1) {
-      if (e.key === 'ArrowDown') {
-        console.log('arrowdown');
+    if (
+      e.key === 'ArrowDown' &&
+      selectedItem > -1 &&
+      this.needle < this.props.values.length - 1
+    ) {
+      const offset = getTranslateOffset(this.items[selectedItem]);
+      this.needle++;
+      setItemTransition(
+        this.items[selectedItem],
+        this.props.transitionDuration
+      );
+      setItemTransition(this.items[this.needle], this.props.transitionDuration);
+      transformItem(
+        this.items[selectedItem],
+        offset * (this.needle - selectedItem)
+      );
+      if (isItemTransformed(this.items[this.needle])) {
+        transformItem(this.items[this.needle - 1], null);
+      } else {
+        transformItem(this.items[this.needle], -offset);
       }
+    }
+    if (e.key === 'ArrowUp' && selectedItem > -1 && this.needle > 0) {
+      const offset = getTranslateOffset(this.items[selectedItem]);
+      this.needle--;
+      setItemTransition(
+        this.items[selectedItem],
+        this.props.transitionDuration
+      );
+      setItemTransition(this.items[this.needle], this.props.transitionDuration);
+      transformItem(
+        this.items[selectedItem],
+        offset * (selectedItem - this.needle) * -1
+      );
+      if (isItemTransformed(this.items[this.needle])) {
+        transformItem(this.items[this.needle + 1], null);
+      } else {
+        transformItem(this.items[this.needle], offset);
+      }
+    }
+    if (e.key === 'Escape' && selectedItem > -1) {
+      this.items.forEach(item => {
+        setItemTransition(item, 0);
+        transformItem(item, null);
+      });
+      this.setState({ selectedItem: -1 });
+      this.needle = -1;
+    }
+    if ((e.key === 'Tab' || e.key === 'Enter') && selectedItem > -1) {
+      e.preventDefault();
     }
   };
 
