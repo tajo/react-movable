@@ -155,7 +155,7 @@ class List<Value = string> extends React.Component<IListProps<Value>> {
     document.removeEventListener('mouseup', this.onEnd);
     document.removeEventListener('touchup', this.onEnd);
     document.removeEventListener('touchcancel', this.onEnd);
-    if (this.afterIndex > -1) {
+    if (this.afterIndex > -1 && this.state.itemDragged !== this.afterIndex) {
       this.props.onChange({
         oldIndex: this.state.itemDragged,
         newIndex: this.afterIndex
