@@ -3,7 +3,6 @@ import {
   getTranslateOffset,
   transformItem,
   setItemTransition,
-  isItemTransformed,
   binarySearch
 } from './utils';
 
@@ -115,16 +114,34 @@ class List<Value = string> extends React.Component<IListProps<Value>> {
     );
     const offset = getTranslateOffset(this.items[this.state.itemDragged]);
     this.afterIndex = binarySearch(this.topOffsets, pageY);
-    this.animateItems(this.afterIndex === -1 ? 0 : this.afterIndex, offset);
+    this.animateItems(
+      this.afterIndex === -1 ? 0 : this.afterIndex,
+      this.state.itemDragged,
+      offset
+    );
   };
 
-  animateItems = (needle: number, offset: number) => {
-    const { itemDragged } = this.state;
+  animateItems = (
+    needle: number,
+    movedItem: number,
+    offset: number,
+    animateMovedItem: boolean = false
+  ) => {
     this.items.forEach((item, i) => {
       setItemTransition(item, this.props.transitionDuration);
-      if (itemDragged < needle && i > itemDragged && i <= needle) {
+      if (movedItem === i && animateMovedItem) {
+        if (movedItem === needle) {
+          return transformItem(item, null);
+        }
+        transformItem(
+          item,
+          movedItem < needle
+            ? offset * (needle - movedItem)
+            : offset * (movedItem - needle) * -1
+        );
+      } else if (movedItem < needle && i > movedItem && i <= needle) {
         transformItem(item, -offset);
-      } else if (i < itemDragged && itemDragged > needle && i >= needle) {
+      } else if (i < movedItem && movedItem > needle && i >= needle) {
         transformItem(item, offset);
       } else {
         transformItem(item, null);
@@ -181,38 +198,12 @@ class List<Value = string> extends React.Component<IListProps<Value>> {
     ) {
       const offset = getTranslateOffset(this.items[selectedItem]);
       this.needle++;
-      setItemTransition(
-        this.items[selectedItem],
-        this.props.transitionDuration
-      );
-      setItemTransition(this.items[this.needle], this.props.transitionDuration);
-      transformItem(
-        this.items[selectedItem],
-        offset * (this.needle - selectedItem)
-      );
-      if (isItemTransformed(this.items[this.needle])) {
-        transformItem(this.items[this.needle - 1], null);
-      } else {
-        transformItem(this.items[this.needle], -offset);
-      }
+      this.animateItems(this.needle, selectedItem, offset, true);
     }
     if (e.key === 'ArrowUp' && selectedItem > -1 && this.needle > 0) {
       const offset = getTranslateOffset(this.items[selectedItem]);
       this.needle--;
-      setItemTransition(
-        this.items[selectedItem],
-        this.props.transitionDuration
-      );
-      setItemTransition(this.items[this.needle], this.props.transitionDuration);
-      transformItem(
-        this.items[selectedItem],
-        offset * (selectedItem - this.needle) * -1
-      );
-      if (isItemTransformed(this.items[this.needle])) {
-        transformItem(this.items[this.needle + 1], null);
-      } else {
-        transformItem(this.items[this.needle], offset);
-      }
+      this.animateItems(this.needle, selectedItem, offset, true);
     }
     if (e.key === 'Escape' && selectedItem > -1) {
       this.items.forEach(item => {
