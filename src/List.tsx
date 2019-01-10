@@ -76,6 +76,10 @@ class List<Value = string> extends React.Component<IListProps<Value>> {
     pageY: number,
     index: number
   ) => {
+    if (this.state.selectedItem > -1) {
+      this.setState({ selectedItem: -1 });
+      this.needle = -1;
+    }
     const targetRect = target.getBoundingClientRect() as DOMRect;
     this.setState({
       itemDragged: index,
