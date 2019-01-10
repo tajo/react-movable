@@ -25,7 +25,10 @@ export interface IBaseItemProps {
 
 interface IListProps<Value> {
   render: (
-    items: { value: Value; itemProps: IBaseItemProps }[]
+    props: {
+      items: { value: Value; itemProps: IBaseItemProps }[];
+      isDragged: boolean;
+    }
   ) => React.ReactNode;
   values: Value[];
   onChange: (meta: { oldIndex: number; newIndex: number }) => void;
@@ -225,8 +228,8 @@ class List<Value = string> extends React.Component<IListProps<Value>> {
   };
 
   render() {
-    return this.props.render(
-      this.props.values.map((value, index) => {
+    return this.props.render({
+      items: this.props.values.map((value, index) => {
         const itemProps: IBaseItemProps = {
           index,
           isDragged: index === this.state.itemDragged,
@@ -248,8 +251,9 @@ class List<Value = string> extends React.Component<IListProps<Value>> {
           }
         };
         return { value, itemProps };
-      })
-    );
+      }),
+      isDragged: this.state.itemDragged > -1
+    });
   }
 }
 

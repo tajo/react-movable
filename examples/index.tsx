@@ -2,20 +2,6 @@ import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import { List, Item, arrayMove } from '../src/index';
 
-const itemStyles = {
-  padding: '1em',
-  marginTop: '0.5em',
-  marginBottom: '0.5em',
-  listStyleType: 'none'
-};
-
-const ghostItemStyles = {
-  padding: '1em',
-  margin: 0,
-  backgroundColor: 'blue',
-  listStyleType: 'none'
-};
-
 export default class App extends React.Component<{}, { items: string[] }> {
   state = {
     items: [
@@ -37,16 +23,21 @@ export default class App extends React.Component<{}, { items: string[] }> {
             items: arrayMove(prevState.items, oldIndex, newIndex)
           }))
         }
-        render={items => (
-          <ul style={{ padding: 0 }}>
+        render={({ items, isDragged }) => (
+          <ul
+            style={{ padding: 0, cursor: isDragged ? 'grabbing' : undefined }}
+          >
             {items.map(({ value, itemProps }) => (
               <Item
                 render={props => (
                   <li
                     {...props}
                     style={{
-                      ...itemStyles,
                       ...props.style,
+                      padding: '1em',
+                      margin: '0.5em 0em',
+                      listStyleType: 'none',
+                      cursor: 'grab',
                       backgroundColor: itemProps.isSelected ? 'yellow' : '#CCC'
                     }}
                   >
@@ -57,8 +48,12 @@ export default class App extends React.Component<{}, { items: string[] }> {
                   <li
                     {...props}
                     style={{
-                      ...ghostItemStyles,
-                      ...props.style
+                      ...props.style,
+                      padding: '1em',
+                      margin: 0,
+                      backgroundColor: 'blue',
+                      listStyleType: 'none',
+                      cursor: 'grabbing'
                     }}
                   >
                     {value}
