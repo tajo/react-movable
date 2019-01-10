@@ -37,7 +37,10 @@ class Item extends React.Component<IItemProps> {
       ...baseRenderProps,
       style: {
         ...baseRenderProps.style,
-        visibility: this.props.isDragged ? 'hidden' : undefined
+        visibility: this.props.isDragged ? 'hidden' : undefined,
+        zIndex: this.props.isSelected ? 5000 : 0,
+        position: this.props.isSelected ? 'relative' : 'static',
+        cursor: this.props.isDragged ? 'grabbing' : 'grab'
       } as React.CSSProperties,
       ref: this.itemRef,
       tabindex: 0,
@@ -55,6 +58,7 @@ class Item extends React.Component<IItemProps> {
         ...baseRenderProps.style,
         display: 'block',
         position: 'fixed',
+        cursor: 'grabbing',
         marginTop: 0,
         top: this.props.ghostItemStyle.top,
         left: this.props.ghostItemStyle.left,
