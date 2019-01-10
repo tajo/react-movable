@@ -3,7 +3,8 @@ import {
   getTranslateOffset,
   transformItem,
   setItemTransition,
-  isItemTransformed
+  isItemTransformed,
+  binarySearch
 } from './utils';
 
 export interface IBaseItemProps {
@@ -39,10 +40,11 @@ interface IListProps<Value> {
 class List<Value = string> extends React.Component<IListProps<Value>> {
   items: React.RefObject<HTMLElement>[] = [];
   ghostRef = React.createRef<HTMLElement>();
+  topOffsets: number[] = [];
   needle = -1;
+  afterIndex = -2;
   state = {
     itemDragged: -1,
-    afterIndex: -2,
     selectedItem: -1,
     initialX: 0,
     initialY: 0,
@@ -53,6 +55,10 @@ class List<Value = string> extends React.Component<IListProps<Value>> {
   };
 
   static defaultProps = { transitionDuration: 300, lockVertically: false };
+
+  componentDidMount() {
+    this.topOffsets = this.items.map(item => item.current!.offsetTop);
+  }
 
   onMouseStart = (e: React.MouseEvent, index: number) => {
     if (e.button !== 0) return;
@@ -108,29 +114,22 @@ class List<Value = string> extends React.Component<IListProps<Value>> {
       this.props.lockVertically ? 0 : pageX - this.state.initialX
     );
     const offset = getTranslateOffset(this.items[this.state.itemDragged]);
-    for (let i = this.items.length - 1; i >= 0; i--) {
-      if (pageY > this.items[i].current!.offsetTop) {
-        if (this.state.afterIndex !== i) {
-          setItemTransition(this.items[i], this.props.transitionDuration);
-          if (i > this.state.afterIndex) {
-            if (isItemTransformed(this.items[i])) {
-              transformItem(this.items[i - 1], null);
-            } else {
-              transformItem(this.items[i], -offset);
-            }
-          } else {
-            if (isItemTransformed(this.items[i])) {
-              transformItem(this.items[i + 1], null);
-            } else {
-              transformItem(this.items[i], offset);
-            }
-          }
-          this.setState({ afterIndex: i });
-        }
-        return;
+    this.afterIndex = binarySearch(this.topOffsets, pageY);
+    this.animateItems(this.afterIndex === -1 ? 0 : this.afterIndex, offset);
+  };
+
+  animateItems = (needle: number, offset: number) => {
+    const { itemDragged } = this.state;
+    this.items.forEach((item, i) => {
+      setItemTransition(item, this.props.transitionDuration);
+      if (itemDragged < needle && i > itemDragged && i <= needle) {
+        transformItem(item, -offset);
+      } else if (i < itemDragged && itemDragged > needle && i >= needle) {
+        transformItem(item, offset);
+      } else {
+        transformItem(item, null);
       }
-    }
-    this.setState({ afterIndex: -1 });
+    });
   };
 
   onEnd = () => {
@@ -139,17 +138,18 @@ class List<Value = string> extends React.Component<IListProps<Value>> {
     document.removeEventListener('mouseup', this.onEnd);
     document.removeEventListener('touchup', this.onEnd);
     document.removeEventListener('touchcancel', this.onEnd);
-    if (this.state.afterIndex > -1) {
+    if (this.afterIndex > -1) {
       this.props.onChange({
         oldIndex: this.state.itemDragged,
-        newIndex: this.state.afterIndex
+        newIndex: this.afterIndex
       });
     }
     this.items.forEach(item => {
       setItemTransition(item, 0);
       transformItem(item, null);
     });
-    this.setState({ itemDragged: -1, afterIndex: -2 });
+    this.setState({ itemDragged: -1 });
+    this.afterIndex = -2;
   };
 
   onKeyDown = (e: React.KeyboardEvent, index: number) => {
