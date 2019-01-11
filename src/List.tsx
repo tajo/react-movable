@@ -61,6 +61,7 @@ class List<Value = string> extends React.Component<IListProps<Value>> {
   items: React.RefObject<HTMLElement>[] = [];
   ghostRef = React.createRef<HTMLElement>();
   topOffsets: number[] = [];
+  itemTranslateOffsets: number[] = [];
   needle = -1;
   afterIndex = -2;
   state = {
@@ -94,9 +95,13 @@ class List<Value = string> extends React.Component<IListProps<Value>> {
     }
   };
 
-  componentDidMount() {
+  calculateOffsets = () => {
+    if (!this.items[0].current) return;
     this.topOffsets = this.items.map(item => item.current!.offsetTop);
-  }
+    this.itemTranslateOffsets = this.items.map(item =>
+      getTranslateOffset(item)
+    );
+  };
 
   onMouseStart = (e: React.MouseEvent, index: number, target?: HTMLElement) => {
     if (e.button !== 0) return;
@@ -188,8 +193,12 @@ class List<Value = string> extends React.Component<IListProps<Value>> {
         transformItem(
           item,
           movedItem < needle
-            ? offset * (needle - movedItem)
-            : offset * (movedItem - needle) * -1
+            ? this.itemTranslateOffsets
+                .slice(movedItem + 1, needle + 1)
+                .reduce((a, b) => a + b, 0)
+            : this.itemTranslateOffsets
+                .slice(needle, movedItem)
+                .reduce((a, b) => a + b, 0) * -1
         );
       } else if (movedItem < needle && i > movedItem && i <= needle) {
         transformItem(item, -offset);
@@ -308,9 +317,11 @@ class List<Value = string> extends React.Component<IListProps<Value>> {
               onKeyDown: this.onKeyDown,
               setItemRef: (ref, index) => {
                 this.items[index] = ref;
+                this.calculateOffsets();
               },
               removeItemRef: index => {
                 this.items = arrayRemove(this.items, index);
+                this.calculateOffsets();
               },
               setGhostRef: ref => {
                 this.ghostRef = ref;

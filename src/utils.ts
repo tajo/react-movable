@@ -48,17 +48,6 @@ export function setItemTransition(
   item.current.style['transition-duration' as any] = `${duration}ms`;
 }
 
-export const throttle = (func: Function, limit: number) => {
-  let inThrottle = false;
-  return function(...args: any[]) {
-    if (!inThrottle) {
-      func.apply(null, args);
-      inThrottle = true;
-      setTimeout(() => (inThrottle = false), limit);
-    }
-  };
-};
-
 export function binarySearch(array: number[], targetValue: number) {
   let min = 0;
   let max = array.length - 1;
