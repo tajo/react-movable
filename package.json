@@ -24,7 +24,6 @@
     "clean": "rimraf es lib build",
     "dev": "NODE=development webpack --watch",
     "prepublish": "cross-env NODE_ENV=production npm run build",
-    "lint": "eslint webpack.config.js src/**/*.js",
     "format": "prettier --write \"**/*.js\""
   },
   "tags": [
@@ -42,8 +41,6 @@
     "@types/react-dom": "^16.0.11",
     "awesome-typescript-loader": "^5.2.1",
     "cross-env": "^5.0.1",
-    "eslint": "^5.11.0",
-    "eslint-plugin-prettier": "^3.0.0",
     "jest": "^23.6.0",
     "prettier": "^1.5.3",
     "react": "^16.3.0",
