@@ -93,7 +93,7 @@ class App extends React.Component<{}, { items: string[] }> {
                       style={{
                         ...props.style,
                         padding: '1.5em',
-                        margin: itemProps.isDragged ? 0 : '0.5em 0em',
+                        margin: '0.5em 0em',
                         listStyleType: 'none',
                         border: '2px solid #CCC',
                         boxShadow: '3px 3px #AAA',

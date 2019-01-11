@@ -133,10 +133,11 @@ class List<Value = string> extends React.Component<IListProps<Value>> {
       this.needle = -1;
     }
     const targetRect = target.getBoundingClientRect() as DOMRect;
+    const targetStyles = window.getComputedStyle(target);
     this.setState({
       itemDragged: index,
-      targetX: targetRect.x,
-      targetY: targetRect.y,
+      targetX: targetRect.x - parseInt(targetStyles['margin-left' as any], 10),
+      targetY: targetRect.y - parseInt(targetStyles['margin-top' as any], 10),
       targetHeight: targetRect.height,
       targetWidth: targetRect.width,
       initialX: pageX,
@@ -226,7 +227,6 @@ class List<Value = string> extends React.Component<IListProps<Value>> {
             oldIndex: selectedItem,
             newIndex: this.needle
           });
-          this.items[this.needle].current!.focus();
         }
         this.setState({
           selectedItem: -1,
