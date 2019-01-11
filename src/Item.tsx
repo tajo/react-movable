@@ -48,7 +48,8 @@ class Item extends React.Component<IItemProps> {
       onMouseDown: (e: React.MouseEvent) =>
         this.props.onMouseStart(e, this.props.index),
       onTouchStart: (e: React.TouchEvent) =>
-        this.props.onTouchStart(e, this.props.index)
+        this.props.onTouchStart(e, this.props.index),
+      'aria-roledescription': this.props.voiceover.item(this.props.index + 1)
     };
     const renderGhostProps = {
       ...baseRenderProps,

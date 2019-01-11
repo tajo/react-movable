@@ -6,6 +6,14 @@ import {
   binarySearch
 } from './utils';
 
+export interface IVoiceover {
+  item: (position: number) => string;
+  lifted: (position: number) => string;
+  dropped: (from: number, to: number) => string;
+  moved: (position: number, up: boolean) => string;
+  canceled: (position: number) => string;
+}
+
 export interface IBaseItemProps {
   index: number;
   isDragged: boolean;
@@ -21,6 +29,7 @@ export interface IBaseItemProps {
   onKeyDown: (e: React.KeyboardEvent, index: number) => void;
   setItemRef: (ref: React.RefObject<HTMLElement>, index: number) => void;
   setGhostRef: (ref: React.RefObject<HTMLElement>) => void;
+  voiceover: IVoiceover;
 }
 
 interface IListProps<Value> {
@@ -34,6 +43,7 @@ interface IListProps<Value> {
   onChange: (meta: { oldIndex: number; newIndex: number }) => void;
   transitionDuration: number;
   lockVertically: boolean;
+  voiceover: IVoiceover;
 }
 
 class List<Value = string> extends React.Component<IListProps<Value>> {
@@ -50,10 +60,28 @@ class List<Value = string> extends React.Component<IListProps<Value>> {
     targetX: 0,
     targetY: 0,
     targetHeight: 0,
-    targetWidth: 0
+    targetWidth: 0,
+    liveText: ''
   };
 
-  static defaultProps = { transitionDuration: 300, lockVertically: false };
+  static defaultProps = {
+    transitionDuration: 300,
+    lockVertically: false,
+    voiceover: {
+      item: (position: number) =>
+        `You are currently at a draggable item at position ${position}. Press space bar to lift.`,
+      lifted: (position: number) =>
+        `You have lifted item at position ${position}. Press j to move down, k to move up, space bar to drop and escape to cancel.`,
+      moved: (position: number, up: boolean) =>
+        `You have moved the lifted item ${
+          up ? 'up' : 'down'
+        } to position ${position}. Press j to move down, k to move up, space bar to drop and escape to cancel.`,
+      dropped: (from: number, to: number) =>
+        `You have dropped the item. It has moved from position ${from} to ${to}.`,
+      canceled: (position: number) =>
+        `You have cancelled the movement. The item has returned to its starting position of ${position}.`
+    }
+  };
 
   componentDidMount() {
     this.topOffsets = this.items.map(item => item.current!.offsetTop);
@@ -184,33 +212,55 @@ class List<Value = string> extends React.Component<IListProps<Value>> {
           });
           this.items[this.needle].current!.focus();
         }
-        this.setState({ selectedItem: -1 });
+        this.setState({
+          selectedItem: -1,
+          liveText: this.props.voiceover.dropped(
+            selectedItem + 1,
+            this.needle + 1
+          )
+        });
         this.needle = -1;
       } else {
-        this.setState({ selectedItem: index });
+        this.setState({
+          selectedItem: index,
+          liveText: this.props.voiceover.lifted(index + 1)
+        });
         this.needle = index;
       }
     }
     if (
-      e.key === 'ArrowDown' &&
+      (e.key === 'ArrowDown' || e.key === 'j') &&
       selectedItem > -1 &&
       this.needle < this.props.values.length - 1
     ) {
       const offset = getTranslateOffset(this.items[selectedItem]);
       this.needle++;
       this.animateItems(this.needle, selectedItem, offset, true);
+      this.setState({
+        liveText: this.props.voiceover.moved(this.needle + 1, false)
+      });
     }
-    if (e.key === 'ArrowUp' && selectedItem > -1 && this.needle > 0) {
+    if (
+      (e.key === 'ArrowUp' || e.key === 'k') &&
+      selectedItem > -1 &&
+      this.needle > 0
+    ) {
       const offset = getTranslateOffset(this.items[selectedItem]);
       this.needle--;
       this.animateItems(this.needle, selectedItem, offset, true);
+      this.setState({
+        liveText: this.props.voiceover.moved(this.needle + 1, true)
+      });
     }
     if (e.key === 'Escape' && selectedItem > -1) {
       this.items.forEach(item => {
         setItemTransition(item, 0);
         transformItem(item, null);
       });
-      this.setState({ selectedItem: -1 });
+      this.setState({
+        selectedItem: -1,
+        liveText: this.props.voiceover.canceled(selectedItem + 1)
+      });
       this.needle = -1;
     }
     if ((e.key === 'Tab' || e.key === 'Enter') && selectedItem > -1) {
@@ -219,32 +269,55 @@ class List<Value = string> extends React.Component<IListProps<Value>> {
   };
 
   render() {
-    return this.props.render({
-      items: this.props.values.map((value, index) => {
-        const itemProps: IBaseItemProps = {
-          index,
-          isDragged: index === this.state.itemDragged,
-          isSelected: index === this.state.selectedItem,
-          onMouseStart: this.onMouseStart,
-          onTouchStart: this.onTouchStart,
-          onKeyDown: this.onKeyDown,
-          setItemRef: (ref, index) => {
-            this.items[index] = ref;
-          },
-          setGhostRef: ref => {
-            this.ghostRef = ref;
-          },
-          ghostItemStyle: {
-            top: this.state.targetY,
-            left: this.state.targetX,
-            width: this.state.targetWidth,
-            height: this.state.targetHeight
-          }
-        };
-        return { value, itemProps };
-      }),
-      isDragged: this.state.itemDragged > -1
-    });
+    return (
+      <React.Fragment>
+        {this.props.render({
+          items: this.props.values.map((value, index) => {
+            const itemProps: IBaseItemProps = {
+              index,
+              isDragged: index === this.state.itemDragged,
+              isSelected: index === this.state.selectedItem,
+              onMouseStart: this.onMouseStart,
+              onTouchStart: this.onTouchStart,
+              onKeyDown: this.onKeyDown,
+              setItemRef: (ref, index) => {
+                this.items[index] = ref;
+              },
+              setGhostRef: ref => {
+                this.ghostRef = ref;
+              },
+              ghostItemStyle: {
+                top: this.state.targetY,
+                left: this.state.targetX,
+                width: this.state.targetWidth,
+                height: this.state.targetHeight
+              },
+              voiceover: this.props.voiceover
+            };
+            return { value, itemProps };
+          }),
+          isDragged: this.state.itemDragged > -1
+        })}
+        <div
+          aria-live="assertive"
+          role="log"
+          aria-atomic="true"
+          style={{
+            position: 'absolute',
+            width: '1px',
+            height: '1px',
+            margin: '-1px',
+            border: '0px',
+            padding: '0px',
+            overflow: 'hidden',
+            clip: 'react(0px, 0px, 0px, 0px)',
+            clipPath: 'inset(100%)'
+          }}
+        >
+          {this.state.liveText}
+        </div>
+      </React.Fragment>
+    );
   }
 }
 
