@@ -1,12 +1,19 @@
 {
   "compilerOptions": {
-    "target": "es6",
+    "target": "es5",
+    "module": "esnext",
+    "lib": ["esnext", "dom"],
+    "jsx": "preserve",
     "moduleResolution": "node",
+    "esModuleInterop": true,
+    "allowJs": true,
+    "skipLibCheck": false,
+    "allowSyntheticDefaultImports": true,
     "strict": true,
-    "noUnusedLocals": true,
-    "jsx": "react",
-    "outDir": "es"
+    "forceConsistentCasingInFileNames": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "noEmit": true
   },
-  "include": ["src/**/*"],
-  "exclude": ["node_modules", "**/*.spec.ts"]
+  "include": ["src", "examples"]
 }
