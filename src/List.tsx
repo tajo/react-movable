@@ -18,6 +18,7 @@ export interface IBaseItemProps {
   index: number;
   isDragged: boolean;
   isSelected: boolean;
+  isActive: boolean;
   ghostItemStyle: {
     top: number;
     left: number;
@@ -277,6 +278,9 @@ class List<Value = string> extends React.Component<IListProps<Value>> {
               index,
               isDragged: index === this.state.itemDragged,
               isSelected: index === this.state.selectedItem,
+              isActive:
+                index === this.state.itemDragged ||
+                index === this.state.selectedItem,
               onMouseStart: this.onMouseStart,
               onTouchStart: this.onTouchStart,
               onKeyDown: this.onKeyDown,

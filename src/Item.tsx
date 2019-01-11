@@ -11,7 +11,6 @@ interface IRenderProps {
 
 interface IItemProps extends IBaseItemProps {
   render: (itemProps: IRenderProps) => React.ReactNode;
-  renderGhost?: (itemProps: IRenderProps) => React.ReactNode;
 }
 
 class Item extends React.Component<IItemProps> {
@@ -42,7 +41,7 @@ class Item extends React.Component<IItemProps> {
         position: this.props.isSelected ? 'relative' : 'static'
       } as React.CSSProperties,
       ref: this.itemRef,
-      tabindex: 0,
+      tabIndex: 0,
       onKeyDown: (e: React.KeyboardEvent) =>
         this.props.onKeyDown(e, this.props.index),
       onMouseDown: (e: React.MouseEvent) =>
@@ -70,9 +69,7 @@ class Item extends React.Component<IItemProps> {
         {this.props.render(renderItemProps)}
         {this.props.isDragged &&
           ReactDOM.createPortal(
-            this.props.renderGhost
-              ? this.props.renderGhost(renderGhostProps)
-              : this.props.render(renderGhostProps),
+            this.props.render(renderGhostProps),
             document.body
           )}
       </React.Fragment>
