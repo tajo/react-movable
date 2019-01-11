@@ -23,6 +23,12 @@ class Item extends React.Component<IItemProps> {
     if (this.props.isDragged && !prevProps.isDragged) {
       this.props.setGhostRef(this.ghostRef);
     }
+    if (prevProps.index !== this.props.index) {
+      this.props.setItemRef(this.itemRef, this.props.index);
+    }
+  }
+  componentWillUnmount() {
+    this.props.removeItemRef(this.props.index);
   }
   render() {
     const baseRenderProps = {

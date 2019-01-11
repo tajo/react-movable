@@ -4,6 +4,12 @@ export function arrayMove<T>(array: T[], from: number, to: number) {
   return array;
 }
 
+export function arrayRemove<T>(array: T[], index: number) {
+  array = array.slice();
+  array.splice(index, 1);
+  return array;
+}
+
 export function getTranslateOffset(item: React.RefObject<HTMLElement>) {
   const element = item.current;
   if (!element) return 0;

@@ -3,7 +3,8 @@ import {
   getTranslateOffset,
   transformItem,
   setItemTransition,
-  binarySearch
+  binarySearch,
+  arrayRemove
 } from './utils';
 
 export interface IVoiceover {
@@ -25,10 +26,19 @@ export interface IBaseItemProps {
     width: number;
     height: number;
   };
-  onMouseStart: (e: React.MouseEvent, index: number) => void;
-  onTouchStart: (e: React.TouchEvent, index: number) => void;
+  onMouseStart: (
+    e: React.MouseEvent,
+    index: number,
+    target?: HTMLElement
+  ) => void;
+  onTouchStart: (
+    e: React.TouchEvent,
+    index: number,
+    target?: HTMLElement
+  ) => void;
   onKeyDown: (e: React.KeyboardEvent, index: number) => void;
   setItemRef: (ref: React.RefObject<HTMLElement>, index: number) => void;
+  removeItemRef: (index: number) => void;
   setGhostRef: (ref: React.RefObject<HTMLElement>) => void;
   voiceover: IVoiceover;
 }
@@ -88,19 +98,24 @@ class List<Value = string> extends React.Component<IListProps<Value>> {
     this.topOffsets = this.items.map(item => item.current!.offsetTop);
   }
 
-  onMouseStart = (e: React.MouseEvent, index: number) => {
+  onMouseStart = (e: React.MouseEvent, index: number, target?: HTMLElement) => {
     if (e.button !== 0) return;
     document.addEventListener('mousemove', this.onMouseMove);
     document.addEventListener('mouseup', this.onEnd);
-    this.onStart(e.target as HTMLElement, e.pageX, e.pageY, index);
+    this.onStart(
+      target ? target : (e.target as HTMLElement),
+      e.pageX,
+      e.pageY,
+      index
+    );
   };
 
-  onTouchStart = (e: React.TouchEvent, index: number) => {
+  onTouchStart = (e: React.TouchEvent, index: number, target?: HTMLElement) => {
     document.addEventListener('touchmove', this.onTouchMove);
     document.addEventListener('touchend', this.onEnd);
     document.addEventListener('touchcancel', this.onEnd);
     this.onStart(
-      e.target as HTMLElement,
+      target ? target : (e.target as HTMLElement),
       e.touches[0].pageX,
       e.touches[0].pageY,
       index
@@ -286,6 +301,9 @@ class List<Value = string> extends React.Component<IListProps<Value>> {
               onKeyDown: this.onKeyDown,
               setItemRef: (ref, index) => {
                 this.items[index] = ref;
+              },
+              removeItemRef: index => {
+                this.items = arrayRemove(this.items, index);
               },
               setGhostRef: ref => {
                 this.ghostRef = ref;
