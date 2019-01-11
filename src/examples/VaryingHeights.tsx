@@ -1,12 +1,15 @@
 import * as React from 'react';
 import { List, Item, arrayMove } from '../index';
 
-class App extends React.Component<
-  { transitionDuration?: number; lockVertically?: boolean },
-  { items: string[] }
-> {
+class App extends React.Component<{}, { items: string[] }> {
   state = {
-    items: ['Item 1', 'Item 2', 'Item 3', 'Item 4', 'Item 5', 'Item 6']
+    items: [
+      '70px Item 1',
+      '100px Item 2',
+      '70px Item 3',
+      '70px Item 4',
+      '150px Item 5'
+    ]
   };
   render() {
     return (
@@ -19,8 +22,6 @@ class App extends React.Component<
         }}
       >
         <List
-          transitionDuration={this.props.transitionDuration}
-          lockVertically={this.props.lockVertically}
           values={this.state.items}
           onChange={({ oldIndex, newIndex }) =>
             this.setState((prevState: { items: string[] }) => ({
@@ -41,6 +42,8 @@ class App extends React.Component<
                         ...props.style,
                         padding: '1.5em',
                         margin: '0.5em 0em',
+                        display: 'flex',
+                        alignItems: 'center',
                         listStyleType: 'none',
                         cursor: itemProps.isDragged ? 'grabbing' : 'grab',
                         border: '2px solid #CCC',
@@ -49,7 +52,8 @@ class App extends React.Component<
                         borderRadius: '5px',
                         fontFamily:
                           'Arial, "Helvetica Neue", Helvetica, sans-serif',
-                        backgroundColor: itemProps.isActive ? '#EEE' : '#FFF'
+                        backgroundColor: itemProps.isActive ? '#EEE' : '#FFF',
+                        height: `${parseInt(value, 10)}px`
                       }}
                     >
                       {value}

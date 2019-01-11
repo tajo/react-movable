@@ -145,20 +145,27 @@ class List<Value = string> extends React.Component<IListProps<Value>> {
     });
   };
 
-  onMouseMove = (e: MouseEvent) => this.onMove(e.pageX, e.pageY);
+  onMouseMove = (e: MouseEvent) =>
+    this.onMove(e.pageX, e.pageY, e.target as HTMLElement);
 
   onTouchMove = (e: TouchEvent) =>
-    this.onMove(e.touches[0].pageX, e.touches[0].pageY);
+    this.onMove(
+      e.touches[0].pageX,
+      e.touches[0].pageY,
+      e.target as HTMLElement
+    );
 
-  onMove = (pageX: number, pageY: number) => {
+  onMove = (pageX: number, pageY: number, element: HTMLElement) => {
     if (this.state.itemDragged === -1) return null;
     transformItem(
       this.ghostRef,
       pageY - this.state.initialY,
       this.props.lockVertically ? 0 : pageX - this.state.initialX
     );
+    const targetRect = element.getBoundingClientRect();
+    const itemVerticalCenter = targetRect.top + targetRect.height / 2;
     const offset = getTranslateOffset(this.items[this.state.itemDragged]);
-    this.afterIndex = binarySearch(this.topOffsets, pageY);
+    this.afterIndex = binarySearch(this.topOffsets, itemVerticalCenter);
     this.animateItems(
       this.afterIndex === -1 ? 0 : this.afterIndex,
       this.state.itemDragged,
