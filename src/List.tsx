@@ -48,6 +48,8 @@ interface IListProps<Value> {
     props: {
       items: { value: Value; itemProps: IBaseItemProps }[];
       isDragged: boolean;
+      onWheel: (e: React.WheelEvent) => void;
+      ref: React.RefObject<HTMLElement>;
     }
   ) => React.ReactNode;
   values: Value[];
@@ -59,6 +61,7 @@ interface IListProps<Value> {
 
 class List<Value = string> extends React.Component<IListProps<Value>> {
   items: React.RefObject<HTMLElement>[] = [];
+  listRef = React.createRef<HTMLElement>();
   ghostRef = React.createRef<HTMLElement>();
   topOffsets: number[] = [];
   itemTranslateOffsets: number[] = [];
@@ -160,6 +163,13 @@ class List<Value = string> extends React.Component<IListProps<Value>> {
       e.target as HTMLElement
     );
 
+  onWheel = (e: React.WheelEvent) => {
+    if (this.state.itemDragged < 0) return;
+    const element = this.items[this.state.itemDragged].current!;
+    this.listRef.current!.scrollTop += e.deltaY;
+    this.moveOtherItems(element);
+  };
+
   onMove = (pageX: number, pageY: number, element: HTMLElement) => {
     if (this.state.itemDragged === -1) return null;
     transformItem(
@@ -167,9 +177,18 @@ class List<Value = string> extends React.Component<IListProps<Value>> {
       pageY - this.state.initialY,
       this.props.lockVertically ? 0 : pageX - this.state.initialX
     );
+    this.moveOtherItems(element);
+  };
+
+  moveOtherItems = (element: HTMLElement) => {
     const targetRect = element.getBoundingClientRect();
-    const itemVerticalCenter = targetRect.top + targetRect.height / 2;
+    const listScroll = this.listRef.current
+      ? this.listRef.current.scrollTop
+      : 0;
+    const itemVerticalCenter =
+      targetRect.top + listScroll + targetRect.height / 2;
     const offset = getTranslateOffset(this.items[this.state.itemDragged]);
+    //console.log(listScroll + targetRect.top);
     this.afterIndex = binarySearch(this.topOffsets, itemVerticalCenter);
     this.animateItems(
       this.afterIndex === -1 ? 0 : this.afterIndex,
@@ -336,7 +355,9 @@ class List<Value = string> extends React.Component<IListProps<Value>> {
             };
             return { value, itemProps };
           }),
-          isDragged: this.state.itemDragged > -1
+          isDragged: this.state.itemDragged > -1,
+          onWheel: this.onWheel,
+          ref: this.listRef
         })}
         <div
           aria-live="assertive"
