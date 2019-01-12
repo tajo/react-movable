@@ -65,6 +65,7 @@ class List<Value = string> extends React.Component<IListProps<Value>> {
   ghostRef = React.createRef<HTMLElement>();
   topOffsets: number[] = [];
   itemTranslateOffsets: number[] = [];
+  lastScroll = 0;
   needle = -1;
   afterIndex = -2;
   state = {
@@ -153,42 +154,35 @@ class List<Value = string> extends React.Component<IListProps<Value>> {
     });
   };
 
-  onMouseMove = (e: MouseEvent) =>
-    this.onMove(e.pageX, e.pageY, e.target as HTMLElement);
+  onMouseMove = (e: MouseEvent) => this.onMove(e.pageX, e.pageY);
 
   onTouchMove = (e: TouchEvent) =>
-    this.onMove(
-      e.touches[0].pageX,
-      e.touches[0].pageY,
-      e.target as HTMLElement
-    );
+    this.onMove(e.touches[0].pageX, e.touches[0].pageY);
 
   onWheel = (e: React.WheelEvent) => {
     if (this.state.itemDragged < 0) return;
-    const element = this.items[this.state.itemDragged].current!;
-    this.listRef.current!.scrollTop += e.deltaY;
-    this.moveOtherItems(element);
+    this.lastScroll = this.listRef.current!.scrollTop += e.deltaY;
+    this.moveOtherItems();
   };
 
-  onMove = (pageX: number, pageY: number, element: HTMLElement) => {
+  onMove = (pageX: number, pageY: number) => {
     if (this.state.itemDragged === -1) return null;
     transformItem(
       this.ghostRef,
       pageY - this.state.initialY,
       this.props.lockVertically ? 0 : pageX - this.state.initialX
     );
-    this.moveOtherItems(element);
+    this.moveOtherItems();
   };
 
-  moveOtherItems = (element: HTMLElement) => {
-    const targetRect = element.getBoundingClientRect();
+  moveOtherItems = () => {
+    const targetRect = this.ghostRef.current!.getBoundingClientRect();
     const listScroll = this.listRef.current
       ? this.listRef.current.scrollTop
       : 0;
     const itemVerticalCenter =
       targetRect.top + listScroll + targetRect.height / 2;
     const offset = getTranslateOffset(this.items[this.state.itemDragged]);
-    //console.log(listScroll + targetRect.top);
     this.afterIndex = binarySearch(this.topOffsets, itemVerticalCenter);
     this.animateItems(
       this.afterIndex === -1 ? 0 : this.afterIndex,
@@ -247,6 +241,11 @@ class List<Value = string> extends React.Component<IListProps<Value>> {
     });
     this.setState({ itemDragged: -1 });
     this.afterIndex = -2;
+    // sometimes the scroll gets messed up after the drop, fix:
+    if (this.lastScroll > 0) {
+      this.listRef.current!.scrollTop = this.lastScroll;
+      this.lastScroll = 0;
+    }
   };
 
   onKeyDown = (e: React.KeyboardEvent, index: number) => {
