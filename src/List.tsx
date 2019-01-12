@@ -113,8 +113,8 @@ class List<Value = string> extends React.Component<IListProps<Value>> {
     document.addEventListener('mouseup', this.onEnd);
     this.onStart(
       target ? target : (e.target as HTMLElement),
-      e.pageX,
-      e.pageY,
+      e.clientX,
+      e.clientY,
       index
     );
   };
@@ -125,16 +125,16 @@ class List<Value = string> extends React.Component<IListProps<Value>> {
     document.addEventListener('touchcancel', this.onEnd);
     this.onStart(
       target ? target : (e.target as HTMLElement),
-      e.touches[0].pageX,
-      e.touches[0].pageY,
+      e.touches[0].clientX,
+      e.touches[0].clientY,
       index
     );
   };
 
   onStart = (
     target: HTMLElement,
-    pageX: number,
-    pageY: number,
+    clientX: number,
+    clientY: number,
     index: number
   ) => {
     if (this.state.selectedItem > -1) {
@@ -149,15 +149,15 @@ class List<Value = string> extends React.Component<IListProps<Value>> {
       targetY: targetRect.y - parseInt(targetStyles['margin-top' as any], 10),
       targetHeight: targetRect.height,
       targetWidth: targetRect.width,
-      initialX: pageX,
-      initialY: pageY
+      initialX: clientX,
+      initialY: clientY
     });
   };
 
-  onMouseMove = (e: MouseEvent) => this.onMove(e.pageX, e.pageY);
+  onMouseMove = (e: MouseEvent) => this.onMove(e.clientX, e.clientY);
 
   onTouchMove = (e: TouchEvent) =>
-    this.onMove(e.touches[0].pageX, e.touches[0].pageY);
+    this.onMove(e.touches[0].clientX, e.touches[0].clientY);
 
   onWheel = (e: React.WheelEvent) => {
     if (this.state.itemDragged < 0) return;
@@ -165,12 +165,12 @@ class List<Value = string> extends React.Component<IListProps<Value>> {
     this.moveOtherItems();
   };
 
-  onMove = (pageX: number, pageY: number) => {
+  onMove = (clientX: number, clientY: number) => {
     if (this.state.itemDragged === -1) return null;
     transformItem(
       this.ghostRef,
-      pageY - this.state.initialY,
-      this.props.lockVertically ? 0 : pageX - this.state.initialX
+      clientY - this.state.initialY,
+      this.props.lockVertically ? 0 : clientX - this.state.initialX
     );
     this.moveOtherItems();
   };
@@ -181,7 +181,7 @@ class List<Value = string> extends React.Component<IListProps<Value>> {
       ? this.listRef.current.scrollTop
       : 0;
     const itemVerticalCenter =
-      targetRect.top + listScroll + targetRect.height / 2;
+      targetRect.top + listScroll + window.scrollY + targetRect.height / 2;
     const offset = getTranslateOffset(this.items[this.state.itemDragged]);
     this.afterIndex = binarySearch(this.topOffsets, itemVerticalCenter);
     this.animateItems(
@@ -251,6 +251,7 @@ class List<Value = string> extends React.Component<IListProps<Value>> {
   onKeyDown = (e: React.KeyboardEvent, index: number) => {
     const selectedItem = this.state.selectedItem;
     if (e.key === ' ') {
+      e.preventDefault();
       if (selectedItem === index) {
         if (selectedItem !== this.needle) {
           this.items.forEach(item => {
@@ -283,6 +284,7 @@ class List<Value = string> extends React.Component<IListProps<Value>> {
       selectedItem > -1 &&
       this.needle < this.props.values.length - 1
     ) {
+      e.preventDefault();
       const offset = getTranslateOffset(this.items[selectedItem]);
       this.needle++;
       this.animateItems(this.needle, selectedItem, offset, true);
@@ -295,6 +297,7 @@ class List<Value = string> extends React.Component<IListProps<Value>> {
       selectedItem > -1 &&
       this.needle > 0
     ) {
+      e.preventDefault();
       const offset = getTranslateOffset(this.items[selectedItem]);
       this.needle--;
       this.animateItems(this.needle, selectedItem, offset, true);
