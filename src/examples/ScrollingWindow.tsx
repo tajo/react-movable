@@ -22,14 +22,12 @@ class App extends React.Component<{}, { items: string[] }> {
               items: arrayMove(prevState.items, oldIndex, newIndex)
             }))
           }
-          render={({ items, isDragged, onWheel, ref }) => (
+          render={({ items, isDragged }) => (
             <ul
               style={{
                 padding: '1em',
                 cursor: isDragged ? 'grabbing' : undefined
               }}
-              onWheel={onWheel}
-              ref={ref as any}
             >
               {items.map(({ value, itemProps }) => (
                 <Item

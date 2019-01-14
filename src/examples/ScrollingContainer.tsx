@@ -22,7 +22,7 @@ class App extends React.Component<{}, { items: string[] }> {
               items: arrayMove(prevState.items, oldIndex, newIndex)
             }))
           }
-          render={({ items, isDragged, onWheel, ref }) => (
+          render={({ items, isDragged, scrollProps }) => (
             <ul
               style={{
                 padding: '1em',
@@ -32,8 +32,7 @@ class App extends React.Component<{}, { items: string[] }> {
                 borderTop: '5px solid #AAA',
                 borderBottom: '5px solid #AAA'
               }}
-              onWheel={onWheel}
-              ref={ref as any}
+              {...scrollProps}
             >
               {items.map(({ value, itemProps }) => (
                 <Item

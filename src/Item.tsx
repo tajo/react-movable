@@ -17,6 +17,9 @@ class Item extends React.Component<IItemProps> {
   ghostRef = React.createRef<HTMLElement>();
   itemRef = React.createRef<HTMLElement>();
   componentDidMount() {
+    if (this.props.isDragged) {
+      this.props.setGhostRef(this.ghostRef);
+    }
     this.props.setItemRef(this.itemRef, this.props.index);
   }
   componentDidUpdate(prevProps: IItemProps) {
@@ -44,7 +47,7 @@ class Item extends React.Component<IItemProps> {
         ...baseRenderProps.style,
         visibility: this.props.isDragged ? 'hidden' : undefined,
         zIndex: this.props.isSelected ? 5000 : 0,
-        position: this.props.isSelected ? 'relative' : 'static'
+        position: 'relative'
       } as React.CSSProperties,
       ref: this.itemRef,
       tabIndex: 0,

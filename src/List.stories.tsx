@@ -6,6 +6,7 @@ import RemovableWithHandle from './examples/RemovableWithHandle';
 import VaryingHeights from './examples/VaryingHeights';
 import ScrollingContainer from './examples/ScrollingContainer';
 import ScrollingWindow from './examples/ScrollingWindow';
+import Virtualized from './examples/Virtualized';
 
 storiesOf('List', module)
   .add('Basic', () => <Basic />)
@@ -14,5 +15,6 @@ storiesOf('List', module)
   .add('No animations', () => <Basic transitionDuration={0} />)
   .add('Lock vertically', () => <Basic lockVertically />)
   .add('Varying heights', () => <VaryingHeights />)
+  .add('Scrolling window', () => <ScrollingWindow />)
   .add('Scrolling container', () => <ScrollingContainer />)
-  .add('Scrolling window', () => <ScrollingWindow />);
+  .add('Virtualized', () => <Virtualized />);

@@ -48,8 +48,10 @@ interface IListProps<Value> {
     props: {
       items: { value: Value; itemProps: IBaseItemProps }[];
       isDragged: boolean;
-      onWheel: (e: React.WheelEvent) => void;
-      ref: React.RefObject<HTMLElement>;
+      scrollProps: {
+        onWheel: (e: React.WheelEvent) => void;
+        ref: React.RefObject<any>;
+      };
     }
   ) => React.ReactNode;
   values: Value[];
@@ -101,7 +103,12 @@ class List<Value = string> extends React.Component<IListProps<Value>> {
 
   calculateOffsets = () => {
     if (!this.items[0].current) return;
-    this.topOffsets = this.items.map(item => item.current!.offsetTop);
+    this.topOffsets = this.items.map((item, index) => {
+      if (!item.current) {
+        return 0;
+      }
+      return item.current!.getBoundingClientRect().top;
+    });
     this.itemTranslateOffsets = this.items.map(item =>
       getTranslateOffset(item)
     );
@@ -109,8 +116,8 @@ class List<Value = string> extends React.Component<IListProps<Value>> {
 
   onMouseStart = (e: React.MouseEvent, index: number, target?: HTMLElement) => {
     if (e.button !== 0) return;
-    document.addEventListener('mousemove', this.onMouseMove);
-    document.addEventListener('mouseup', this.onEnd);
+    document.addEventListener('mousemove', this.onMouseMove, { passive: true });
+    document.addEventListener('mouseup', this.onEnd, { passive: true });
     this.onStart(
       target ? target : (e.target as HTMLElement),
       e.clientX,
@@ -120,9 +127,9 @@ class List<Value = string> extends React.Component<IListProps<Value>> {
   };
 
   onTouchStart = (e: React.TouchEvent, index: number, target?: HTMLElement) => {
-    document.addEventListener('touchmove', this.onTouchMove);
-    document.addEventListener('touchend', this.onEnd);
-    document.addEventListener('touchcancel', this.onEnd);
+    document.addEventListener('touchmove', this.onTouchMove, { passive: true });
+    document.addEventListener('touchend', this.onEnd, { passive: true });
+    document.addEventListener('touchcancel', this.onEnd, { passive: true });
     this.onStart(
       target ? target : (e.target as HTMLElement),
       e.touches[0].clientX,
@@ -184,6 +191,7 @@ class List<Value = string> extends React.Component<IListProps<Value>> {
       targetRect.top + listScroll + window.scrollY + targetRect.height / 2;
     const offset = getTranslateOffset(this.items[this.state.itemDragged]);
     this.afterIndex = binarySearch(this.topOffsets, itemVerticalCenter);
+    console.log(this.items.map(item => item.current!));
     this.animateItems(
       this.afterIndex === -1 ? 0 : this.afterIndex,
       this.state.itemDragged,
@@ -341,6 +349,7 @@ class List<Value = string> extends React.Component<IListProps<Value>> {
                 this.calculateOffsets();
               },
               removeItemRef: index => {
+                console.log(index);
                 this.items = arrayRemove(this.items, index);
                 this.calculateOffsets();
               },
@@ -358,8 +367,10 @@ class List<Value = string> extends React.Component<IListProps<Value>> {
             return { value, itemProps };
           }),
           isDragged: this.state.itemDragged > -1,
-          onWheel: this.onWheel,
-          ref: this.listRef
+          scrollProps: {
+            onWheel: this.onWheel,
+            ref: this.listRef
+          }
         })}
         <div
           aria-live="assertive"
