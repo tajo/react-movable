@@ -67,6 +67,7 @@ class List<Value = string> extends React.Component<IListProps<Value>> {
   ghostRef = React.createRef<HTMLElement>();
   topOffsets: number[] = [];
   itemTranslateOffsets: number[] = [];
+  initialYOffset = 0;
   lastScroll = 0;
   needle = -1;
   afterIndex = -2;
@@ -138,6 +139,12 @@ class List<Value = string> extends React.Component<IListProps<Value>> {
     );
   };
 
+  getYOffset = () => {
+    const listScroll = this.listRef.current
+      ? this.listRef.current.scrollTop
+      : 0;
+    return window.pageYOffset + listScroll;
+  };
   onStart = (
     target: HTMLElement,
     clientX: number,
@@ -150,6 +157,8 @@ class List<Value = string> extends React.Component<IListProps<Value>> {
     }
     const targetRect = target.getBoundingClientRect() as DOMRect;
     const targetStyles = window.getComputedStyle(target);
+    this.calculateOffsets();
+    this.initialYOffset = this.getYOffset();
     this.setState({
       itemDragged: index,
       targetX: targetRect.x - parseInt(targetStyles['margin-left' as any], 10),
@@ -184,14 +193,17 @@ class List<Value = string> extends React.Component<IListProps<Value>> {
 
   moveOtherItems = () => {
     const targetRect = this.ghostRef.current!.getBoundingClientRect();
-    const listScroll = this.listRef.current
-      ? this.listRef.current.scrollTop
-      : 0;
-    const itemVerticalCenter =
-      targetRect.top + listScroll + window.scrollY + targetRect.height / 2;
+    const itemVerticalCenter = targetRect.top + targetRect.height / 2;
     const offset = getTranslateOffset(this.items[this.state.itemDragged]);
+    const currentYOffset = this.getYOffset();
+    // adjust offsets if scrolling happens during the item movement
+    if (this.initialYOffset !== currentYOffset) {
+      this.topOffsets = this.topOffsets.map(
+        offset => offset - (currentYOffset - this.initialYOffset)
+      );
+      this.initialYOffset = currentYOffset;
+    }
     this.afterIndex = binarySearch(this.topOffsets, itemVerticalCenter);
-    console.log(this.items.map(item => item.current!));
     this.animateItems(
       this.afterIndex === -1 ? 0 : this.afterIndex,
       this.state.itemDragged,
@@ -346,12 +358,10 @@ class List<Value = string> extends React.Component<IListProps<Value>> {
               onKeyDown: this.onKeyDown,
               setItemRef: (ref, index) => {
                 this.items[index] = ref;
-                this.calculateOffsets();
               },
               removeItemRef: index => {
                 console.log(index);
                 this.items = arrayRemove(this.items, index);
-                this.calculateOffsets();
               },
               setGhostRef: ref => {
                 this.ghostRef = ref;
