@@ -7,6 +7,8 @@ import {
   binarySearch
 } from './utils';
 
+const WINDOW_SIZE = 20;
+
 export interface IVoiceover {
   item: (position: number) => string;
   lifted: (position: number) => string;
@@ -43,6 +45,7 @@ interface IListProps<Value> {
       isDragged: boolean;
       props: {
         ref: React.RefObject<any>;
+        onScroll: (e: React.UIEvent<any>) => void;
       };
     }
   ) => React.ReactNode;
@@ -55,8 +58,14 @@ interface IListProps<Value> {
 
 type TEvent = React.MouseEvent | React.TouchEvent | React.KeyboardEvent;
 
+const Spacer: React.FC<{ height: number }> = ({ height }) => (
+  <script style={{ height, width: 1, display: 'flex' }} />
+);
+
 class List<Value = string> extends React.Component<IListProps<Value>> {
   listRef = React.createRef<HTMLElement>();
+  listHeight = 0;
+  topVisibleItem = -1;
   ghostRef = React.createRef<HTMLElement>();
   topOffsets: number[] = [];
   itemTranslateOffsets: number[] = [];
@@ -65,6 +74,9 @@ class List<Value = string> extends React.Component<IListProps<Value>> {
   needle = -1;
   afterIndex = -2;
   state = {
+    topSpacer: 0,
+    bottomSpacer: 0,
+    firstRenderedItem: 0,
     itemDragged: -1,
     selectedItem: -1,
     initialX: 0,
@@ -78,11 +90,17 @@ class List<Value = string> extends React.Component<IListProps<Value>> {
 
   componentDidMount() {
     this.calculateOffsets();
+    this.listHeight = parseInt(
+      window.getComputedStyle(this.listRef.current!).height || '0',
+      10
+    );
   }
 
   getChildren = () => {
     if (this.listRef && this.listRef.current) {
-      return Array.from(this.listRef.current.children);
+      return Array.from(this.listRef.current.children).filter(
+        child => child.tagName !== 'SCRIPT'
+      );
     }
     console.warn(
       'No items found in the List container. Did you forget to pass & spread the `props` param in renderList?'
@@ -151,12 +169,11 @@ class List<Value = string> extends React.Component<IListProps<Value>> {
     );
   };
 
-  getYOffset = () => {
-    const listScroll = this.listRef.current
-      ? this.listRef.current.scrollTop
-      : 0;
-    return window.pageYOffset + listScroll;
-  };
+  getListYOffset = () =>
+    this.listRef.current ? this.listRef.current.scrollTop : 0;
+
+  getYOffset = () => window.pageYOffset + this.getListYOffset();
+
   onStart = (
     target: HTMLElement,
     clientX: number,
@@ -191,6 +208,38 @@ class List<Value = string> extends React.Component<IListProps<Value>> {
     if (this.state.itemDragged < 0) return;
     this.lastScroll = this.listRef.current!.scrollTop += e.deltaY;
     this.moveOtherItems();
+  };
+
+  sum = (arr: number[]) => arr.reduce((p, c) => p + c, 0);
+  average = (arr: number[]) => this.sum(arr) / arr.length;
+
+  onScroll = (e: React.UIEvent<any>) => {
+    const topVisibleItem = binarySearch(
+      this.topOffsets,
+      this.listRef.current!.scrollTop
+    );
+    console.log(topVisibleItem, this.state.firstRenderedItem);
+    if (
+      topVisibleItem - this.state.firstRenderedItem >
+      Math.round(WINDOW_SIZE / 3)
+    ) {
+      console.log('firstRenderedItem', topVisibleItem);
+      this.setState({
+        topSpacer: this.sum(
+          this.itemTranslateOffsets.slice(
+            this.state.firstRenderedItem,
+            this.state.firstRenderedItem + WINDOW_SIZE
+          )
+        ),
+        firstRenderedItem: topVisibleItem
+      });
+    }
+    const avgHeight = this.average(this.itemTranslateOffsets);
+    const bottomSpacer = (this.props.values.length - WINDOW_SIZE) * avgHeight;
+    if (this.state.bottomSpacer !== bottomSpacer) {
+      this.setState({ bottomSpacer });
+    }
+    //console.log(this.getChildren(), this.topOffsets);
   };
 
   onMove = (clientX: number, clientY: number) => {
@@ -378,33 +427,43 @@ class List<Value = string> extends React.Component<IListProps<Value>> {
     return (
       <React.Fragment>
         {this.props.renderList({
-          children: this.props.values.map((value, index) => {
-            const isDragged = index === this.state.itemDragged;
-            const isSelected = index === this.state.selectedItem;
-            const props: IItemProps = {
-              key: index,
-              tabIndex: 0,
-              'aria-roledescription': this.props.voiceover.item(index + 1),
-              onKeyDown: this.onKeyDown,
-              onMouseDown: this.onMouseDown,
-              onTouchStart: this.onTouchStart,
-              style: {
-                ...baseStyle,
-                visibility: isDragged ? 'hidden' : undefined,
-                zIndex: isSelected ? 5000 : 0
-              } as React.CSSProperties
-            };
-            return this.props.renderItem({
-              value,
-              props,
-              index,
-              isDragged,
-              isSelected
-            });
-          }),
+          children: [
+            <Spacer height={this.state.topSpacer} key="top-spacer" />,
+            ...this.props.values
+              .slice(
+                this.state.firstRenderedItem,
+                this.state.firstRenderedItem + WINDOW_SIZE
+              )
+              .map((value, index) => {
+                const isDragged = index === this.state.itemDragged;
+                const isSelected = index === this.state.selectedItem;
+                const props: IItemProps = {
+                  key: index,
+                  tabIndex: 0,
+                  'aria-roledescription': this.props.voiceover.item(index + 1),
+                  onKeyDown: this.onKeyDown,
+                  onMouseDown: this.onMouseDown,
+                  onTouchStart: this.onTouchStart,
+                  style: {
+                    ...baseStyle,
+                    visibility: isDragged ? 'hidden' : undefined,
+                    zIndex: isSelected ? 5000 : 0
+                  } as React.CSSProperties
+                };
+                return this.props.renderItem({
+                  value,
+                  props,
+                  index,
+                  isDragged,
+                  isSelected
+                });
+              }),
+            <Spacer height={this.state.bottomSpacer} key="bottom-spacer" />
+          ],
           isDragged: this.state.itemDragged > -1,
           props: {
-            ref: this.listRef
+            ref: this.listRef,
+            onScroll: this.onScroll
           }
         })}
         {this.state.itemDragged > -1 &&
