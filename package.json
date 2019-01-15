@@ -1,16 +1,18 @@
 {
   "name": "react-movable",
   "version": "0.0.1",
-  "description": "Drag and drop.",
+  "description": "Drag and drop lists.",
   "main": "lib/index.js",
-  "module": "es/index.js",
-  "jsnext:main": "es/index.js",
-  "browserslist": "last 2 versions",
+  "types": "lib/index.d.ts",
   "files": [
     "*.md",
     "LICENSE",
-    "lib",
-    "es"
+    "lib/index.js",
+    "lib/index.d.ts",
+    "lib/List.js",
+    "lib/List.d.ts",
+    "lib/utils.js",
+    "lib/utils.d.ts"
   ],
   "repository": {
     "type": "git",
@@ -19,6 +21,7 @@
   "author": "Vojtech Miksu <vojtech@miksu.cz>",
   "license": "MIT",
   "scripts": {
+    "build": "tsc --outDir lib",
     "build-storybook": "build-storybook -s public",
     "storybook": "start-storybook -p 9010 -s public",
     "test": "react-scripts test --env=jsdom",
@@ -32,7 +35,8 @@
     "react-component",
     "drag",
     "drop",
-    "list"
+    "list",
+    "movable"
   ],
   "devDependencies": {
     "@storybook/addon-options": "4.2.0-alpha.8",
@@ -41,7 +45,6 @@
     "@types/enzyme": "^3.1.15",
     "@types/react": "^16.7.18",
     "@types/react-dom": "^16.0.11",
-    "@types/react-window": "^1.1.0",
     "@types/storybook__react": "^4.0.0",
     "enzyme": "^3.8.0",
     "enzyme-adapter-react-16": "^1.7.1",

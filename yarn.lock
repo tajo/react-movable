@@ -1363,12 +1363,6 @@
   dependencies:
     "@types/react" "*"
 
-"@types/react-window@^1.1.0":
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/@types/react-window/-/react-window-1.1.0.tgz#5253a7545b9017e0a4440f2a14e78136b4a7fb2a"
-  dependencies:
-    "@types/react" "*"
-
 "@types/react@*", "@types/react@^16.7.18":
   version "16.7.18"
   resolved "https://registry.yarnpkg.com/@types/react/-/react-16.7.18.tgz#f4ce0d539a893dd61e36cd11ae3a5e54f5a48337"
