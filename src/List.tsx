@@ -1,10 +1,10 @@
 import * as React from 'react';
+import * as ReactDOM from 'react-dom';
 import {
   getTranslateOffset,
   transformItem,
   setItemTransition,
-  binarySearch,
-  arrayRemove
+  binarySearch
 } from './utils';
 
 export interface IVoiceover {
@@ -15,40 +15,32 @@ export interface IVoiceover {
   canceled: (position: number) => string;
 }
 
-export interface IBaseItemProps {
-  index: number;
-  isDragged: boolean;
-  isSelected: boolean;
-  isActive: boolean;
-  ghostItemStyle: {
-    top: number;
-    left: number;
-    width: number;
-    height: number;
-  };
-  onMouseStart: (
-    e: React.MouseEvent,
-    index: number,
-    target?: HTMLElement
-  ) => void;
-  onTouchStart: (
-    e: React.TouchEvent,
-    index: number,
-    target?: HTMLElement
-  ) => void;
-  onKeyDown: (e: React.KeyboardEvent, index: number) => void;
-  setItemRef: (ref: React.RefObject<HTMLElement>, index: number) => void;
-  removeItemRef: (index: number) => void;
-  setGhostRef: (ref: React.RefObject<HTMLElement>) => void;
-  voiceover: IVoiceover;
+interface IItemProps {
+  key?: number;
+  tabIndex?: number;
+  'aria-roledescription'?: string;
+  onKeyDown?: (e: React.KeyboardEvent) => void;
+  onMouseDown?: (e: React.MouseEvent) => void;
+  onTouchStart?: (e: React.TouchEvent) => void;
+  style?: React.CSSProperties;
+  ref?: React.RefObject<any>;
 }
 
 interface IListProps<Value> {
-  render: (
-    props: {
-      items: { value: Value; itemProps: IBaseItemProps }[];
+  renderItem: (
+    params: {
+      value: Value;
+      props: IItemProps;
+      index?: number;
       isDragged: boolean;
-      scrollProps: {
+      isSelected: boolean;
+    }
+  ) => React.ReactNode;
+  renderList: (
+    props: {
+      children: any;
+      isDragged: boolean;
+      props: {
         onWheel: (e: React.WheelEvent) => void;
         ref: React.RefObject<any>;
       };
@@ -61,8 +53,9 @@ interface IListProps<Value> {
   voiceover: IVoiceover;
 }
 
+type TEvent = React.MouseEvent | React.TouchEvent | React.KeyboardEvent;
+
 class List<Value = string> extends React.Component<IListProps<Value>> {
-  items: React.RefObject<HTMLElement>[] = [];
   listRef = React.createRef<HTMLElement>();
   ghostRef = React.createRef<HTMLElement>();
   topOffsets: number[] = [];
@@ -81,6 +74,17 @@ class List<Value = string> extends React.Component<IListProps<Value>> {
     targetHeight: 0,
     targetWidth: 0,
     liveText: ''
+  };
+
+  componentDidMount() {
+    this.calculateOffsets();
+  }
+
+  getChildren = () => {
+    if (this.listRef && this.listRef.current) {
+      return Array.from(this.listRef.current.children);
+    }
+    return [];
   };
 
   static defaultProps = {
@@ -103,36 +107,41 @@ class List<Value = string> extends React.Component<IListProps<Value>> {
   };
 
   calculateOffsets = () => {
-    if (!this.items[0].current) return;
-    this.topOffsets = this.items.map((item, index) => {
-      if (!item.current) {
-        return 0;
-      }
-      return item.current!.getBoundingClientRect().top;
+    this.topOffsets = this.getChildren().map(item => {
+      return item.getBoundingClientRect().top;
     });
-    this.itemTranslateOffsets = this.items.map(item =>
+    this.itemTranslateOffsets = this.getChildren().map(item =>
       getTranslateOffset(item)
     );
   };
 
-  onMouseStart = (e: React.MouseEvent, index: number, target?: HTMLElement) => {
+  getTargetIndex = (e: TEvent) =>
+    this.getChildren().findIndex(
+      child => child === e.target || child.contains(e.currentTarget)
+    );
+
+  onMouseDown = (e: React.MouseEvent) => {
     if (e.button !== 0) return;
     document.addEventListener('mousemove', this.onMouseMove, { passive: true });
     document.addEventListener('mouseup', this.onEnd, { passive: true });
+    const index = this.getTargetIndex(e);
+    if (index === -1) return;
     this.onStart(
-      target ? target : (e.target as HTMLElement),
+      this.getChildren()[index] as HTMLElement,
       e.clientX,
       e.clientY,
       index
     );
   };
 
-  onTouchStart = (e: React.TouchEvent, index: number, target?: HTMLElement) => {
+  onTouchStart = (e: React.TouchEvent) => {
     document.addEventListener('touchmove', this.onTouchMove, { passive: true });
     document.addEventListener('touchend', this.onEnd, { passive: true });
     document.addEventListener('touchcancel', this.onEnd, { passive: true });
+    const index = this.getTargetIndex(e);
+    if (index === -1) return;
     this.onStart(
-      target ? target : (e.target as HTMLElement),
+      this.getChildren()[index] as HTMLElement,
       e.touches[0].clientX,
       e.touches[0].clientY,
       index
@@ -184,7 +193,7 @@ class List<Value = string> extends React.Component<IListProps<Value>> {
   onMove = (clientX: number, clientY: number) => {
     if (this.state.itemDragged === -1) return null;
     transformItem(
-      this.ghostRef,
+      this.ghostRef.current!,
       clientY - this.state.initialY,
       this.props.lockVertically ? 0 : clientX - this.state.initialX
     );
@@ -194,7 +203,9 @@ class List<Value = string> extends React.Component<IListProps<Value>> {
   moveOtherItems = () => {
     const targetRect = this.ghostRef.current!.getBoundingClientRect();
     const itemVerticalCenter = targetRect.top + targetRect.height / 2;
-    const offset = getTranslateOffset(this.items[this.state.itemDragged]);
+    const offset = getTranslateOffset(
+      this.getChildren()[this.state.itemDragged]
+    );
     const currentYOffset = this.getYOffset();
     // adjust offsets if scrolling happens during the item movement
     if (this.initialYOffset !== currentYOffset) {
@@ -217,7 +228,7 @@ class List<Value = string> extends React.Component<IListProps<Value>> {
     offset: number,
     animateMovedItem: boolean = false
   ) => {
-    this.items.forEach((item, i) => {
+    this.getChildren().forEach((item, i) => {
       setItemTransition(item, this.props.transitionDuration);
       if (movedItem === i && animateMovedItem) {
         if (movedItem === needle) {
@@ -255,7 +266,7 @@ class List<Value = string> extends React.Component<IListProps<Value>> {
         newIndex: this.afterIndex
       });
     }
-    this.items.forEach(item => {
+    this.getChildren().forEach(item => {
       setItemTransition(item, 0);
       transformItem(item, null);
     });
@@ -268,13 +279,15 @@ class List<Value = string> extends React.Component<IListProps<Value>> {
     }
   };
 
-  onKeyDown = (e: React.KeyboardEvent, index: number) => {
+  onKeyDown = (e: React.KeyboardEvent) => {
     const selectedItem = this.state.selectedItem;
+    const index = this.getTargetIndex(e);
+    if (index === -1) return;
     if (e.key === ' ') {
       e.preventDefault();
       if (selectedItem === index) {
         if (selectedItem !== this.needle) {
-          this.items.forEach(item => {
+          this.getChildren().forEach(item => {
             setItemTransition(item, 0);
             transformItem(item, null);
           });
@@ -282,6 +295,7 @@ class List<Value = string> extends React.Component<IListProps<Value>> {
             oldIndex: selectedItem,
             newIndex: this.needle
           });
+          (this.getChildren()[this.needle] as HTMLElement).focus();
         }
         this.setState({
           selectedItem: -1,
@@ -305,7 +319,7 @@ class List<Value = string> extends React.Component<IListProps<Value>> {
       this.needle < this.props.values.length - 1
     ) {
       e.preventDefault();
-      const offset = getTranslateOffset(this.items[selectedItem]);
+      const offset = getTranslateOffset(this.getChildren()[selectedItem]);
       this.needle++;
       this.animateItems(this.needle, selectedItem, offset, true);
       this.setState({
@@ -318,7 +332,7 @@ class List<Value = string> extends React.Component<IListProps<Value>> {
       this.needle > 0
     ) {
       e.preventDefault();
-      const offset = getTranslateOffset(this.items[selectedItem]);
+      const offset = getTranslateOffset(this.getChildren()[selectedItem]);
       this.needle--;
       this.animateItems(this.needle, selectedItem, offset, true);
       this.setState({
@@ -326,7 +340,7 @@ class List<Value = string> extends React.Component<IListProps<Value>> {
       });
     }
     if (e.key === 'Escape' && selectedItem > -1) {
-      this.items.forEach(item => {
+      this.getChildren().forEach(item => {
         setItemTransition(item, 0);
         transformItem(item, null);
       });
@@ -342,46 +356,65 @@ class List<Value = string> extends React.Component<IListProps<Value>> {
   };
 
   render() {
+    const baseStyle = {
+      userDrag: 'none',
+      userSelect: 'none',
+      boxSizing: 'border-box',
+      position: 'relative'
+    } as React.CSSProperties;
+    const ghostStyle = {
+      ...baseStyle,
+      top: this.state.targetY,
+      left: this.state.targetX,
+      width: this.state.targetWidth,
+      height: this.state.targetHeight,
+      display: 'block',
+      position: 'fixed',
+      marginTop: 0
+    } as React.CSSProperties;
     return (
       <React.Fragment>
-        {this.props.render({
-          items: this.props.values.map((value, index) => {
-            const itemProps: IBaseItemProps = {
-              index,
-              isDragged: index === this.state.itemDragged,
-              isSelected: index === this.state.selectedItem,
-              isActive:
-                index === this.state.itemDragged ||
-                index === this.state.selectedItem,
-              onMouseStart: this.onMouseStart,
-              onTouchStart: this.onTouchStart,
+        {this.props.renderList({
+          children: this.props.values.map((value, index) => {
+            const isDragged = index === this.state.itemDragged;
+            const isSelected = index === this.state.selectedItem;
+            const props: IItemProps = {
+              key: index,
+              tabIndex: 0,
+              'aria-roledescription': this.props.voiceover.item(index + 1),
               onKeyDown: this.onKeyDown,
-              setItemRef: (ref, index) => {
-                this.items[index] = ref;
-              },
-              removeItemRef: index => {
-                console.log(index);
-                this.items = arrayRemove(this.items, index);
-              },
-              setGhostRef: ref => {
-                this.ghostRef = ref;
-              },
-              ghostItemStyle: {
-                top: this.state.targetY,
-                left: this.state.targetX,
-                width: this.state.targetWidth,
-                height: this.state.targetHeight
-              },
-              voiceover: this.props.voiceover
+              onMouseDown: this.onMouseDown,
+              onTouchStart: this.onTouchStart,
+              style: {
+                ...baseStyle,
+                visibility: isDragged ? 'hidden' : undefined,
+                zIndex: isSelected ? 5000 : 0
+              } as React.CSSProperties
             };
-            return { value, itemProps };
+            return this.props.renderItem({
+              value,
+              props,
+              index,
+              isDragged,
+              isSelected
+            });
           }),
           isDragged: this.state.itemDragged > -1,
-          scrollProps: {
+          props: {
             onWheel: this.onWheel,
             ref: this.listRef
           }
         })}
+        {this.state.itemDragged > -1 &&
+          ReactDOM.createPortal(
+            this.props.renderItem({
+              value: this.props.values[this.state.itemDragged],
+              props: { ref: this.ghostRef, style: ghostStyle },
+              isDragged: true,
+              isSelected: false
+            }),
+            document.body
+          )}
         <div
           aria-live="assertive"
           role="log"

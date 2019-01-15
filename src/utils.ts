@@ -10,9 +10,7 @@ export function arrayRemove<T>(array: T[], index: number) {
   return array;
 }
 
-export function getTranslateOffset(item: React.RefObject<HTMLElement>) {
-  const element = item.current;
-  if (!element) return 0;
+export function getTranslateOffset(element: Element) {
   const style = window.getComputedStyle(element);
   return (
     Math.max(
@@ -23,29 +21,25 @@ export function getTranslateOffset(item: React.RefObject<HTMLElement>) {
 }
 
 export function transformItem(
-  item: React.RefObject<HTMLElement>,
+  element: Element,
   offsetY: number | null = 0,
   offsetX: number | null = 0
 ) {
-  if (!item.current) return;
   if (offsetY === null || offsetX === null) {
-    item.current.style.transform = null;
+    (element as HTMLElement).style.transform = null;
     return;
   }
-  item.current.style.transform = `translate3d(${offsetX}px, ${offsetY}px, 0px)`;
+  (element as HTMLElement).style.transform = `translate3d(${offsetX}px, ${offsetY}px, 0px)`;
 }
 
-export function isItemTransformed(item: React.RefObject<HTMLElement>) {
-  if (!item.current) return false;
-  return !!item.current.style.transform;
+export function isItemTransformed(element: Element) {
+  return !!(element as HTMLElement).style.transform;
 }
 
-export function setItemTransition(
-  item: React.RefObject<HTMLElement>,
-  duration: number
-) {
-  if (!item.current) return;
-  item.current.style['transition-duration' as any] = `${duration}ms`;
+export function setItemTransition(element: Element, duration: number) {
+  (element as HTMLElement).style[
+    'transition-duration' as any
+  ] = `${duration}ms`;
 }
 
 export function binarySearch(array: number[], targetValue: number) {

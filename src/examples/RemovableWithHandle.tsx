@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { List, Item, arrayMove, arrayRemove } from '../index';
+import { List, arrayMove, arrayRemove } from '../index';
 
 const Removable = () => (
   <svg
@@ -75,84 +75,68 @@ class App extends React.Component<{}, { items: string[] }> {
               items: arrayMove(prevState.items, oldIndex, newIndex)
             }))
           }
-          render={({ items, isDragged }) => (
+          renderList={({ children, props, isDragged }) => (
             <ul
+              {...props}
               style={{
                 padding: '0em 0em 1em 0em',
                 cursor: isDragged ? 'grabbing' : 'inherit'
               }}
             >
-              {items.map(({ value, itemProps }) => (
-                <Item
-                  key={value}
-                  render={props => (
-                    <li
-                      {...props}
-                      onMouseDown={undefined}
-                      onTouchStart={undefined}
-                      style={{
-                        ...props.style,
-                        padding: '1.5em',
-                        margin: '0.5em 0em',
-                        listStyleType: 'none',
-                        border: '2px solid #CCC',
-                        boxShadow: '3px 3px #AAA',
-                        color: '#333',
-                        borderRadius: '5px',
-                        fontFamily:
-                          'Arial, "Helvetica Neue", Helvetica, sans-serif',
-                        backgroundColor: itemProps.isActive ? '#EEE' : '#FFF'
-                      }}
-                    >
-                      <div
-                        style={{
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'space-between'
-                        }}
-                      >
-                        <button
-                          style={{
-                            ...buttonStyles,
-                            cursor: itemProps.isDragged ? 'grabbing' : 'grab'
-                          }}
-                          onMouseDown={e =>
-                            // We need to pass optional <li /> target as a third parameter
-                            // since it's used for measurments of the ghost
-                            itemProps.onMouseStart(e, itemProps.index, e
-                              .currentTarget.parentNode!
-                              .parentNode as HTMLElement)
-                          }
-                          onTouchStart={e =>
-                            itemProps.onTouchStart(e, itemProps.index, e
-                              .currentTarget.parentNode!
-                              .parentNode as HTMLElement)
-                          }
-                          tabIndex={-1}
-                        >
-                          <Move />
-                        </button>
-                        <div>{value}</div>{' '}
-                        <button
-                          onClick={() =>
-                            this.setState(prevProps => ({
-                              items: arrayRemove(
-                                prevProps.items,
-                                itemProps.index
-                              )
-                            }))
-                          }
-                          style={buttonStyles}
-                        >
-                          <Removable />
-                        </button>
-                      </div>
-                    </li>
-                  )}
-                  {...itemProps}
-                />
-              ))}
+              {children}
             </ul>
+          )}
+          renderItem={({ value, props, index, isDragged, isSelected }) => (
+            <li
+              {...props}
+              onMouseDown={undefined}
+              onTouchStart={undefined}
+              style={{
+                ...props.style,
+                padding: '1.5em',
+                margin: '0.5em 0em',
+                listStyleType: 'none',
+                border: '2px solid #CCC',
+                boxShadow: '3px 3px #AAA',
+                color: '#333',
+                borderRadius: '5px',
+                fontFamily: 'Arial, "Helvetica Neue", Helvetica, sans-serif',
+                backgroundColor: isDragged || isSelected ? '#EEE' : '#FFF'
+              }}
+            >
+              <div
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between'
+                }}
+              >
+                <button
+                  style={{
+                    ...buttonStyles,
+                    cursor: isDragged ? 'grabbing' : 'grab'
+                  }}
+                  onMouseDown={props.onMouseDown}
+                  onTouchStart={props.onTouchStart}
+                  tabIndex={-1}
+                >
+                  <Move />
+                </button>
+                <div>{value}</div>{' '}
+                <button
+                  onClick={() =>
+                    this.setState(prevProps => ({
+                      items: index
+                        ? arrayRemove(prevProps.items, index)
+                        : prevProps.items
+                    }))
+                  }
+                  style={buttonStyles}
+                >
+                  <Removable />
+                </button>
+              </div>
+            </li>
           )}
         />
         <button
