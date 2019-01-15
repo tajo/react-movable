@@ -1,5 +1,6 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
+import { FixedSizeList } from 'react-window';
 import {
   getTranslateOffset,
   transformItem,
@@ -378,30 +379,43 @@ class List<Value = string> extends React.Component<IListProps<Value>> {
     return (
       <React.Fragment>
         {this.props.renderList({
-          children: this.props.values.map((value, index) => {
-            const isDragged = index === this.state.itemDragged;
-            const isSelected = index === this.state.selectedItem;
-            const props: IItemProps = {
-              key: index,
-              tabIndex: 0,
-              'aria-roledescription': this.props.voiceover.item(index + 1),
-              onKeyDown: this.onKeyDown,
-              onMouseDown: this.onMouseDown,
-              onTouchStart: this.onTouchStart,
-              style: {
-                ...baseStyle,
-                visibility: isDragged ? 'hidden' : undefined,
-                zIndex: isSelected ? 5000 : 0
-              } as React.CSSProperties
-            };
-            return this.props.renderItem({
-              value,
-              props,
-              index,
-              isDragged,
-              isSelected
-            });
-          }),
+          children: (
+            <FixedSizeList
+              height={600}
+              itemCount={100}
+              itemSize={70}
+              width={300}
+            >
+              {({ index, style }) => {
+                const isDragged = index === this.state.itemDragged;
+                const isSelected = index === this.state.selectedItem;
+                const props: IItemProps = {
+                  key: index,
+                  tabIndex: 0,
+                  'aria-roledescription': this.props.voiceover.item(index + 1),
+                  onKeyDown: this.onKeyDown,
+                  onMouseDown: this.onMouseDown,
+                  onTouchStart: this.onTouchStart,
+                  style: {
+                    ...baseStyle,
+                    visibility: isDragged ? 'hidden' : undefined,
+                    zIndex: isSelected ? 5000 : 0
+                  } as React.CSSProperties
+                };
+                return (
+                  <div style={style} key={index}>
+                    {this.props.renderItem({
+                      value: this.props.values[index],
+                      props,
+                      index,
+                      isDragged,
+                      isSelected
+                    })}
+                  </div>
+                );
+              }}
+            </FixedSizeList>
+          ),
           isDragged: this.state.itemDragged > -1,
           props: {
             ref: this.listRef
