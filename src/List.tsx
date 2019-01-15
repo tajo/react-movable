@@ -22,6 +22,7 @@ interface IItemProps {
   onKeyDown?: (e: React.KeyboardEvent) => void;
   onMouseDown?: (e: React.MouseEvent) => void;
   onTouchStart?: (e: React.TouchEvent) => void;
+  onWheel?: (e: React.WheelEvent) => void;
   style?: React.CSSProperties;
   ref?: React.RefObject<any>;
 }
@@ -41,7 +42,6 @@ interface IListProps<Value> {
       children: any;
       isDragged: boolean;
       props: {
-        onWheel: (e: React.WheelEvent) => void;
         ref: React.RefObject<any>;
       };
     }
@@ -84,6 +84,9 @@ class List<Value = string> extends React.Component<IListProps<Value>> {
     if (this.listRef && this.listRef.current) {
       return Array.from(this.listRef.current.children);
     }
+    console.warn(
+      'No items found in the List container. Did you forget to pass & spread the `props` param in renderList?'
+    );
     return [];
   };
 
@@ -401,7 +404,6 @@ class List<Value = string> extends React.Component<IListProps<Value>> {
           }),
           isDragged: this.state.itemDragged > -1,
           props: {
-            onWheel: this.onWheel,
             ref: this.listRef
           }
         })}
@@ -409,7 +411,11 @@ class List<Value = string> extends React.Component<IListProps<Value>> {
           ReactDOM.createPortal(
             this.props.renderItem({
               value: this.props.values[this.state.itemDragged],
-              props: { ref: this.ghostRef, style: ghostStyle },
+              props: {
+                ref: this.ghostRef,
+                style: ghostStyle,
+                onWheel: this.onWheel
+              },
               isDragged: true,
               isSelected: false
             }),

@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { List, Item, arrayMove } from '../index';
+import { List, arrayMove } from '../index';
 
 class App extends React.Component<{}, { items: string[] }> {
   state = {
@@ -14,17 +14,8 @@ class App extends React.Component<{}, { items: string[] }> {
             items: arrayMove(prevState.items, oldIndex, newIndex)
           }))
         }
-        render={({ items }) => (
-          <ul>
-            {items.map(({ value, itemProps }) => (
-              <Item
-                key={value}
-                render={props => <li {...props}>{value}</li>}
-                {...itemProps}
-              />
-            ))}
-          </ul>
-        )}
+        renderList={({ children, props }) => <ul {...props}>{children}</ul>}
+        renderItem={({ value, props }) => <li {...props}>{value}</li>}
       />
     );
   }
