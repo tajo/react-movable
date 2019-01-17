@@ -39,11 +39,21 @@ interface IListProps<Value> {
   ) => React.ReactNode;
   renderList: (
     props: {
-      children: any;
+      children: React.ReactNode;
       isDragged: boolean;
       props: {
         ref: React.RefObject<any>;
       };
+    }
+  ) => React.ReactNode;
+  renderGhostWrapper: (
+    params: {
+      value: Value;
+      props: IItemProps;
+      index?: number;
+      isDragged: boolean;
+      isSelected: boolean;
+      children: React.ReactNode;
     }
   ) => React.ReactNode;
   values: Value[];
@@ -93,6 +103,8 @@ class List<Value = string> extends React.Component<IListProps<Value>> {
   static defaultProps = {
     transitionDuration: 300,
     lockVertically: false,
+    renderGhostWrapper: ({ children }: { children: React.ReactNode }) =>
+      children,
     voiceover: {
       item: (position: number) =>
         `You are currently at a draggable item at position ${position}. Press space bar to lift.`,
@@ -409,7 +421,7 @@ class List<Value = string> extends React.Component<IListProps<Value>> {
         })}
         {this.state.itemDragged > -1 &&
           ReactDOM.createPortal(
-            this.props.renderItem({
+            this.props.renderGhostWrapper({
               value: this.props.values[this.state.itemDragged],
               props: {
                 ref: this.ghostRef,
@@ -417,7 +429,17 @@ class List<Value = string> extends React.Component<IListProps<Value>> {
                 onWheel: this.onWheel
               },
               isDragged: true,
-              isSelected: false
+              isSelected: false,
+              children: this.props.renderItem({
+                value: this.props.values[this.state.itemDragged],
+                props: {
+                  ref: this.ghostRef,
+                  style: ghostStyle,
+                  onWheel: this.onWheel
+                },
+                isDragged: true,
+                isSelected: false
+              })
             }),
             document.body
           )}

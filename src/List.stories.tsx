@@ -6,6 +6,7 @@ import RemovableWithHandle from './examples/RemovableWithHandle';
 import VaryingHeights from './examples/VaryingHeights';
 import ScrollingWindow from './examples/ScrollingWindow';
 import ScrollingContainer from './examples/ScrollingContainer';
+import Table from './examples/Table';
 
 // import Virtualized from './examples/Virtualized';
 
@@ -17,5 +18,6 @@ storiesOf('List', module)
   .add('Lock vertically', () => <Basic lockVertically />)
   .add('Varying heights', () => <VaryingHeights />)
   .add('Scrolling window', () => <ScrollingWindow />)
-  .add('Scrolling container', () => <ScrollingContainer />);
+  .add('Scrolling container', () => <ScrollingContainer />)
+  .add('Table', () => <Table />);
 // .add('Virtualized', () => <Virtualized />);
