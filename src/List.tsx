@@ -46,16 +46,6 @@ interface IListProps<Value> {
       };
     }
   ) => React.ReactNode;
-  renderGhostWrapper: (
-    params: {
-      value: Value;
-      props: IItemProps;
-      index?: number;
-      isDragged: boolean;
-      isSelected: boolean;
-      children: React.ReactNode;
-    }
-  ) => React.ReactNode;
   values: Value[];
   onChange: (meta: { oldIndex: number; newIndex: number }) => void;
   transitionDuration: number;
@@ -103,8 +93,6 @@ class List<Value = string> extends React.Component<IListProps<Value>> {
   static defaultProps = {
     transitionDuration: 300,
     lockVertically: false,
-    renderGhostWrapper: ({ children }: { children: React.ReactNode }) =>
-      children,
     voiceover: {
       item: (position: number) =>
         `You are currently at a draggable item at position ${position}. Press space bar to lift.`,
@@ -391,7 +379,7 @@ class List<Value = string> extends React.Component<IListProps<Value>> {
       <React.Fragment>
         {this.props.renderList({
           children: this.props.values.map((value, index) => {
-            const isDragged = index === this.state.itemDragged;
+            const isHidden = index === this.state.itemDragged;
             const isSelected = index === this.state.selectedItem;
             const props: IItemProps = {
               key: index,
@@ -402,7 +390,7 @@ class List<Value = string> extends React.Component<IListProps<Value>> {
               onTouchStart: this.onTouchStart,
               style: {
                 ...baseStyle,
-                visibility: isDragged ? 'hidden' : undefined,
+                visibility: isHidden ? 'hidden' : undefined,
                 zIndex: isSelected ? 5000 : 0
               } as React.CSSProperties
             };
@@ -410,7 +398,7 @@ class List<Value = string> extends React.Component<IListProps<Value>> {
               value,
               props,
               index,
-              isDragged,
+              isDragged: false,
               isSelected
             });
           }),
@@ -421,7 +409,7 @@ class List<Value = string> extends React.Component<IListProps<Value>> {
         })}
         {this.state.itemDragged > -1 &&
           ReactDOM.createPortal(
-            this.props.renderGhostWrapper({
+            this.props.renderItem({
               value: this.props.values[this.state.itemDragged],
               props: {
                 ref: this.ghostRef,
@@ -429,17 +417,7 @@ class List<Value = string> extends React.Component<IListProps<Value>> {
                 onWheel: this.onWheel
               },
               isDragged: true,
-              isSelected: false,
-              children: this.props.renderItem({
-                value: this.props.values[this.state.itemDragged],
-                props: {
-                  ref: this.ghostRef,
-                  style: ghostStyle,
-                  onWheel: this.onWheel
-                },
-                isDragged: true,
-                isSelected: false
-              })
+              isSelected: false
             }),
             document.body
           )}

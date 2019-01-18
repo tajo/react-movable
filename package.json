@@ -13,7 +13,8 @@
     "lib/List.d.ts",
     "lib/List.flow.js",
     "lib/utils.js",
-    "lib/utils.d.ts"
+    "lib/utils.d.ts",
+    "lib/utils.flow.js"
   ],
   "repository": {
     "type": "git",
@@ -22,7 +23,7 @@
   "author": "Vojtech Miksu <vojtech@miksu.cz>",
   "license": "MIT",
   "scripts": {
-    "build": "tsc --outDir lib",
+    "build": "rm -rf lib && tsc --outDir lib && cp flowtypes/* lib",
     "build-storybook": "build-storybook -s public",
     "storybook": "start-storybook -p 9010 -s public",
     "test": "react-scripts test --env=jsdom",

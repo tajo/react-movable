@@ -112,27 +112,31 @@ class App extends React.Component<{}, IAppStateItems> {
               <tbody {...props}>{children}</tbody>
             </table>
           )}
-          renderGhostWrapper={({ children, props }) => (
-            <table style={props.style}>
-              <tbody>{children}</tbody>
-            </table>
-          )}
-          renderItem={({ value, props, isDragged, isSelected }) => (
-            <tr
-              {...props}
-              style={{
-                ...props.style,
-                cursor: isDragged ? 'grabbing' : 'grab',
-                backgroundColor: isDragged || isSelected ? '#EEE' : '#fafafa',
-                border: isDragged ? '2px solid #AAA' : undefined
-              }}
-            >
-              <td style={tdStyles}>{value.last_name}</td>
-              <td style={tdStyles}>{value.last_name}</td>
-              <td style={tdStyles}>{value.car_make}</td>
-              <td style={tdStyles}>{value.car_model}</td>
-            </tr>
-          )}
+          renderItem={({ value, props, isDragged, isSelected }) => {
+            const row = (
+              <tr
+                {...props}
+                style={{
+                  ...props.style,
+                  cursor: isDragged ? 'grabbing' : 'grab',
+                  backgroundColor: isDragged || isSelected ? '#EEE' : '#fafafa',
+                  border: isDragged ? '2px solid #AAA' : undefined
+                }}
+              >
+                <td style={tdStyles}>{value.last_name}</td>
+                <td style={tdStyles}>{value.last_name}</td>
+                <td style={tdStyles}>{value.car_make}</td>
+                <td style={tdStyles}>{value.car_model}</td>
+              </tr>
+            );
+            return isDragged ? (
+              <table style={props.style}>
+                <tbody>{row}</tbody>
+              </table>
+            ) : (
+              row
+            );
+          }}
         />
       </div>
     );
