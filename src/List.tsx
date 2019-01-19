@@ -55,6 +55,8 @@ interface IListProps<Value> {
 
 type TEvent = React.MouseEvent | React.TouchEvent | React.KeyboardEvent;
 
+const SCROLL_DELAYS = [10, 5, 1];
+
 class List<Value = string> extends React.Component<IListProps<Value>> {
   listRef = React.createRef<HTMLElement>();
   ghostRef = React.createRef<HTMLElement>();
@@ -73,12 +75,40 @@ class List<Value = string> extends React.Component<IListProps<Value>> {
     targetY: 0,
     targetHeight: 0,
     targetWidth: 0,
-    liveText: ''
+    liveText: '',
+    scrollingSpeed: 0
   };
 
   componentDidMount() {
     this.calculateOffsets();
   }
+
+  componentDidUpdate(prevProps: any, prevState: { scrollingSpeed: number }) {
+    if (
+      prevState.scrollingSpeed !== this.state.scrollingSpeed &&
+      prevState.scrollingSpeed === 0
+    ) {
+      this.autoScrolling();
+    }
+  }
+
+  autoScrolling = () => {
+    const { scrollingSpeed } = this.state;
+    console.log(
+      'scroll',
+      SCROLL_DELAYS[Math.abs(scrollingSpeed) - 1],
+      scrollingSpeed
+    );
+    setTimeout(() => {
+      this.listRef.current!.scrollBy({
+        top: scrollingSpeed > 0 ? 3 : -3,
+        left: 0
+      });
+      if (this.state.scrollingSpeed !== 0) {
+        this.autoScrolling();
+      }
+    }, SCROLL_DELAYS[Math.abs(scrollingSpeed) - 1]);
+  };
 
   getChildren = () => {
     if (this.listRef && this.listRef.current) {
@@ -200,6 +230,24 @@ class List<Value = string> extends React.Component<IListProps<Value>> {
       clientY - this.state.initialY,
       this.props.lockVertically ? 0 : clientX - this.state.initialX
     );
+    const { top, bottom } = this.listRef.current!.getBoundingClientRect();
+    let scrollingSpeed = 0;
+    if (clientY > bottom) {
+      scrollingSpeed = 3;
+    } else if (clientY + 100 > bottom) {
+      scrollingSpeed = 2;
+    } else if (clientY + 200 > bottom) {
+      scrollingSpeed = 1;
+    } else if (clientY < top) {
+      scrollingSpeed = -3;
+    } else if (clientY - 100 < top) {
+      scrollingSpeed = -2;
+    } else if (clientY - 200 < top) {
+      scrollingSpeed = -1;
+    }
+    if (this.state.scrollingSpeed !== scrollingSpeed) {
+      this.setState({ scrollingSpeed });
+    }
     this.moveOtherItems();
   };
 
@@ -273,7 +321,7 @@ class List<Value = string> extends React.Component<IListProps<Value>> {
       setItemTransition(item, 0);
       transformItem(item, null);
     });
-    this.setState({ itemDragged: -1 });
+    this.setState({ itemDragged: -1, scrollingSpeed: 0 });
     this.afterIndex = -2;
     // sometimes the scroll gets messed up after the drop, fix:
     if (this.lastScroll > 0) {
