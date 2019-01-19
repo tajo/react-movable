@@ -55,8 +55,6 @@ interface IListProps<Value> {
 
 type TEvent = React.MouseEvent | React.TouchEvent | React.KeyboardEvent;
 
-const SCROLL_DELAYS = [10, 5, 1];
-
 class List<Value = string> extends React.Component<IListProps<Value>> {
   listRef = React.createRef<HTMLElement>();
   ghostRef = React.createRef<HTMLElement>();
@@ -94,20 +92,15 @@ class List<Value = string> extends React.Component<IListProps<Value>> {
 
   autoScrolling = () => {
     const { scrollingSpeed } = this.state;
-    console.log(
-      'scroll',
-      SCROLL_DELAYS[Math.abs(scrollingSpeed) - 1],
-      scrollingSpeed
-    );
-    setTimeout(() => {
+    window.requestAnimationFrame(() => {
       this.listRef.current!.scrollBy({
-        top: scrollingSpeed > 0 ? 3 : -3,
+        top: scrollingSpeed,
         left: 0
       });
       if (this.state.scrollingSpeed !== 0) {
         this.autoScrolling();
       }
-    }, SCROLL_DELAYS[Math.abs(scrollingSpeed) - 1]);
+    });
   };
 
   getChildren = () => {
@@ -230,23 +223,21 @@ class List<Value = string> extends React.Component<IListProps<Value>> {
       clientY - this.state.initialY,
       this.props.lockVertically ? 0 : clientX - this.state.initialX
     );
-    const { top, bottom } = this.listRef.current!.getBoundingClientRect();
-    let scrollingSpeed = 0;
-    if (clientY > bottom) {
-      scrollingSpeed = 3;
-    } else if (clientY + 100 > bottom) {
-      scrollingSpeed = 2;
-    } else if (clientY + 200 > bottom) {
-      scrollingSpeed = 1;
-    } else if (clientY < top) {
-      scrollingSpeed = -3;
-    } else if (clientY - 100 < top) {
-      scrollingSpeed = -2;
-    } else if (clientY - 200 < top) {
-      scrollingSpeed = -1;
-    }
-    if (this.state.scrollingSpeed !== scrollingSpeed) {
-      this.setState({ scrollingSpeed });
+    const {
+      top,
+      bottom,
+      height
+    } = this.listRef.current!.getBoundingClientRect();
+    if (height + 20 < this.listRef.current!.scrollHeight) {
+      let scrollingSpeed = 0;
+      if (clientY - top < 200) {
+        scrollingSpeed = Math.round((200 - (clientY - top)) / -10);
+      } else if (bottom - clientY < 200) {
+        scrollingSpeed = Math.round((200 - (bottom - clientY)) / 10);
+      }
+      if (this.state.scrollingSpeed !== scrollingSpeed) {
+        this.setState({ scrollingSpeed });
+      }
     }
     this.moveOtherItems();
   };
