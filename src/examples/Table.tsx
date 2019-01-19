@@ -12,10 +12,12 @@ interface IAppStateItems {
 }
 
 const tableStyles = {
-  background: '#eaebec'
+  background: '#eaebec',
+  borderSpacing: 0
 };
 
 const thStyles = {
+  borderBottom: '2px solid #ddd',
   padding: '30px',
   background: '#ededed',
   color: '#666',
@@ -24,6 +26,7 @@ const thStyles = {
 } as React.CSSProperties;
 
 const tdStyles = {
+  borderBottom: '1px solid #ddd',
   color: '#666',
   fontFamily: 'Arial, "Helvetica Neue", Helvetica, sans-serif',
   padding: '24px',
@@ -119,18 +122,17 @@ class App extends React.Component<{}, IAppStateItems> {
                 style={{
                   ...props.style,
                   cursor: isDragged ? 'grabbing' : 'grab',
-                  backgroundColor: isDragged || isSelected ? '#EEE' : '#fafafa',
-                  border: isDragged ? '2px solid #AAA' : undefined
+                  backgroundColor: isDragged || isSelected ? '#EEE' : '#fafafa'
                 }}
               >
-                <td style={tdStyles}>{value.last_name}</td>
+                <td style={tdStyles}>{value.first_name}</td>
                 <td style={tdStyles}>{value.last_name}</td>
                 <td style={tdStyles}>{value.car_make}</td>
                 <td style={tdStyles}>{value.car_model}</td>
               </tr>
             );
             return isDragged ? (
-              <table style={props.style}>
+              <table style={{ ...props.style, borderSpacing: 0 }}>
                 <tbody>{row}</tbody>
               </table>
             ) : (
