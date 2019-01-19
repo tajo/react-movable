@@ -29,7 +29,7 @@ export function transformItem(
     (element as HTMLElement).style.transform = null;
     return;
   }
-  (element as HTMLElement).style.transform = `translate3d(${offsetX}px, ${offsetY}px, 0px)`;
+  (element as HTMLElement).style.transform = `translate(${offsetX}px, ${offsetY}px)`;
 }
 
 export function isItemTransformed(element: Element) {
