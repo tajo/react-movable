@@ -55,6 +55,9 @@ interface IListProps<Value> {
 
 type TEvent = React.MouseEvent | React.TouchEvent | React.KeyboardEvent;
 
+const AUTOSCROLL_ACTIVE_OFFSET = 200;
+const AUTOSCROLL_SPEED_RATIO = 10;
+
 class List<Value = string> extends React.Component<IListProps<Value>> {
   listRef = React.createRef<HTMLElement>();
   ghostRef = React.createRef<HTMLElement>();
@@ -74,7 +77,8 @@ class List<Value = string> extends React.Component<IListProps<Value>> {
     targetHeight: 0,
     targetWidth: 0,
     liveText: '',
-    scrollingSpeed: 0
+    scrollingSpeed: 0,
+    scrollWindow: false
   };
 
   componentDidMount() {
@@ -91,13 +95,14 @@ class List<Value = string> extends React.Component<IListProps<Value>> {
   }
 
   autoScrolling = () => {
-    const { scrollingSpeed } = this.state;
+    const { scrollingSpeed, scrollWindow } = this.state;
+    const el = scrollWindow ? window : this.listRef.current!;
     window.requestAnimationFrame(() => {
-      this.listRef.current!.scrollBy({
+      el.scrollBy({
         top: scrollingSpeed,
         left: 0
       });
-      if (this.state.scrollingSpeed !== 0) {
+      if (scrollingSpeed !== 0) {
         this.autoScrolling();
       }
     });
@@ -180,6 +185,7 @@ class List<Value = string> extends React.Component<IListProps<Value>> {
       : 0;
     return window.pageYOffset + listScroll;
   };
+
   onStart = (
     target: HTMLElement,
     clientX: number,
@@ -223,20 +229,56 @@ class List<Value = string> extends React.Component<IListProps<Value>> {
       clientY - this.state.initialY,
       this.props.lockVertically ? 0 : clientX - this.state.initialX
     );
+
+    // autoscrolling logic follows...
     const {
       top,
       bottom,
       height
     } = this.listRef.current!.getBoundingClientRect();
-    if (height + 20 < this.listRef.current!.scrollHeight) {
-      let scrollingSpeed = 0;
-      if (clientY - top < 200) {
-        scrollingSpeed = Math.round((200 - (clientY - top)) / -10);
-      } else if (bottom - clientY < 200) {
-        scrollingSpeed = Math.round((200 - (bottom - clientY)) / 10);
+    const viewportHeight =
+      window.innerHeight || document.documentElement.clientHeight;
+    // autoscrolling for the window (down)
+    if (
+      bottom > viewportHeight &&
+      viewportHeight - clientY < AUTOSCROLL_ACTIVE_OFFSET
+    ) {
+      this.setState({
+        scrollingSpeed: Math.round(
+          (AUTOSCROLL_ACTIVE_OFFSET - (viewportHeight - clientY)) /
+            AUTOSCROLL_SPEED_RATIO
+        ),
+        scrollWindow: true
+      });
+      // autoscrolling for the window (up)
+    } else if (top < 0 && clientY < AUTOSCROLL_ACTIVE_OFFSET) {
+      this.setState({
+        scrollingSpeed: Math.round(
+          (AUTOSCROLL_ACTIVE_OFFSET - clientY) / -AUTOSCROLL_SPEED_RATIO
+        ),
+        scrollWindow: true
+      });
+    } else {
+      if (this.state.scrollWindow && this.state.scrollingSpeed !== 0) {
+        this.setState({ scrollingSpeed: 0, scrollWindow: false });
       }
-      if (this.state.scrollingSpeed !== scrollingSpeed) {
-        this.setState({ scrollingSpeed });
+      // autoscrolling for containers with overflow
+      if (height + 20 < this.listRef.current!.scrollHeight) {
+        let scrollingSpeed = 0;
+        if (clientY - top < AUTOSCROLL_ACTIVE_OFFSET) {
+          scrollingSpeed = Math.round(
+            (AUTOSCROLL_ACTIVE_OFFSET - (clientY - top)) /
+              -AUTOSCROLL_SPEED_RATIO
+          );
+        } else if (bottom - clientY < AUTOSCROLL_ACTIVE_OFFSET) {
+          scrollingSpeed = Math.round(
+            (AUTOSCROLL_ACTIVE_OFFSET - (bottom - clientY)) /
+              AUTOSCROLL_SPEED_RATIO
+          );
+        }
+        if (this.state.scrollingSpeed !== scrollingSpeed) {
+          this.setState({ scrollingSpeed });
+        }
       }
     }
     this.moveOtherItems();
