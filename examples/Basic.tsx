@@ -1,21 +1,26 @@
 import * as React from 'react';
-import { List, arrayMove } from '../index';
+import { List, arrayMove } from '../src/index';
 
-class App extends React.Component<{}, { items: string[] }> {
+class Basic extends React.Component<
+  { transitionDuration?: number; lockVertically?: boolean },
+  { items: string[] }
+> {
   state = {
-    items: Array.from(Array(100).keys()).map(val => `Item ${val}`)
+    items: ['Item 1', 'Item 2', 'Item 3', 'Item 4', 'Item 5', 'Item 6']
   };
   render() {
     return (
       <div
         style={{
-          maxWidth: '332px',
+          maxWidth: '300px',
           margin: '0px auto',
           backgroundColor: '#F7F7F7',
           padding: '3em'
         }}
       >
         <List
+          transitionDuration={this.props.transitionDuration}
+          lockVertically={this.props.lockVertically}
           values={this.state.items}
           onChange={({ oldIndex, newIndex }) =>
             this.setState((prevState: { items: string[] }) => ({
@@ -25,14 +30,7 @@ class App extends React.Component<{}, { items: string[] }> {
           renderList={({ children, props, isDragged }) => (
             <ul
               {...props}
-              style={{
-                padding: '1em',
-                cursor: isDragged ? 'grabbing' : undefined,
-                height: 600,
-                overflow: 'scroll',
-                borderTop: '5px solid #AAA',
-                borderBottom: '5px solid #AAA'
-              }}
+              style={{ padding: 0, cursor: isDragged ? 'grabbing' : undefined }}
             >
               {children}
             </ul>
@@ -63,4 +61,4 @@ class App extends React.Component<{}, { items: string[] }> {
   }
 }
 
-export default App;
+export default Basic;

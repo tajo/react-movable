@@ -1,10 +1,7 @@
 import * as React from 'react';
-import { List, arrayMove } from '../index';
+import { List, arrayMove } from '../src/index';
 
-class App extends React.Component<
-  { transitionDuration?: number; lockVertically?: boolean },
-  { items: string[] }
-> {
+class LockVertically extends React.Component<{}, { items: string[] }> {
   state = {
     items: ['Item 1', 'Item 2', 'Item 3', 'Item 4', 'Item 5', 'Item 6']
   };
@@ -19,8 +16,7 @@ class App extends React.Component<
         }}
       >
         <List
-          transitionDuration={this.props.transitionDuration}
-          lockVertically={this.props.lockVertically}
+          lockVertically
           values={this.state.items}
           onChange={({ oldIndex, newIndex }) =>
             this.setState((prevState: { items: string[] }) => ({
@@ -61,4 +57,4 @@ class App extends React.Component<
   }
 }
 
-export default App;
+export default LockVertically;

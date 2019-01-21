@@ -1,21 +1,15 @@
 import * as React from 'react';
-import { List, arrayMove } from '../index';
+import { List, arrayMove } from '../src/index';
 
-class App extends React.Component<{}, { items: string[] }> {
+class ScrollingWindow extends React.Component<{}, { items: string[] }> {
   state = {
-    items: [
-      '70px Item 1',
-      '100px Item 2',
-      '70px Item 3',
-      '70px Item 4',
-      '150px Item 5'
-    ]
+    items: Array.from(Array(100).keys()).map(val => `Item ${val}`)
   };
   render() {
     return (
       <div
         style={{
-          maxWidth: '300px',
+          maxWidth: '332px',
           margin: '0px auto',
           backgroundColor: '#F7F7F7',
           padding: '3em'
@@ -31,7 +25,10 @@ class App extends React.Component<{}, { items: string[] }> {
           renderList={({ children, props, isDragged }) => (
             <ul
               {...props}
-              style={{ padding: 0, cursor: isDragged ? 'grabbing' : undefined }}
+              style={{
+                padding: '1em',
+                cursor: isDragged ? 'grabbing' : undefined
+              }}
             >
               {children}
             </ul>
@@ -43,8 +40,6 @@ class App extends React.Component<{}, { items: string[] }> {
                 ...props.style,
                 padding: '1.5em',
                 margin: '0.5em 0em',
-                display: 'flex',
-                alignItems: 'center',
                 listStyleType: 'none',
                 cursor: isDragged ? 'grabbing' : 'grab',
                 border: '2px solid #CCC',
@@ -52,8 +47,7 @@ class App extends React.Component<{}, { items: string[] }> {
                 color: '#333',
                 borderRadius: '5px',
                 fontFamily: 'Arial, "Helvetica Neue", Helvetica, sans-serif',
-                backgroundColor: isDragged || isSelected ? '#EEE' : '#FFF',
-                height: `${parseInt(value, 10)}px`
+                backgroundColor: isDragged || isSelected ? '#EEE' : '#FFF'
               }}
             >
               {value}
@@ -65,4 +59,4 @@ class App extends React.Component<{}, { items: string[] }> {
   }
 }
 
-export default App;
+export default ScrollingWindow;

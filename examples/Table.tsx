@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { List, arrayMove } from '../index';
+import { List, arrayMove } from '../src/index';
 import { REPLCommand } from 'repl';
 
 interface IAppStateItems {
@@ -34,7 +34,7 @@ const tdStyles = {
   width: '150px'
 } as React.CSSProperties;
 
-class App extends React.Component<{}, IAppStateItems> {
+class Table extends React.Component<{}, IAppStateItems> {
   state = {
     items: [
       {
@@ -145,4 +145,4 @@ class App extends React.Component<{}, IAppStateItems> {
   }
 }
 
-export default App;
+export default Table;

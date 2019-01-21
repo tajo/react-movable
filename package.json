@@ -5,16 +5,7 @@
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
   "files": [
-    "*.md",
-    "LICENSE",
-    "lib/index.js",
-    "lib/index.d.ts",
-    "lib/List.js",
-    "lib/List.d.ts",
-    "lib/List.flow.js",
-    "lib/utils.js",
-    "lib/utils.d.ts",
-    "lib/utils.flow.js"
+    "lib"
   ],
   "repository": {
     "type": "git",
@@ -24,10 +15,9 @@
   "license": "MIT",
   "scripts": {
     "build": "rm -rf lib && tsc --outDir lib && cp flowtypes/* lib",
-    "build-storybook": "build-storybook -s public",
+    "build-storybook": "build-storybook -s public && rm ./examples/*.d.ts && rm ./src/*.d.ts",
     "storybook": "start-storybook -p 9010 -s public",
-    "test": "react-scripts test --env=jsdom",
-    "format": "prettier --write \"**/*.js\""
+    "test": "react-scripts test"
   },
   "tags": [
     "react"
@@ -44,24 +34,17 @@
     "@storybook/addon-options": "4.2.0-alpha.8",
     "@storybook/addons": "4.2.0-alpha.8",
     "@storybook/react": "4.2.0-alpha.8",
-    "@types/enzyme": "^3.1.15",
     "@types/react": "^16.7.18",
     "@types/react-dom": "^16.0.11",
     "@types/storybook__react": "^4.0.0",
-    "enzyme": "^3.8.0",
-    "enzyme-adapter-react-16": "^1.7.1",
-    "enzyme-to-json": "^3.3.5",
+    "awesome-typescript-loader": "^5.2.1",
     "fork-ts-checker-webpack-plugin": "^0.5.2",
     "react-docgen-typescript-loader": "^3.0.0",
     "react-scripts": "^2.1.2",
     "typescript": "^3.2.2"
   },
   "peerDependencies": {
-    "react": "^16.3.0-0 || ^17.0.0-0"
-  },
-  "jest": {
-    "snapshotSerializers": [
-      "enzyme-to-json/serializer"
-    ]
+    "react": "^16.3.0-0 || ^17.0.0-0",
+    "react-dom": "^16.3.0-0 || ^17.0.0-0"
   }
 }

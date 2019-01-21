@@ -1,7 +1,7 @@
 import * as React from 'react';
-import { List, arrayMove } from '../index';
+import { List, arrayMove } from '../src/index';
 
-class App extends React.Component<{}, { items: string[] }> {
+class SuperSimple extends React.Component<{}, { items: string[] }> {
   state = {
     items: ['Item 1', 'Item 2', 'Item 3', 'Item 4', 'Item 5', 'Item 6']
   };
@@ -21,4 +21,4 @@ class App extends React.Component<{}, { items: string[] }> {
   }
 }
 
-export default App;
+export default SuperSimple;
