@@ -6,59 +6,12 @@ import {
   setItemTransition,
   binarySearch
 } from './utils';
-
-export interface IVoiceover {
-  item: (position: number) => string;
-  lifted: (position: number) => string;
-  dropped: (from: number, to: number) => string;
-  moved: (position: number, up: boolean) => string;
-  canceled: (position: number) => string;
-}
-
-interface IItemProps {
-  key?: number;
-  tabIndex?: number;
-  'aria-roledescription'?: string;
-  onKeyDown?: (e: React.KeyboardEvent) => void;
-  onMouseDown?: (e: React.MouseEvent) => void;
-  onTouchStart?: (e: React.TouchEvent) => void;
-  onWheel?: (e: React.WheelEvent) => void;
-  style?: React.CSSProperties;
-  ref?: React.RefObject<any>;
-}
-
-interface IListProps<Value> {
-  renderItem: (
-    params: {
-      value: Value;
-      props: IItemProps;
-      index?: number;
-      isDragged: boolean;
-      isSelected: boolean;
-    }
-  ) => React.ReactNode;
-  renderList: (
-    props: {
-      children: React.ReactNode;
-      isDragged: boolean;
-      props: {
-        ref: React.RefObject<any>;
-      };
-    }
-  ) => React.ReactNode;
-  values: Value[];
-  onChange: (meta: { oldIndex: number; newIndex: number }) => void;
-  transitionDuration: number;
-  lockVertically: boolean;
-  voiceover: IVoiceover;
-}
-
-type TEvent = React.MouseEvent | React.TouchEvent | React.KeyboardEvent;
+import { IItemProps, IProps, TEvent } from './types';
 
 const AUTOSCROLL_ACTIVE_OFFSET = 200;
 const AUTOSCROLL_SPEED_RATIO = 10;
 
-class List<Value = string> extends React.Component<IListProps<Value>> {
+class List<Value = string> extends React.Component<IProps<Value>> {
   listRef = React.createRef<HTMLElement>();
   ghostRef = React.createRef<HTMLElement>();
   topOffsets: number[] = [];
@@ -85,16 +38,16 @@ class List<Value = string> extends React.Component<IListProps<Value>> {
     this.calculateOffsets();
   }
 
-  componentDidUpdate(prevProps: any, prevState: { scrollingSpeed: number }) {
+  componentDidUpdate(_prevProps: any, prevState: { scrollingSpeed: number }) {
     if (
       prevState.scrollingSpeed !== this.state.scrollingSpeed &&
       prevState.scrollingSpeed === 0
     ) {
-      this.autoScrolling();
+      this.doScrolling();
     }
   }
 
-  autoScrolling = () => {
+  doScrolling = () => {
     const { scrollingSpeed, scrollWindow } = this.state;
     const el = scrollWindow ? window : this.listRef.current!;
     window.requestAnimationFrame(() => {
@@ -103,7 +56,7 @@ class List<Value = string> extends React.Component<IListProps<Value>> {
         left: 0
       });
       if (scrollingSpeed !== 0) {
-        this.autoScrolling();
+        this.doScrolling();
       }
     });
   };
@@ -138,9 +91,9 @@ class List<Value = string> extends React.Component<IListProps<Value>> {
   };
 
   calculateOffsets = () => {
-    this.topOffsets = this.getChildren().map(item => {
-      return item.getBoundingClientRect().top;
-    });
+    this.topOffsets = this.getChildren().map(
+      item => item.getBoundingClientRect().top
+    );
     this.itemTranslateOffsets = this.getChildren().map(item =>
       getTranslateOffset(item)
     );
@@ -229,8 +182,33 @@ class List<Value = string> extends React.Component<IListProps<Value>> {
       clientY - this.state.initialY,
       this.props.lockVertically ? 0 : clientX - this.state.initialX
     );
+    this.autoScrolling(clientY);
+    this.moveOtherItems();
+  };
 
-    // autoscrolling logic follows...
+  moveOtherItems = () => {
+    const targetRect = this.ghostRef.current!.getBoundingClientRect();
+    const itemVerticalCenter = targetRect.top + targetRect.height / 2;
+    const offset = getTranslateOffset(
+      this.getChildren()[this.state.itemDragged]
+    );
+    const currentYOffset = this.getYOffset();
+    // adjust offsets if scrolling happens during the item movement
+    if (this.initialYOffset !== currentYOffset) {
+      this.topOffsets = this.topOffsets.map(
+        offset => offset - (currentYOffset - this.initialYOffset)
+      );
+      this.initialYOffset = currentYOffset;
+    }
+    this.afterIndex = binarySearch(this.topOffsets, itemVerticalCenter);
+    this.animateItems(
+      this.afterIndex === -1 ? 0 : this.afterIndex,
+      this.state.itemDragged,
+      offset
+    );
+  };
+
+  autoScrolling = (clientY: number) => {
     const {
       top,
       bottom,
@@ -281,29 +259,6 @@ class List<Value = string> extends React.Component<IListProps<Value>> {
         }
       }
     }
-    this.moveOtherItems();
-  };
-
-  moveOtherItems = () => {
-    const targetRect = this.ghostRef.current!.getBoundingClientRect();
-    const itemVerticalCenter = targetRect.top + targetRect.height / 2;
-    const offset = getTranslateOffset(
-      this.getChildren()[this.state.itemDragged]
-    );
-    const currentYOffset = this.getYOffset();
-    // adjust offsets if scrolling happens during the item movement
-    if (this.initialYOffset !== currentYOffset) {
-      this.topOffsets = this.topOffsets.map(
-        offset => offset - (currentYOffset - this.initialYOffset)
-      );
-      this.initialYOffset = currentYOffset;
-    }
-    this.afterIndex = binarySearch(this.topOffsets, itemVerticalCenter);
-    this.animateItems(
-      this.afterIndex === -1 ? 0 : this.afterIndex,
-      this.state.itemDragged,
-      offset
-    );
   };
 
   animateItems = (
