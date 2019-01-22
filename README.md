@@ -162,7 +162,7 @@ voiceover: {
 }
 ```
 
-In order to support screen reader users, react-movable is triggering different messages when user is interacting with the list. There is already a set of [English messages](https://github.com/tajo/react-movable/blob/master/src/List.tsx#L77-L89) included but you can override it with this prop.
+In order to support screen reader users, `react-movable` is triggering different messages when user is interacting with the list. There is already a set of [English messages](https://github.com/tajo/react-movable/blob/master/src/List.tsx#L77-L89) included but you can override it with this prop.
 
 ## `arrayMove` and `arrayRemove`
 
@@ -188,27 +188,31 @@ There are multiple great libraries in React's ecosystem already. DnD can get pre
 
 [react-beautiful-dnd](https://github.com/atlassian/react-beautiful-dnd) is a really beautiful DnD library for lists. It comes with a great support for accesibility and it's packed with awesome features. It doesn't use HTML5 API so it doesn't impose any of its limitations.
 
-[react-sortable-hoc](https://github.com/clauderic/react-sortable-hoc) provides a set of higher order components to make your lists dnd-able. It has many features and approaches similar to react-beautiful-dnd but it's more minimalistic and lacks some features as accesibility or unopinionated styling.
+[react-sortable-hoc](https://github.com/clauderic/react-sortable-hoc) provides a set of higher order components to make your lists dnd-able. It has many features and approaches similar to `react-beautiful-dnd` but it's more minimalistic and lacks some features as accesibility or unopinionated styling.
 
-So why react-movable was created? There are two main goals:
+So why `react-movable` was created? There are two main goals:
 
-- **Small footprint**. It's about 10 times smaller than `react-dnd` or `react-beautiful-dnd` (~3kB vs ~30kB) and half of the size of `react-sortable-hoc` (~7kB). That's especially important when you intend to use `react-movable` as a dependency in your own library. However, that also means that some features are left out - the horizontal DnD is not supported.
+- **Small footprint**. It's about 10 times smaller than `react-dnd` or `react-beautiful-dnd` (~3kB vs ~30kB) and half of the size of `react-sortable-hoc` (~7kB). That's especially important when you intend to use `react-movable` as a dependency in your own library. However, that also means that some features are left out - for example, the horizontal DnD is not supported.
 - **Simple but not compromised**. - Every byte counts but not if it comes down to the support for accesibility, screen readers, keyboards and touch devices. The goal is to support a limited set of use cases but without compromises.
 
 ### Features that are not supported (and never will be)
 
-- Vertical sorting.
+- Horizontal sorting.
 - DnD between multiple list.
 - Combining items / multi drag support.
 - Supporting older versions of React. The minimum required version is `16.3` since the new `createRef` and `createPortal` APIs are used.
 
-If you need those, please give a try to `react-beautiful-dnd`. It's a really well-designed library with all those features and gives you a lot of power to customize! If you are bulding an application heavy on DnD interactions, it might be your best bet!
+If you need the features above, please give a try to `react-beautiful-dnd`. It's a really well-designed library with all those features and gives you a lot of power to customize! If you are bulding an application heavy on DnD interactions, it might be your best bet! `react-movable`'s goal is not to be feature complete with `react-beautiful-dnd`.
 
 ### Planned features
 
 - Built-in virtualization / windowing.
 
+Other feature requests will be thoroughly vetted. Again, the primary goal is to keep the size down while supporting main use-cases!
+
 ## Contributing
+
+This is how you can spin up the dev environment:
 
 ```
 git clone https://github.com/tajo/react-movable
