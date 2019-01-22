@@ -29,7 +29,8 @@ class ScrollingContainer extends React.Component<{}, { items: string[] }> {
                 padding: '1em',
                 cursor: isDragged ? 'grabbing' : undefined,
                 height: 600,
-                overflow: 'scroll',
+                overflowY: 'scroll',
+                overflowX: 'hidden',
                 borderTop: '5px solid #AAA',
                 borderBottom: '5px solid #AAA'
               }}

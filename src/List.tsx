@@ -49,12 +49,13 @@ class List<Value = string> extends React.Component<IProps<Value>> {
 
   doScrolling = () => {
     const { scrollingSpeed, scrollWindow } = this.state;
-    const el = scrollWindow ? window : this.listRef.current!;
+    const listEl = this.listRef.current!;
     window.requestAnimationFrame(() => {
-      el.scrollBy({
-        top: scrollingSpeed,
-        left: 0
-      });
+      if (scrollWindow) {
+        window.scrollTo(window.scrollX, window.scrollY + scrollingSpeed * 1.5);
+      } else {
+        listEl.scrollTop += scrollingSpeed;
+      }
       if (scrollingSpeed !== 0) {
         this.doScrolling();
       }
@@ -157,8 +158,9 @@ class List<Value = string> extends React.Component<IProps<Value>> {
     this.initialYOffset = this.getYOffset();
     this.setState({
       itemDragged: index,
-      targetX: targetRect.x - parseInt(targetStyles['margin-left' as any], 10),
-      targetY: targetRect.y - parseInt(targetStyles['margin-top' as any], 10),
+      targetX:
+        targetRect.left - parseInt(targetStyles['margin-left' as any], 10),
+      targetY: targetRect.top - parseInt(targetStyles['margin-top' as any], 10),
       targetHeight: targetRect.height,
       targetWidth: targetRect.width,
       initialX: clientX,
@@ -405,6 +407,7 @@ class List<Value = string> extends React.Component<IProps<Value>> {
   render() {
     const baseStyle = {
       userSelect: 'none',
+      touchAction: 'none',
       WebkitUserSelect: 'none',
       MozUserSelect: 'none',
       msUserSelect: 'none',
