@@ -26,7 +26,7 @@ export function transformItem(
   offsetX: number | null = 0
 ) {
   if (offsetY === null || offsetX === null) {
-    (element as HTMLElement).style.transform = null;
+    (element as HTMLElement).style.removeProperty('transform');
     return;
   }
   (element as HTMLElement).style.transform = `translate(${offsetX}px, ${offsetY}px)`;
