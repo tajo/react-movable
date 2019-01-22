@@ -2,7 +2,9 @@
 
 ![Basic list](https://raw.githubusercontent.com/tajo/react-movable/master/assets/react-movable.gif?raw=true)
 
-[Check the examples](https://react-movable.netlify.com) and [their source code](https://github.com/tajo/react-movable/tree/master/examples)!
+[![Edit Basic react-movable](https://codesandbox.io/static/img/play-codesandbox.svg)](https://codesandbox.io/s/k1mrwyr9l3)
+
+[See all the other examples](https://react-movable.netlify.com) and [their source code](https://github.com/tajo/react-movable/tree/master/examples)!
 
 ## Installation
 
