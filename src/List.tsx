@@ -396,8 +396,10 @@ class List<Value = string> extends React.Component<IProps<Value>> {
 
   render() {
     const baseStyle = {
-      userDrag: 'none',
       userSelect: 'none',
+      '-webkit-user-select': 'none',
+      '-moz-user-select': 'none',
+      '-ms-user-select': 'none',
       boxSizing: 'border-box',
       position: 'relative'
     } as React.CSSProperties;
