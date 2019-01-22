@@ -24,10 +24,17 @@
   ],
   "keywords": [
     "react",
+    "react-dom",
     "react-component",
+    "sortable",
+    "reorder",
+    "reorderable",
     "drag",
     "drop",
     "list",
+    "table",
+    "drag and drop",
+    "dnd",
     "movable"
   ],
   "devDependencies": {

@@ -2,6 +2,8 @@
 
 ![Basic list](https://raw.githubusercontent.com/tajo/react-movable/master/assets/react-movable.gif?raw=true)
 
+[Check the examples](https://react-movable.netlify.com) and [their source code](https://github.com/tajo/react-movable/tree/master/examples)!
+
 ## Installation
 
 ```
@@ -160,7 +162,7 @@ voiceover: {
 }
 ```
 
-In order to support screen reader users, react-movable is triggering different messages when user is interacting with the list. There is already a set of [English messages](https://github.com/tajo/react-movable/blob/master/src/List.tsx#L77-L89) included but you can override it with this props.
+In order to support screen reader users, react-movable is triggering different messages when user is interacting with the list. There is already a set of [English messages](https://github.com/tajo/react-movable/blob/master/src/List.tsx#L77-L89) included but you can override it with this prop.
 
 ## `arrayMove` and `arrayRemove`
 
