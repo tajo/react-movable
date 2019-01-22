@@ -223,14 +223,14 @@ yarn
 yarn storybook
 ```
 
-## Prior work
+## Shutouts 🙏
 
 The popular React DnD libraries were already mentioned in the motivation part. Big shutout to `react-beautiful-dnd` ❤️ ️ for supporting multiple great features and adding first-class support for accesibility! It was strongly used as an inspiration for `react-movable`!
+
+<img src="https://raw.githubusercontent.com/tajo/react-movable/master/assets/browserstack-logo.png?raw=true" height="80" title="BrowserStack Logo" alt="BrowserStack Logo" />
+
+Big thanks to [BrowserStack](https://www.browserstack.com) for letting the maintainers use their service to debug browser issues.
 
 ## Author
 
 Vojtech Miksu 2019, [miksu.cz](https://miksu.cz), [@vmiksu](https://twitter.com/vmiksu)
-
-Shutout to BrowserStack for free support of this library.
-
-[![BrowserStack](https://raw.githubusercontent.com/tajo/react-movable/master/assets/browserstack-logo.png?raw=true)](https://www.browserstack.com)
