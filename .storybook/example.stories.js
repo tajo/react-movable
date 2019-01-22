@@ -18,7 +18,7 @@ storiesOf('List', module)
   .add('Removable', () => <Removable />)
   .add('Handle', () => <Handle />)
   .add('No animations', () => <NoAnimations />)
-  .add('Lock vertically', () => <Basic lockVertically />)
+  .add('Lock vertically', () => <LockVertically />)
   .add('Varying heights', () => <VaryingHeights />)
   .add('Scrolling window', () => <ScrollingWindow />)
   .add('Scrolling container', () => <ScrollingContainer />);
