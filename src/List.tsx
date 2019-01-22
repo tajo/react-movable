@@ -106,8 +106,9 @@ class List<Value = string> extends React.Component<IProps<Value>> {
 
   onMouseDown = (e: React.MouseEvent) => {
     if (e.button !== 0) return;
-    document.addEventListener('mousemove', this.onMouseMove, { passive: true });
-    document.addEventListener('mouseup', this.onEnd, { passive: true });
+    e.preventDefault();
+    document.addEventListener('mousemove', this.onMouseMove);
+    document.addEventListener('mouseup', this.onEnd);
     const index = this.getTargetIndex(e);
     if (index === -1) return;
     this.onStart(
@@ -119,9 +120,10 @@ class List<Value = string> extends React.Component<IProps<Value>> {
   };
 
   onTouchStart = (e: React.TouchEvent) => {
-    document.addEventListener('touchmove', this.onTouchMove, { passive: true });
-    document.addEventListener('touchend', this.onEnd, { passive: true });
-    document.addEventListener('touchcancel', this.onEnd, { passive: true });
+    e.preventDefault();
+    document.addEventListener('touchmove', this.onTouchMove);
+    document.addEventListener('touchend', this.onEnd);
+    document.addEventListener('touchcancel', this.onEnd);
     const index = this.getTargetIndex(e);
     if (index === -1) return;
     this.onStart(
@@ -164,10 +166,15 @@ class List<Value = string> extends React.Component<IProps<Value>> {
     });
   };
 
-  onMouseMove = (e: MouseEvent) => this.onMove(e.clientX, e.clientY);
+  onMouseMove = (e: MouseEvent) => {
+    e.preventDefault();
+    this.onMove(e.clientX, e.clientY);
+  };
 
-  onTouchMove = (e: TouchEvent) =>
+  onTouchMove = (e: TouchEvent) => {
+    e.preventDefault();
     this.onMove(e.touches[0].clientX, e.touches[0].clientY);
+  };
 
   onWheel = (e: React.WheelEvent) => {
     if (this.state.itemDragged < 0) return;
@@ -293,7 +300,8 @@ class List<Value = string> extends React.Component<IProps<Value>> {
     });
   };
 
-  onEnd = () => {
+  onEnd = (e: Event) => {
+    e.preventDefault();
     document.removeEventListener('mousemove', this.onMouseMove);
     document.removeEventListener('touchmove', this.onTouchMove);
     document.removeEventListener('mouseup', this.onEnd);
@@ -397,9 +405,9 @@ class List<Value = string> extends React.Component<IProps<Value>> {
   render() {
     const baseStyle = {
       userSelect: 'none',
-      '-webkit-user-select': 'none',
-      '-moz-user-select': 'none',
-      '-ms-user-select': 'none',
+      WebkitUserSelect: 'none',
+      MozUserSelect: 'none',
+      msUserSelect: 'none',
       boxSizing: 'border-box',
       position: 'relative'
     } as React.CSSProperties;
