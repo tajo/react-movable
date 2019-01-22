@@ -230,3 +230,7 @@ The popular React DnD libraries were already mentioned in the motivation part. B
 ## Author
 
 Vojtech Miksu 2019, [miksu.cz](https://miksu.cz), [@vmiksu](https://twitter.com/vmiksu)
+
+Shutout to BrowserStack for free support of this library.
+
+[![BrowserStack](https://raw.githubusercontent.com/tajo/react-movable/master/assets/browserstack-logo.png?raw=true)](https://www.browserstack.com)
