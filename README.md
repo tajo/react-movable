@@ -212,6 +212,14 @@ If you need the features above, please give a try to `react-beautiful-dnd`. It's
 
 Other feature requests will be thoroughly vetted. Again, the primary goal is to keep the size down while supporting main use-cases!
 
+## Browser support
+
+- **Chrome** (latest, mac, windows, iOS, Android)
+- **Firefox** (latest, mac, windows)
+- **Safari** (latest, mac, iOS)
+- **Edge** (latest, windows)
+- **MSIE 11** (windows)
+
 ## Contributing
 
 This is how you can spin up the dev environment:
