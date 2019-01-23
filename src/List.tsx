@@ -52,7 +52,10 @@ class List<Value = string> extends React.Component<IProps<Value>> {
     const listEl = this.listRef.current!;
     window.requestAnimationFrame(() => {
       if (scrollWindow) {
-        window.scrollTo(window.scrollX, window.scrollY + scrollingSpeed * 1.5);
+        window.scrollTo(
+          window.pageXOffset,
+          window.pageYOffset + scrollingSpeed * 1.5
+        );
       } else {
         listEl.scrollTop += scrollingSpeed;
       }
@@ -360,6 +363,7 @@ class List<Value = string> extends React.Component<IProps<Value>> {
           liveText: this.props.voiceover.lifted(index + 1)
         });
         this.needle = index;
+        this.calculateOffsets();
       }
     }
     if (
