@@ -16,14 +16,14 @@ module.exports = (_baseCnig, _env, config) => ({
         use: [
           {
             loader: require.resolve('awesome-typescript-loader')
-          },
-          {
-            loader: require.resolve('react-docgen-typescript-loader')
           }
         ]
       }
     ],
     exprContextCritical: false
+  },
+  resolve: {
+    extensions: ['.ts', '.tsx', '.js']
   },
   plugins: [...config.plugins, new ForkTsCheckerWebpackPlugin()],
   node: {

@@ -5,7 +5,8 @@
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
   "files": [
-    "lib"
+    "lib",
+    "!lib/*.test.*"
   ],
   "repository": {
     "type": "git",
@@ -17,7 +18,7 @@
     "build": "rm -rf lib && tsc --outDir lib && cp flowtypes/* lib",
     "build-storybook": "build-storybook -s public && rm ./examples/*.d.ts && rm ./src/*.d.ts",
     "storybook": "start-storybook -p 9010 -s public",
-    "test": "react-scripts test"
+    "test": "jest src"
   },
   "tags": [
     "react"
@@ -42,17 +43,21 @@
     "@storybook/addons": "4.2.0-alpha.8",
     "@storybook/react": "4.2.0-alpha.8",
     "@types/jest": "^23.3.13",
-    "@types/react": "^16.7.18",
+    "@types/react": "^16.7.20",
     "@types/react-dom": "^16.0.11",
     "@types/storybook__react": "^4.0.0",
     "awesome-typescript-loader": "^5.2.1",
     "fork-ts-checker-webpack-plugin": "^0.5.2",
-    "react-docgen-typescript-loader": "^3.0.0",
-    "react-scripts": "^2.1.2",
-    "typescript": "^3.2.2"
+    "jest": "^23.6.0",
+    "ts-jest": "^23.10.5",
+    "typescript": "^3.2.4"
   },
   "peerDependencies": {
     "react": "^16.3.0-0 || ^17.0.0-0",
     "react-dom": "^16.3.0-0 || ^17.0.0-0"
+  },
+  "jest": {
+    "preset": "ts-jest",
+    "testEnvironment": "node"
   }
 }
