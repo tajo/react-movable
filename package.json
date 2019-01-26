@@ -41,6 +41,7 @@
     "@storybook/addon-options": "4.2.0-alpha.8",
     "@storybook/addons": "4.2.0-alpha.8",
     "@storybook/react": "4.2.0-alpha.8",
+    "@types/jest": "^23.3.13",
     "@types/react": "^16.7.18",
     "@types/react-dom": "^16.0.11",
     "@types/storybook__react": "^4.0.0",

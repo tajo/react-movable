@@ -42,6 +42,8 @@ export function setItemTransition(element: Element, duration: number) {
   ] = `${duration}ms`;
 }
 
+// returns the "slot" for the targetValue, aka where it should go
+// in an ordered "array", it starts with -1 index
 export function binarySearch(array: number[], targetValue: number) {
   let min = 0;
   let max = array.length - 1;

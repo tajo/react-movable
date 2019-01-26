@@ -1334,6 +1334,11 @@
     "@svgr/plugin-svgo" "^4.0.3"
     loader-utils "^1.1.0"
 
+"@types/jest@^23.3.13":
+  version "23.3.13"
+  resolved "https://registry.yarnpkg.com/@types/jest/-/jest-23.3.13.tgz#c81484b6f4ca007bb09887ed15ecb3286d58f928"
+  integrity sha512-ePl4l+7dLLmCucIwgQHAgjiepY++qcI6nb8eAwGNkB6OxmTe3Z9rQU3rSpomqu42PCCnlThZbOoxsf+qylJsLA==
+
 "@types/node@*":
   version "10.12.18"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-10.12.18.tgz#1d3ca764718915584fcd9f6344621b7672665c67"
