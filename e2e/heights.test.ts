@@ -38,10 +38,10 @@ test('dnd the first item to second position', async () => {
     '150px Item 5'
   ]);
   await untrackMouse(page);
-  //expect(await page.screenshot()).toMatchImageSnapshot();
+  expect(await page.screenshot()).toMatchImageSnapshot();
 });
 
-test.only('dnd the fifth item to fourth position', async () => {
+test('dnd the fifth item to fourth position', async () => {
   await trackMouse(page);
   await makeDnd(page.mouse, 5, 4, getPositions([0, 0, 0, 395, 493]));
   expect(await getListItems(page)).toEqual([
@@ -52,22 +52,21 @@ test.only('dnd the fifth item to fourth position', async () => {
     '70px Item 4'
   ]);
   await untrackMouse(page);
-  //expect(await page.screenshot()).toMatchImageSnapshot();
+  expect(await page.screenshot()).toMatchImageSnapshot();
 });
 
-// test('dnd 1->5, 6->2 and 3->5', async () => {
-//   await trackMouse(page);
-//   await makeDnd(page.mouse, 1, 5, POSITIONS);
-//   await makeDnd(page.mouse, 6, 2, POSITIONS);
-//   await makeDnd(page.mouse, 3, 5, POSITIONS);
-//   expect(await getListItems(page)).toEqual([
-//     'Item 2',
-//     'Item 6',
-//     'Item 4',
-//     'Item 5',
-//     'Item 3',
-//     'Item 1'
-//   ]);
-//   await untrackMouse(page);
-//   expect(await page.screenshot()).toMatchImageSnapshot();
-// });
+test('dnd 1->5, 4->2 and 3->5', async () => {
+  await trackMouse(page);
+  await makeDnd(page.mouse, 1, 5, getPositions([108, 0, 0, 0, 491]));
+  await makeDnd(page.mouse, 4, 2, getPositions([0, 228, 0, 419, 0]));
+  await makeDnd(page.mouse, 3, 5, getPositions([0, 0, 373, 0, 536]));
+  expect(await getListItems(page)).toEqual([
+    '100px Item 2',
+    '150px Item 5',
+    '70px Item 4',
+    '70px Item 1',
+    '70px Item 3'
+  ]);
+  await untrackMouse(page);
+  expect(await page.screenshot()).toMatchImageSnapshot();
+});
