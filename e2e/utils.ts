@@ -2,7 +2,9 @@ import * as puppeteer from 'puppeteer';
 
 export enum Examples {
   BASIC,
-  HEIGHTS
+  HEIGHTS,
+  SCROLLING_CONTAINER,
+  SCROLLING_WINDOW
 }
 
 export const getTestUrl = (example: Examples): string => {
@@ -12,6 +14,10 @@ export const getTestUrl = (example: Examples): string => {
       return `http://localhost:${PORT}/iframe.html?selectedKind=List&selectedStory=Basic`;
     case Examples.HEIGHTS:
       return `http://localhost:${PORT}/iframe.html?selectedKind=List&selectedStory=Varying%20heights`;
+    case Examples.SCROLLING_CONTAINER:
+      return `http://localhost:${PORT}/iframe.html?selectedKind=List&selectedStory=Scrolling%20container`;
+    case Examples.SCROLLING_WINDOW:
+      return `http://localhost:${PORT}/iframe.html?selectedKind=List&selectedStory=Scrolling%20window`;
   }
 };
 
