@@ -1,6 +1,6 @@
 const { configureToMatchImageSnapshot } = require('jest-image-snapshot');
 
-const customConfig = { threshold: 0.015 };
+const customConfig = { threshold: 0.02 };
 const toMatchImageSnapshot = configureToMatchImageSnapshot({
   customDiffConfig: customConfig
 });
