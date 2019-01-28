@@ -5,6 +5,7 @@ import {
   getListItems,
   makeDnd
 } from './utils';
+
 jest.setTimeout(10000);
 
 const POSITIONS = [
