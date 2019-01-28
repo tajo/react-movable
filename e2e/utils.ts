@@ -40,6 +40,7 @@ export const trackMouse = async (page: puppeteer.Page) => {
 
 export const untrackMouse = async (page: puppeteer.Page) => {
   await page.evaluate(hideCursor);
+  await page.waitForSelector('.mouse-helper', { hidden: true });
 };
 
 // This injects a box into the page that moves with the mouse;
@@ -125,19 +126,7 @@ const hideCursor = () => {
   const styleElement = document.createElement('style');
   styleElement.innerHTML = `
   .mouse-helper {
-    background: transparent;
-  }
-  .mouse-helper.button-1 {
-    background: transparent;
-  }
-  .mouse-helper.button-2 {
-    border-color: transparent;
-  }
-  .mouse-helper.button-4 {
-    border-color: transparent;
-  }
-  .mouse-helper.button-5 {
-    border-color: transparent;
+    display: none;
   }
   `;
   document.head.appendChild(styleElement);
