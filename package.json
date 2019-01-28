@@ -17,8 +17,8 @@
   "scripts": {
     "build": "rm -rf lib && tsc --outDir lib && cp flowtypes/* lib",
     "build-storybook": "build-storybook -s public && rm ./examples/*.d.ts && rm ./src/*.d.ts",
-    "jest:e2e": "jest e2e",
-    "jest:e2e:update": "jest e2e -u",
+    "jest:e2e": "jest --runInBand e2e",
+    "jest:e2e:update": "jest --runInBand e2e -u",
     "storybook": "start-storybook -p 9010 -s public",
     "storybook:ci": "start-storybook -p 9011 -s public --ci --quiet",
     "test": "yarn test:e2e && yarn test:unit",
