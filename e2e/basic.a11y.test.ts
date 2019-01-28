@@ -20,6 +20,7 @@ test('move the first item to second position', async () => {
     'Item 5',
     'Item 6'
   ]);
+  await page.mouse.click(1, 1);
   expect(await page.screenshot()).toMatchImageSnapshot();
 });
 
@@ -38,6 +39,7 @@ test('move the sixth item to fifth position', async () => {
     'Item 6',
     'Item 5'
   ]);
+  await page.mouse.click(1, 1);
   expect(await page.screenshot()).toMatchImageSnapshot();
 });
 
@@ -75,6 +77,7 @@ test('move 1->5, 6->2 and 3->5', async () => {
     'Item 3',
     'Item 1'
   ]);
+  await page.mouse.click(1, 1);
   expect(await page.screenshot()).toMatchImageSnapshot();
 });
 
@@ -91,5 +94,6 @@ test('cancel the move of first item to second position', async () => {
     'Item 5',
     'Item 6'
   ]);
+  await page.mouse.click(1, 1);
   expect(await page.screenshot()).toMatchImageSnapshot();
 });
