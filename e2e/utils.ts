@@ -45,6 +45,12 @@ const showCursor = () => {
   box.classList.add('mouse-helper');
   const styleElement = document.createElement('style');
   styleElement.innerHTML = `
+  li {
+    font-weight: normal;
+    font-style: normal;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+  }
   .mouse-helper {
     pointer-events: none;
     position: absolute;
