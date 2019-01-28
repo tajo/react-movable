@@ -1,5 +1,20 @@
 import * as puppeteer from 'puppeteer';
 
+export enum Examples {
+  BASIC,
+  HEIGHTS
+}
+
+export const getTestUrl = (example: Examples): string => {
+  const PORT = process.env.E2E === 'dev' ? 9010 : 9011;
+  switch (example) {
+    case Examples.BASIC:
+      return `http://localhost:${PORT}/iframe.html?selectedKind=List&selectedStory=Basic`;
+    case Examples.HEIGHTS:
+      return `http://localhost:${PORT}/iframe.html?selectedKind=List&selectedStory=Varying%20heights`;
+  }
+};
+
 export const getListItems = async (page: puppeteer.Page) => {
   const items = await page.$$('#root li');
   return await Promise.all(

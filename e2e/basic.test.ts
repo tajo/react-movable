@@ -1,4 +1,10 @@
-import { trackMouse, getListItems, makeDnd } from './utils';
+import {
+  Examples,
+  getTestUrl,
+  trackMouse,
+  getListItems,
+  makeDnd
+} from './utils';
 jest.setTimeout(10000);
 
 const POSITIONS = [
@@ -12,9 +18,7 @@ const POSITIONS = [
 
 describe('Basic example', () => {
   beforeEach(async () => {
-    await page.goto(
-      'http://localhost:9010/iframe.html?selectedKind=List&selectedStory=Basic'
-    );
+    await page.goto(getTestUrl(Examples.BASIC));
     await page.setViewport({ width: 400, height: 800 });
     await trackMouse(page);
   });
