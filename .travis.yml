@@ -1,6 +1,8 @@
 language: node_js
+os:
+  - osx
 node_js:
-  - 'node'
+  - 'lts/*'
 script:
   - yarn build
   - yarn test -- --runInBand
