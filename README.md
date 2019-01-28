@@ -1,14 +1,14 @@
 # 🔀 react-movable
 
+[![npm version](https://img.shields.io/npm/v/react-movable.svg?style=flat-square)](https://www.npmjs.com/package/react-movable)
+[![npm downloads](https://img.shields.io/npm/dm/react-movable.svg?style=flat-square)](https://www.npmjs.com/package/react-movable)
+[![Build Status](https://travis-ci.org/tajo/react-movable.svg?branch=master)](https://travis-ci.org/tajo/react-movable)
+
 ![Basic list](https://raw.githubusercontent.com/tajo/react-movable/master/assets/react-movable.gif?raw=true)
 
 [![Edit Basic react-movable](https://codesandbox.io/static/img/play-codesandbox.svg)](https://codesandbox.io/s/k1mrwyr9l3)
 
 [See all the other examples](https://react-movable.netlify.com) and [their source code](https://github.com/tajo/react-movable/tree/master/examples)!
-
-[![npm version](https://img.shields.io/npm/v/react-moveable.svg?style=flat-square)](https://www.npmjs.com/package/react-moveable)
-[![npm downloads](https://img.shields.io/npm/dm/react-moveable.svg?style=flat-square)](https://www.npmjs.com/package/react-moveable)
-[![Build Status](https://travis-ci.org/tajo/react-moveable.svg?branch=master)](https://travis-ci.org/tajo/react-moveable)
 
 ## Installation
 
