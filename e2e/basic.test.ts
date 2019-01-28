@@ -33,6 +33,7 @@ describe('Basic example', () => {
       'Item 5',
       'Item 6'
     ]);
+    expect(await page.screenshot()).toMatchImageSnapshot();
   });
 
   it('dnd the sixth item to fifth position', async () => {
@@ -45,6 +46,7 @@ describe('Basic example', () => {
       'Item 6',
       'Item 5'
     ]);
+    expect(await page.screenshot()).toMatchImageSnapshot();
   });
 
   it('dnd 1->5, 6->2 and 3->5', async () => {
@@ -59,5 +61,6 @@ describe('Basic example', () => {
       'Item 3',
       'Item 1'
     ]);
+    expect(await page.screenshot()).toMatchImageSnapshot();
   });
 });
