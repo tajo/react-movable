@@ -38,6 +38,10 @@ export const trackMouse = async (page: puppeteer.Page) => {
   await page.evaluate(showCursor);
 };
 
+export const untrackMouse = async (page: puppeteer.Page) => {
+  await page.evaluate(hideCursor);
+};
+
 // This injects a box into the page that moves with the mouse;
 // Useful for debugging
 const showCursor = () => {
@@ -87,36 +91,54 @@ const showCursor = () => {
     border-color: rgba(0,255,0,0.9);
   }
   `;
+
+  const onMouseMove = (event: MouseEvent) => {
+    box.style.left = event.pageX + 'px';
+    box.style.top = event.pageY + 'px';
+    updateButtons(event.buttons);
+  };
+
+  const onMouseDown = (event: MouseEvent) => {
+    updateButtons(event.buttons);
+    box.classList.add('button-' + event.which);
+  };
+
+  const onMouseUp = (event: MouseEvent) => {
+    updateButtons(event.buttons);
+    box.classList.remove('button-' + event.which);
+  };
+
   document.head.appendChild(styleElement);
   document.body.appendChild(box);
-  document.addEventListener(
-    'mousemove',
-    event => {
-      box.style.left = event.pageX + 'px';
-      box.style.top = event.pageY + 'px';
-      updateButtons(event.buttons);
-    },
-    true
-  );
-  document.addEventListener(
-    'mousedown',
-    event => {
-      updateButtons(event.buttons);
-      box.classList.add('button-' + event.which);
-    },
-    true
-  );
-  document.addEventListener(
-    'mouseup',
-    event => {
-      updateButtons(event.buttons);
-      box.classList.remove('button-' + event.which);
-    },
-    true
-  );
+  document.addEventListener('mousemove', onMouseMove, true);
+  document.addEventListener('mousedown', onMouseDown, true);
+  document.addEventListener('mouseup', onMouseUp, true);
   function updateButtons(buttons: any) {
     for (let i = 0; i < 5; i++)
       // @ts-ignore
       box.classList.toggle('button-' + i, buttons & (1 << i));
   }
+};
+
+// make the cursor invisble, good for visual snaps
+const hideCursor = () => {
+  const styleElement = document.createElement('style');
+  styleElement.innerHTML = `
+  .mouse-helper {
+    background: transparent;
+  }
+  .mouse-helper.button-1 {
+    background: transparent;
+  }
+  .mouse-helper.button-2 {
+    border-color: transparent;
+  }
+  .mouse-helper.button-4 {
+    border-color: transparent;
+  }
+  .mouse-helper.button-5 {
+    border-color: transparent;
+  }
+  `;
+  document.head.appendChild(styleElement);
 };
