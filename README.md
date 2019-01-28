@@ -1,4 +1,4 @@
-# 🔀 react-movable
+# react-movable
 
 [![npm version](https://img.shields.io/npm/v/react-movable.svg?style=flat-square)](https://www.npmjs.com/package/react-movable)
 [![npm downloads](https://img.shields.io/npm/dm/react-movable.svg?style=flat-square)](https://www.npmjs.com/package/react-movable)
@@ -60,6 +60,7 @@ class SuperSimple extends React.Component {
 - Optional lock of the horizontal axis when dragging
 - Typescript and Flow type definitions
 - **No dependencies, less than 4kB (gzipped)**
+- Coverage by [e2e puppeteer tests](https://github.com/tajo/react-movable/blob/master/e2e/basic.test.ts)
 
 ## Keyboard support
 
