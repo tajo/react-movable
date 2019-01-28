@@ -6,6 +6,10 @@
 
 [See all the other examples](https://react-movable.netlify.com) and [their source code](https://github.com/tajo/react-movable/tree/master/examples)!
 
+[![npm version](https://img.shields.io/npm/v/react-moveable.svg?style=flat-square)](https://www.npmjs.com/package/react-moveable)
+[![npm downloads](https://img.shields.io/npm/dm/react-moveable.svg?style=flat-square)](https://www.npmjs.com/package/react-moveable)
+[![Build Status](https://travis-ci.org/tajo/react-moveable.svg?branch=master)](https://travis-ci.org/tajo/react-moveable)
+
 ## Installation
 
 ```
