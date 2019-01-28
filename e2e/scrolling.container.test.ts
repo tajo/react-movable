@@ -16,7 +16,7 @@ test('scroll down', async () => {
   await page.mouse.up();
   const list = await page.$('#root ul');
   const scrollTop = await page.evaluate(el => el.scrollTop, list);
-  expect(scrollTop).toBeGreaterThan(100);
+  expect(scrollTop).toBeGreaterThan(0);
 });
 
 test('scroll up', async () => {
