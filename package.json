@@ -17,8 +17,13 @@
   "scripts": {
     "build": "rm -rf lib && tsc --outDir lib && cp flowtypes/* lib",
     "build-storybook": "build-storybook -s public && rm ./examples/*.d.ts && rm ./src/*.d.ts",
+    "jest:e2e": "jest e2e",
     "storybook": "start-storybook -p 9010 -s public",
-    "test": "jest src"
+    "storybook:ci": "start-storybook -p 9011 -s public --ci",
+    "test": "yarn test:e2e && yarn test:unit",
+    "test:e2e": "start-server-and-test storybook:ci http-get://localhost:9011 jest:e2e",
+    "test:e2e:dev": "E2E=dev yarn jest:e2e",
+    "test:unit": "jest src"
   },
   "tags": [
     "react"
@@ -42,13 +47,20 @@
     "@storybook/addon-options": "4.2.0-alpha.8",
     "@storybook/addons": "4.2.0-alpha.8",
     "@storybook/react": "4.2.0-alpha.8",
+    "@types/expect-puppeteer": "^3.3.0",
     "@types/jest": "^23.3.13",
+    "@types/jest-environment-puppeteer": "^2.2.1",
+    "@types/node": "^10.12.18",
+    "@types/puppeteer": "^1.11.2",
     "@types/react": "^16.7.20",
     "@types/react-dom": "^16.0.11",
     "@types/storybook__react": "^4.0.0",
     "awesome-typescript-loader": "^5.2.1",
     "fork-ts-checker-webpack-plugin": "^0.5.2",
     "jest": "^23.6.0",
+    "jest-puppeteer": "^3.9.0",
+    "puppeteer": "^1.11.0",
+    "start-server-and-test": "^1.7.11",
     "ts-jest": "^23.10.5",
     "typescript": "^3.2.4"
   },
@@ -57,7 +69,22 @@
     "react-dom": "^16.3.0-0 || ^17.0.0-0"
   },
   "jest": {
-    "preset": "ts-jest",
-    "testEnvironment": "node"
+    "roots": [
+      "<rootDir>/src/",
+      "<rootDir>/e2e/"
+    ],
+    "transform": {
+      "^.+\\.tsx?$": "ts-jest"
+    },
+    "testRegex": "(/__tests__/.*|(\\.|/)(test|spec))\\.[jt]sx?$",
+    "moduleFileExtensions": [
+      "ts",
+      "tsx",
+      "js",
+      "jsx",
+      "json",
+      "node"
+    ],
+    "preset": "jest-puppeteer"
   }
 }
