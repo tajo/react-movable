@@ -28,5 +28,5 @@ test('scroll up', async () => {
   await page.waitFor(200);
   await page.mouse.up();
   const pageYOffset = await page.evaluate(() => window.pageYOffset);
-  expect(pageYOffset).toBe(0);
+  expect(pageYOffset).toBeLessThan(300);
 });

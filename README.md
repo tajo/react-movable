@@ -60,7 +60,7 @@ class SuperSimple extends React.Component {
 - Optional lock of the horizontal axis when dragging
 - Typescript and Flow type definitions
 - **No dependencies, less than 4kB (gzipped)**
-- Coverage by [e2e puppeteer tests](https://github.com/tajo/react-movable/blob/master/e2e/basic.test.ts)
+- Coverage by [e2e puppeteer tests](#end-to-end-testing)
 
 ## Keyboard support
 
@@ -216,6 +216,33 @@ If you need the features above, please give a try to `react-beautiful-dnd`. It's
 - Built-in virtualization / windowing.
 
 Other feature requests will be thoroughly vetted. Again, the primary goal is to keep the size down while supporting main use-cases!
+
+## End to end testing
+
+**This library is tightly coupled to many DOM APIs**. It would be very hard to write unit tests that would not involve a lot of mocking. Or we could re-architect the library to better abstract all DOM interfaces but that would mean more code and bigger footprint.
+
+Instead of that, `react-movable` is thoroughly tested by end to end tests powered by [puppeteer](https://github.com/GoogleChrome/puppeteer). It tests all user interactions:
+
+- [drag and drop](https://github.com/tajo/react-movable/blob/master/e2e/basic.test.ts) of items by mouse (same and different heights)
+- [keyboard controls](https://github.com/tajo/react-movable/blob/master/e2e/basic.a11y.test.ts) (moving items around)
+- [auto scrolling for containers](https://github.com/tajo/react-movable/blob/master/e2e/scrolling.container.test.ts)
+- [auto scrolling for the window](https://github.com/tajo/react-movable/blob/master/e2e/scrolling.window.test.ts)
+- [visual regression testing](https://github.com/americanexpress/jest-image-snapshot)
+
+All tests are automatically ran in Travis CI with headless chromium. This way, the public API is well tested, including pixel-perfect positioning. Also, the tests are pretty fast, reliable and very descriptive.
+
+Do you want to run them in the `dev` mode (slows down operations, opens the browser)?
+
+```bash
+yarn storybook #start the storybook server
+yarn test:e2e:dev #run the e2e tests
+```
+
+`CI` mode (storybook started on the background, quick, headless)
+
+```bash
+yarn test:e2e
+```
 
 ## Browser support
 
