@@ -20,7 +20,7 @@
     "jest:e2e": "jest e2e",
     "jest:e2e:update": "jest e2e -u",
     "storybook": "start-storybook -p 9010 -s public",
-    "storybook:ci": "start-storybook -p 9011 -s public --ci",
+    "storybook:ci": "start-storybook -p 9011 -s public --ci --quiet",
     "test": "yarn test:e2e && yarn test:unit",
     "test:e2e": "start-server-and-test storybook:ci http-get://localhost:9011 jest:e2e",
     "test:e2e:dev": "E2E=dev yarn jest:e2e",
