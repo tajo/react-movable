@@ -3,6 +3,7 @@ import {
   getTestUrl,
   trackMouse,
   untrackMouse,
+  addFontStyles,
   getListItems,
   makeDnd
 } from './utils';
@@ -21,6 +22,7 @@ const POSITIONS = [
 beforeEach(async () => {
   await page.goto(getTestUrl(Examples.BASIC));
   await page.setViewport({ width: 400, height: 800 });
+  await addFontStyles(page);
 });
 
 test('dnd the first item to second position', async () => {

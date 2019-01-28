@@ -43,6 +43,10 @@ export const untrackMouse = async (page: puppeteer.Page) => {
   await page.waitForSelector('.mouse-helper', { hidden: true });
 };
 
+export const addFontStyles = async (page: puppeteer.Page) => {
+  await page.evaluate(fontStyles);
+};
+
 // This injects a box into the page that moves with the mouse;
 // Useful for debugging
 const showCursor = () => {
@@ -50,12 +54,6 @@ const showCursor = () => {
   box.classList.add('mouse-helper');
   const styleElement = document.createElement('style');
   styleElement.innerHTML = `
-  li {
-    font-weight: normal;
-    font-style: normal;
-    text-rendering: optimizeLegibility;
-    -webkit-font-smoothing: antialiased;
-  }
   .mouse-helper {
     pointer-events: none;
     position: absolute;
@@ -127,6 +125,21 @@ const hideCursor = () => {
   styleElement.innerHTML = `
   .mouse-helper {
     display: none;
+  }
+  `;
+  document.head.appendChild(styleElement);
+};
+
+// This injects a box into the page that moves with the mouse;
+// Useful for debugging
+const fontStyles = () => {
+  const styleElement = document.createElement('style');
+  styleElement.innerHTML = `
+  li {
+    font-weight: normal;
+    font-style: normal;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
   }
   `;
   document.head.appendChild(styleElement);
