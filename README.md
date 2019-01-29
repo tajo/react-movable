@@ -252,6 +252,12 @@ yarn test:e2e
 - **Edge** (latest, windows)
 - **MSIE 11** (windows)
 
+## Users
+
+- [Uber Base UI](https://baseui.design/components/dnd-list/)
+
+> If you are using react-movable, please open a PR and add yourself to this list!
+
 ## Contributing
 
 This is how you can spin up the dev environment:
