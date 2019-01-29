@@ -136,7 +136,9 @@ class List<Value = string> extends React.Component<IProps<Value>> {
 
   onTouchStart = (e: React.TouchEvent) => {
     e.preventDefault();
-    document.addEventListener('touchmove', this.schdOnTouchMove);
+    document.addEventListener('touchmove', this.schdOnTouchMove, {
+      passive: false
+    });
     document.addEventListener('touchend', this.schdOnEnd);
     document.addEventListener('touchcancel', this.schdOnEnd);
     const index = this.getTargetIndex(e);
