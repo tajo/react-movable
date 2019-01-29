@@ -63,3 +63,20 @@ export function binarySearch(array: number[], targetValue: number) {
   }
   return -1;
 }
+
+// adapted from https://github.com/alexreardon/raf-schd
+export const schd = (fn: Function) => {
+  let lastArgs: any[] = [];
+  let frameId: number | null = null;
+  const wrapperFn = (...args: any[]) => {
+    lastArgs = args;
+    if (frameId) {
+      return;
+    }
+    frameId = requestAnimationFrame(() => {
+      frameId = null;
+      fn(...lastArgs);
+    });
+  };
+  return wrapperFn;
+};

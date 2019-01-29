@@ -4,7 +4,8 @@ import {
   getTranslateOffset,
   transformItem,
   setItemTransition,
-  binarySearch
+  binarySearch,
+  schd
 } from './utils';
 import { IItemProps, IProps, TEvent } from './types';
 
@@ -33,6 +34,16 @@ class List<Value = string> extends React.Component<IProps<Value>> {
     scrollingSpeed: 0,
     scrollWindow: false
   };
+  schdOnMouseMove: (e: MouseEvent) => void;
+  schdOnTouchMove: (e: TouchEvent) => void;
+  schdOnEnd: (e: Event) => void;
+
+  constructor(props: IProps<Value>) {
+    super(props);
+    this.schdOnMouseMove = schd(this.onMouseMove);
+    this.schdOnTouchMove = schd(this.onTouchMove);
+    this.schdOnEnd = schd(this.onEnd);
+  }
 
   componentDidMount() {
     this.calculateOffsets();
@@ -111,8 +122,8 @@ class List<Value = string> extends React.Component<IProps<Value>> {
   onMouseDown = (e: React.MouseEvent) => {
     if (e.button !== 0) return;
     e.preventDefault();
-    document.addEventListener('mousemove', this.onMouseMove);
-    document.addEventListener('mouseup', this.onEnd);
+    document.addEventListener('mousemove', this.schdOnMouseMove);
+    document.addEventListener('mouseup', this.schdOnEnd);
     const index = this.getTargetIndex(e);
     if (index === -1) return;
     this.onStart(
@@ -125,9 +136,9 @@ class List<Value = string> extends React.Component<IProps<Value>> {
 
   onTouchStart = (e: React.TouchEvent) => {
     e.preventDefault();
-    document.addEventListener('touchmove', this.onTouchMove);
-    document.addEventListener('touchend', this.onEnd);
-    document.addEventListener('touchcancel', this.onEnd);
+    document.addEventListener('touchmove', this.schdOnTouchMove);
+    document.addEventListener('touchend', this.schdOnEnd);
+    document.addEventListener('touchcancel', this.schdOnEnd);
     const index = this.getTargetIndex(e);
     if (index === -1) return;
     this.onStart(
@@ -307,11 +318,11 @@ class List<Value = string> extends React.Component<IProps<Value>> {
 
   onEnd = (e: Event) => {
     e.preventDefault();
-    document.removeEventListener('mousemove', this.onMouseMove);
-    document.removeEventListener('touchmove', this.onTouchMove);
-    document.removeEventListener('mouseup', this.onEnd);
-    document.removeEventListener('touchup', this.onEnd);
-    document.removeEventListener('touchcancel', this.onEnd);
+    document.removeEventListener('mousemove', this.schdOnMouseMove);
+    document.removeEventListener('touchmove', this.schdOnTouchMove);
+    document.removeEventListener('mouseup', this.schdOnEnd);
+    document.removeEventListener('touchup', this.schdOnEnd);
+    document.removeEventListener('touchcancel', this.schdOnEnd);
     if (this.afterIndex > -1 && this.state.itemDragged !== this.afterIndex) {
       this.props.onChange({
         oldIndex: this.state.itemDragged,

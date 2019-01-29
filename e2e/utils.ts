@@ -38,6 +38,11 @@ export const makeDnd = async (
   await mouse.down();
   await mouse.move(positions[to - 1][0], positions[to - 1][1]);
   await mouse.up();
+  // make sure that originally dragged item is visible (rendered)
+  // in a new place
+  await page.waitForSelector(`#root li:nth-child(${from})`, {
+    visible: true
+  });
 };
 
 export const trackMouse = async (page: puppeteer.Page) => {
