@@ -1,6 +1,5 @@
 import * as React from 'react';
 import { List, arrayMove } from '../src/index';
-import { REPLCommand } from 'repl';
 
 interface IAppStateItems {
   items: {
