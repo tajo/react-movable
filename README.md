@@ -3,6 +3,7 @@
 [![npm version](https://img.shields.io/npm/v/react-movable.svg?style=flat-square)](https://www.npmjs.com/package/react-movable)
 [![npm downloads](https://img.shields.io/npm/dm/react-movable.svg?style=flat-square)](https://www.npmjs.com/package/react-movable)
 [![Build Status](https://travis-ci.org/tajo/react-movable.svg?branch=master)](https://travis-ci.org/tajo/react-movable)
+[![size](https://img.shields.io/bundlephobia/minzip/react-movable.svg?style=flat)](https://bundlephobia.com/result?p=react-movable)
 
 ![Basic list](https://raw.githubusercontent.com/tajo/react-movable/master/assets/react-movable.gif?raw=true)
 
@@ -13,7 +14,7 @@
 ## Installation
 
 ```
-yarn add react react-dom react-movable
+yarn add react-movable
 ```
 
 ## Usage
