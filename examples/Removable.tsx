@@ -93,9 +93,10 @@ class Removable extends React.Component<{}, { items: string[] }> {
                   onClick={() => {
                     console.log('clicked');
                     this.setState(prevProps => ({
-                      items: index
-                        ? arrayRemove(prevProps.items, index)
-                        : prevProps.items
+                      items:
+                        typeof index !== 'undefined'
+                          ? arrayRemove(prevProps.items, index)
+                          : prevProps.items
                     }));
                   }}
                   onMouseDown={e => e.stopPropagation()}
