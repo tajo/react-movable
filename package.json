@@ -5,8 +5,7 @@
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
   "files": [
-    "lib",
-    "!lib/*.test.*"
+    "lib"
   ],
   "repository": {
     "type": "git",
@@ -15,7 +14,7 @@
   "author": "Vojtech Miksu <vojtech@miksu.cz>",
   "license": "MIT",
   "scripts": {
-    "build": "rm -rf lib && tsc --outDir lib && cp flowtypes/* lib",
+    "build": "rm -rf lib && tsc --outDir lib && cp flowtypes/* lib && rm lib/*.test.*",
     "build-storybook": "build-storybook -s public && rm ./examples/*.d.ts && rm ./src/*.d.ts",
     "jest:e2e": "jest --runInBand e2e",
     "jest:e2e:update": "jest --runInBand -u e2e",

@@ -1,3 +1,6 @@
+// @flow
+import * as React from 'react';
+
 export interface IVoiceover {
   item: (position: number) => string;
   lifted: (position: number) => string;
@@ -5,15 +8,16 @@ export interface IVoiceover {
   moved: (position: number, up: boolean) => string;
   canceled: (position: number) => string;
 }
-declare interface IItemProps {
-  key?: number;
-  tabIndex?: number;
-  onKeyDown?: (e: React.KeyboardEvent) => void;
-  onMouseDown?: (e: React.MouseEvent) => void;
-  onTouchStart?: (e: React.TouchEvent) => void;
-  onWheel?: (e: React.WheelEvent) => void;
-  style?: React.CSSProperties;
-  ref?: React.RefObject<any>;
+declare type IItemProps = {
+  key?: number,
+  tabIndex?: number,
+  'aria-roledescription'?: string,
+  onKeyDown?: (e: SyntheticEvent<*>) => void,
+  onMouseDown?: (e: SyntheticEvent<*>) => void,
+  onTouchStart?: (e: SyntheticEvent<*>) => void,
+  onWheel?: (e: SyntheticEvent<*>) => void,
+  style?: CSSStyleDeclaration,
+  ref?: React.Ref<any>
 }
 declare interface IListProps<Value> {
   renderItem: (params: {
@@ -22,22 +26,21 @@ declare interface IListProps<Value> {
     index?: number,
     isDragged: boolean,
     isSelected: boolean
-  }) => React.ReactNode;
+  }) => React.Node;
   renderList: (props: {
     children: any,
     isDragged: boolean,
     props: {
-      ref: React.RefObject<any>
+      ref: React.Ref<any>
     }
-  }) => React.ReactNode;
+  }) => React.Node;
   values: Value[];
   onChange: (meta: {
     oldIndex: number,
     newIndex: number
   }) => void;
-  transitionDuration: number;
-  lockVertically: boolean;
-  voiceover: IVoiceover;
+  transitionDuration?: number;
+  lockVertically?: boolean;
+  voiceover?: IVoiceover;
 }
-declare type TEvent = React.MouseEvent | React.TouchEvent | React.KeyboardEvent;
-declare module.exports: typeof List;
+declare export default class List extends React$Component<IListProps<*>> {}
