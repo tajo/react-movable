@@ -143,7 +143,6 @@ class List<Value = string> extends React.Component<IProps<Value>> {
       return;
     }
     if (checkIfInteractive(e.target as HTMLElement, listItemTouched)) {
-      console.log('interactive interuption');
       return;
     }
     e.preventDefault();

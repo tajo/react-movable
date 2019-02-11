@@ -98,7 +98,9 @@ export function checkIfInteractive(target: Element, rootElement: Element) {
     'a'
   ];
   while (target !== rootElement) {
-    console.log(target);
+    if (target.getAttribute('data-movable-handle')) {
+      return false;
+    }
     if (DISABLED_ELEMENTS.includes(target.tagName.toLowerCase())) {
       return true;
     }
