@@ -13,12 +13,10 @@ declare type IItemProps = {
   tabIndex?: number,
   'aria-roledescription'?: string,
   onKeyDown?: (e: SyntheticEvent<*>) => void,
-  onMouseDown?: (e: SyntheticEvent<*>) => void,
-  onTouchStart?: (e: SyntheticEvent<*>) => void,
   onWheel?: (e: SyntheticEvent<*>) => void,
   style?: CSSStyleDeclaration,
   ref?: React.Ref<any>
-}
+};
 declare interface IListProps<Value> {
   renderItem: (params: {
     value: Value,
