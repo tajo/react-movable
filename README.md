@@ -104,8 +104,6 @@ renderItem: (params: {
     tabIndex?: number;
     'aria-roledescription'?: string;
     onKeyDown?: (e: React.KeyboardEvent) => void;
-    onMouseDown?: (e: React.MouseEvent) => void;
-    onTouchStart?: (e: React.TouchEvent) => void;
     onWheel?: (e: React.WheelEvent) => void;
     style?: React.CSSProperties;
     ref?: React.RefObject<any>;
