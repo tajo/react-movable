@@ -20,6 +20,13 @@ export function getTranslateOffset(element: Element) {
   );
 }
 
+export function isTouchEvent(event: TouchEvent & MouseEvent) {
+  return (
+    (event.touches && event.touches.length) ||
+    (event.changedTouches && event.changedTouches.length)
+  );
+}
+
 export function transformItem(
   element: Element,
   offsetY: number | null = 0,
@@ -80,3 +87,26 @@ export const schd = (fn: Function) => {
   };
   return wrapperFn;
 };
+
+export function checkIfInteractive(target: Element, rootElement: Element) {
+  const DISABLED_ELEMENTS = [
+    'input',
+    'textarea',
+    'select',
+    'option',
+    'button',
+    'a'
+  ];
+  while (target !== rootElement) {
+    console.log(target);
+    if (DISABLED_ELEMENTS.includes(target.tagName.toLowerCase())) {
+      return true;
+    }
+    const role = target.getAttribute('role');
+    if (role === 'button' || role === 'link') {
+      return true;
+    }
+    if (target.tagName) target = target.parentElement!;
+  }
+  return false;
+}

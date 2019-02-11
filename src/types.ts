@@ -11,32 +11,26 @@ export interface IItemProps {
   tabIndex?: number;
   'aria-roledescription'?: string;
   onKeyDown?: (e: React.KeyboardEvent) => void;
-  onMouseDown?: (e: React.MouseEvent) => void;
-  onTouchStart?: (e: React.TouchEvent) => void;
   onWheel?: (e: React.WheelEvent) => void;
   style?: React.CSSProperties;
   ref?: React.RefObject<any>;
 }
 
 export interface IProps<Value> {
-  renderItem: (
-    params: {
-      value: Value;
-      props: IItemProps;
-      index?: number;
-      isDragged: boolean;
-      isSelected: boolean;
-    }
-  ) => React.ReactNode;
-  renderList: (
+  renderItem: (params: {
+    value: Value;
+    props: IItemProps;
+    index?: number;
+    isDragged: boolean;
+    isSelected: boolean;
+  }) => React.ReactNode;
+  renderList: (props: {
+    children: React.ReactNode;
+    isDragged: boolean;
     props: {
-      children: React.ReactNode;
-      isDragged: boolean;
-      props: {
-        ref: React.RefObject<any>;
-      };
-    }
-  ) => React.ReactNode;
+      ref: React.RefObject<any>;
+    };
+  }) => React.ReactNode;
   values: Value[];
   onChange: (meta: { oldIndex: number; newIndex: number }) => void;
   transitionDuration: number;

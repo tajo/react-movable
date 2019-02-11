@@ -5,7 +5,9 @@ import {
   transformItem,
   setItemTransition,
   binarySearch,
-  schd
+  schd,
+  isTouchEvent,
+  checkIfInteractive
 } from './utils';
 import { IItemProps, IProps, TEvent } from './types';
 
@@ -47,6 +49,11 @@ class List<Value = string> extends React.Component<IProps<Value>> {
 
   componentDidMount() {
     this.calculateOffsets();
+    document.addEventListener('touchstart', this.onMouseOrTouchStart as any, {
+      passive: false,
+      capture: false
+    });
+    document.addEventListener('mousedown', this.onMouseOrTouchStart as any);
   }
 
   componentDidUpdate(_prevProps: any, prevState: { scrollingSpeed: number }) {
@@ -56,6 +63,11 @@ class List<Value = string> extends React.Component<IProps<Value>> {
     ) {
       this.doScrolling();
     }
+  }
+
+  componentWillUnmount() {
+    document.removeEventListener('touchstart', this.onMouseOrTouchStart as any);
+    document.removeEventListener('mousedown', this.onMouseOrTouchStart as any);
   }
 
   doScrolling = () => {
@@ -114,39 +126,40 @@ class List<Value = string> extends React.Component<IProps<Value>> {
     );
   };
 
-  getTargetIndex = (e: TEvent) =>
-    this.getChildren().findIndex(
-      child => child === e.target || child.contains(e.currentTarget)
-    );
-
-  onMouseDown = (e: React.MouseEvent) => {
-    if (e.button !== 0) return;
-    e.preventDefault();
-    document.addEventListener('mousemove', this.schdOnMouseMove);
-    document.addEventListener('mouseup', this.schdOnEnd);
-    const index = this.getTargetIndex(e);
-    if (index === -1) return;
-    this.onStart(
-      this.getChildren()[index] as HTMLElement,
-      e.clientX,
-      e.clientY,
-      index
+  getTargetIndex = (e: TEvent) => {
+    return this.getChildren().findIndex(
+      child => child === e.target || child.contains(e.target as Node)
     );
   };
 
-  onTouchStart = (e: React.TouchEvent) => {
-    e.preventDefault();
-    document.addEventListener('touchmove', this.schdOnTouchMove, {
-      passive: false
-    });
-    document.addEventListener('touchend', this.schdOnEnd);
-    document.addEventListener('touchcancel', this.schdOnEnd);
-    const index = this.getTargetIndex(e);
+  onMouseOrTouchStart = (e: MouseEvent & TouchEvent) => {
+    const isTouch = isTouchEvent(e);
+    if (!isTouch && e.button !== 0) return;
+    const index = this.getTargetIndex(e as any);
     if (index === -1) return;
+    const listItemTouched = this.getChildren()[index];
+    const handle = listItemTouched.querySelector('[data-movable-handle]');
+    if (handle && !handle.contains(e.target as any)) {
+      return;
+    }
+    if (checkIfInteractive(e.target as HTMLElement, listItemTouched)) {
+      console.log('interactive interuption');
+      return;
+    }
+    e.preventDefault();
+    if (isTouch) {
+      const opts = { passive: false };
+      document.addEventListener('touchend', this.schdOnEnd, opts);
+      document.addEventListener('touchmove', this.schdOnTouchMove, opts);
+      document.addEventListener('touchcancel', this.schdOnEnd, opts);
+    } else {
+      document.addEventListener('mousemove', this.schdOnMouseMove);
+      document.addEventListener('mouseup', this.schdOnEnd);
+    }
     this.onStart(
-      this.getChildren()[index] as HTMLElement,
-      e.touches[0].clientX,
-      e.touches[0].clientY,
+      listItemTouched as HTMLElement,
+      isTouch ? e.touches[0].clientX : e.clientX,
+      isTouch ? e.touches[0].clientY : e.clientY,
       index
     );
   };
@@ -185,12 +198,12 @@ class List<Value = string> extends React.Component<IProps<Value>> {
   };
 
   onMouseMove = (e: MouseEvent) => {
-    e.preventDefault();
+    e.cancelable && e.preventDefault();
     this.onMove(e.clientX, e.clientY);
   };
 
   onTouchMove = (e: TouchEvent) => {
-    e.preventDefault();
+    e.cancelable && e.preventDefault();
     this.onMove(e.touches[0].clientX, e.touches[0].clientY);
   };
 
@@ -319,7 +332,7 @@ class List<Value = string> extends React.Component<IProps<Value>> {
   };
 
   onEnd = (e: Event) => {
-    e.preventDefault();
+    e.cancelable && e.preventDefault();
     document.removeEventListener('mousemove', this.schdOnMouseMove);
     document.removeEventListener('touchmove', this.schdOnTouchMove);
     document.removeEventListener('mouseup', this.schdOnEnd);
@@ -452,8 +465,6 @@ class List<Value = string> extends React.Component<IProps<Value>> {
               tabIndex: 0,
               'aria-roledescription': this.props.voiceover.item(index + 1),
               onKeyDown: this.onKeyDown,
-              onMouseDown: this.onMouseDown,
-              onTouchStart: this.onTouchStart,
               style: {
                 ...baseStyle,
                 visibility: isHidden ? 'hidden' : undefined,

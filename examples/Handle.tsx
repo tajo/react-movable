@@ -66,11 +66,9 @@ class Handle extends React.Component<{}, { items: string[] }> {
               {children}
             </ul>
           )}
-          renderItem={({ value, props, index, isDragged, isSelected }) => (
+          renderItem={({ value, props, isDragged, isSelected }) => (
             <li
               {...props}
-              onMouseDown={undefined}
-              onTouchStart={undefined}
               style={{
                 ...props.style,
                 padding: '1.5em',
@@ -91,14 +89,18 @@ class Handle extends React.Component<{}, { items: string[] }> {
                   alignItems: 'center'
                 }}
               >
+                {/* 
+                  Mark any node with the data-movable-handle attribute if you wish
+                  to use is it as a DnD handle. The rest of renderItem will be then
+                  ignored and not start the drag and drop. 
+                */}
                 <button
+                  data-movable-handle
                   style={{
                     ...buttonStyles,
                     cursor: isDragged ? 'grabbing' : 'grab',
                     marginRight: '3em'
                   }}
-                  onMouseDown={props.onMouseDown}
-                  onTouchStart={props.onTouchStart}
                   tabIndex={-1}
                 >
                   <HandleIcon />

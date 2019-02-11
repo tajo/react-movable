@@ -91,7 +91,6 @@ class Removable extends React.Component<{}, { items: string[] }> {
                 <div>{value}</div>{' '}
                 <button
                   onClick={() => {
-                    console.log('clicked');
                     this.setState(prevProps => ({
                       items:
                         typeof index !== 'undefined'
@@ -99,8 +98,6 @@ class Removable extends React.Component<{}, { items: string[] }> {
                           : prevProps.items
                     }));
                   }}
-                  onMouseDown={e => e.stopPropagation()}
-                  onTouchStart={e => e.stopPropagation()}
                   style={buttonStyles}
                 >
                   <RemovableIcon />
