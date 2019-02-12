@@ -36,7 +36,7 @@ declare interface IListProps<Value> {
   onChange: (meta: {
     oldIndex: number,
     newIndex: number
-  }) => void;
+  }) => mixed;
   transitionDuration?: number;
   lockVertically?: boolean;
   voiceover?: IVoiceover;
