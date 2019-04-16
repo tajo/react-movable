@@ -492,6 +492,7 @@ class List<Value = string> extends React.Component<IProps<Value>> {
                 style: ghostStyle,
                 onWheel: this.onWheel
               },
+              index: this.state.itemDragged,
               isDragged: true,
               isSelected: false
             }),
