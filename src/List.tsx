@@ -136,7 +136,12 @@ class List<Value = string> extends React.Component<IProps<Value>> {
     const isTouch = isTouchEvent(e);
     if (!isTouch && e.button !== 0) return;
     const index = this.getTargetIndex(e as any);
-    if (index === -1) return;
+    if (
+      index === -1 ||
+      // @ts-ignore
+      (this.props.values[index] && this.props.values[index].disabled)
+    )
+      return;
     const listItemTouched = this.getChildren()[index];
     const handle = listItemTouched.querySelector('[data-movable-handle]');
     if (handle && !handle.contains(e.target as any)) {
@@ -459,9 +464,12 @@ class List<Value = string> extends React.Component<IProps<Value>> {
           children: this.props.values.map((value, index) => {
             const isHidden = index === this.state.itemDragged;
             const isSelected = index === this.state.selectedItem;
+            const isDisabled =
+              // @ts-ignore
+              this.props.values[index] && this.props.values[index].disabled;
             const props: IItemProps = {
               key: index,
-              tabIndex: 0,
+              tabIndex: isDisabled ? -1 : 0,
               'aria-roledescription': this.props.voiceover.item(index + 1),
               onKeyDown: this.onKeyDown,
               style: {
