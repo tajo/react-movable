@@ -2,6 +2,7 @@ import * as React from 'react';
 import { storiesOf } from '@storybook/react';
 import Basic from '../examples/Basic';
 import Table from '../examples/Table';
+import TableAuto from '../examples/TableAuto';
 import SuperSimple from '../examples/SuperSimple';
 import Removable from '../examples/Removable';
 import Handle from '../examples/Handle';
@@ -13,7 +14,8 @@ import ScrollingContainer from '../examples/ScrollingContainer';
 
 storiesOf('List', module)
   .add('Basic', () => <Basic />)
-  .add('Table', () => <Table />)
+  .add('Table Fixed Cell Widths', () => <Table />)
+  .add('Table Auto Cell Widths', () => <TableAuto />)
   .add('Super simple', () => <SuperSimple />)
   .add('Removable', () => <Removable />)
   .add('Handle', () => <Handle />)

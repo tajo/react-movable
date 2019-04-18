@@ -146,6 +146,11 @@ class List<Value = string> extends React.Component<IProps<Value>> {
       return;
     }
     e.preventDefault();
+    this.props.beforeDrag &&
+      this.props.beforeDrag({
+        elements: this.getChildren(),
+        index
+      });
     if (isTouch) {
       const opts = { passive: false };
       document.addEventListener('touchend', this.schdOnEnd, opts);

@@ -17,6 +17,7 @@ export interface IItemProps {
 }
 
 export interface IProps<Value> {
+  beforeDrag?: (params: { elements: Element[]; index: number }) => void;
   renderItem: (params: {
     value: Value;
     props: IItemProps;
