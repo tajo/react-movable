@@ -6,6 +6,7 @@ import TableAuto from '../examples/TableAuto';
 import SuperSimple from '../examples/SuperSimple';
 import Removable from '../examples/Removable';
 import Handle from '../examples/Handle';
+import Disabled from '../examples/Disabled';
 import NoAnimations from '../examples/NoAnimations';
 import LockVertically from '../examples/LockVertically';
 import VaryingHeights from '../examples/VaryingHeights';
@@ -19,6 +20,7 @@ storiesOf('List', module)
   .add('Super simple', () => <SuperSimple />)
   .add('Removable', () => <Removable />)
   .add('Handle', () => <Handle />)
+  .add('Disabled', () => <Disabled />)
   .add('No animations', () => <NoAnimations />)
   .add('Lock vertically', () => <LockVertically />)
   .add('Varying heights', () => <VaryingHeights />)
