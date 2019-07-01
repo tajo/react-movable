@@ -37,6 +37,10 @@ declare interface IListProps<Value> {
     oldIndex: number,
     newIndex: number
   }) => mixed;
+  beforeDrag?: (params: {
+    elements: HTMLElement[],
+    index: number
+  }) => mixed;
   transitionDuration?: number;
   lockVertically?: boolean;
   voiceover?: IVoiceover;
