@@ -20,7 +20,6 @@ test('dnd the second item out the bounds to be removed', async () => {
   await page.mouse.move(517, 275);
   await page.mouse.down();
   await page.mouse.move(828, 222);
-  expect(await page.screenshot()).toMatchImageSnapshot();
   await page.mouse.up();
   // make sure that originally dragged item is visible (rendered)
   // in a new place
@@ -35,5 +34,4 @@ test('dnd the second item out the bounds to be removed', async () => {
     'Item 6'
   ]);
   await untrackMouse(page);
-  expect(await page.screenshot()).toMatchImageSnapshot();
 });

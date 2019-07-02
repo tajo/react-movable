@@ -23,7 +23,8 @@ declare interface IListProps<Value> {
     props: IItemProps,
     index?: number,
     isDragged: boolean,
-    isSelected: boolean
+    isSelected: boolean,
+    isOutOfBounds: boolean
   }) => React.Node;
   renderList: (props: {
     children: any,
@@ -35,13 +36,15 @@ declare interface IListProps<Value> {
   values: Value[];
   onChange: (meta: {
     oldIndex: number,
-    newIndex: number
+    newIndex: number,
+    targetRect: ClientRect
   }) => mixed;
   beforeDrag?: (params: {
     elements: HTMLElement[],
     index: number
   }) => mixed;
   transitionDuration?: number;
+  removableByMove?: boolean;
   lockVertically?: boolean;
   voiceover?: IVoiceover;
 }
