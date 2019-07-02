@@ -99,6 +99,7 @@ renderItem: (params: {
   index?: number;
   isDragged: boolean;
   isSelected: boolean;
+  isOutOfBounds: boolean;
   props: {
     key?: number;
     tabIndex?: number;
@@ -117,6 +118,7 @@ renderItem: (params: {
 - `index` - the item index (order)
 - `isDragged` - `true` if the item is dragged, great for styling purposes
 - `isSelected` - `true` if the item is lifted with the `space`
+- `isOutOfBounds` - `true` if the item is dragged far left or right
 - `props` - it has multiple props that you need to spread over your item element
 
 ### values
@@ -130,13 +132,14 @@ An array of values. The value can be a string or any more complex object. The le
 ### onChange
 
 ```ts
-onChange: (meta: { oldIndex: number; newIndex: number }) => void
+onChange: (meta: { oldIndex: number; newIndex: number, targetRect: ClientRect }) => void
 ```
 
 Called when the item is dropped to a new location:
 
 - `oldIndex` - the initial position of the element (0 indexed)
-- `newIndex` - the new position of the element (0 indexed)
+- `newIndex` - the new position of the element (0 indexed), -1 when `removableByMove` is set and item dropped out of bounds
+- `targetRect` - [getBoundingClientRect](https://developer.mozilla.org/en-US/docs/Web/API/Element/getBoundingClientRect) of dropped item
 
 The List component is `stateless` and `controlled` so you need to implement this function to change the order of input `values`. Check the initial example.
 
@@ -147,6 +150,14 @@ beforeDrag?: (params: { elements: Element[]; index: number }) => void;
 ```
 
 Called when a valid drag is initiated. It provides a direct access to all list DOM elements and the index of dragged item. This can be useful when you need to do some upfront measurements like when building a [table with variable column widths](https://react-movable.netlify.com/?selectedKind=List&selectedStory=Table%20Auto%20Cell%20Widths).
+
+### removableByMove
+
+```ts
+removableByMove: boolean;
+```
+
+Default is `false`. When set to `true` and an item is dragged far left or far right (out of bounds), the original gap disappears (animated) and following item drop will cause `onChange` being called with `newIndex = -1`. You can use that to remove the item from your `values` state. [Example](https://react-movable.netlify.com/?selectedKind=List&selectedStory=Removable%20by%20move).
 
 ### transitionDuration
 

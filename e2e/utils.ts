@@ -4,7 +4,8 @@ export enum Examples {
   BASIC,
   HEIGHTS,
   SCROLLING_CONTAINER,
-  SCROLLING_WINDOW
+  SCROLLING_WINDOW,
+  REMOVABLE
 }
 
 export const getTestUrl = (example: Examples): string => {
@@ -18,6 +19,8 @@ export const getTestUrl = (example: Examples): string => {
       return `http://localhost:${PORT}/iframe.html?selectedKind=List&selectedStory=Scrolling%20container`;
     case Examples.SCROLLING_WINDOW:
       return `http://localhost:${PORT}/iframe.html?selectedKind=List&selectedStory=Scrolling%20window`;
+    case Examples.REMOVABLE:
+      return `http://localhost:${PORT}/iframe.html?selectedKind=List&selectedStory=Removable%20by%20move`;
   }
 };
 
