@@ -25,6 +25,7 @@ class List<Value = string> extends React.Component<IProps<Value>> {
   afterIndex = -2;
   state = {
     itemDragged: -1,
+    itemDraggedOutOfBounds: -1,
     selectedItem: -1,
     initialX: 0,
     initialY: 0,
@@ -101,6 +102,7 @@ class List<Value = string> extends React.Component<IProps<Value>> {
   static defaultProps = {
     transitionDuration: 300,
     lockVertically: false,
+    removableByMove: false,
     voiceover: {
       item: (position: number) =>
         `You are currently at a draggable item at position ${position}. Press space bar to lift.`,
@@ -247,7 +249,11 @@ class List<Value = string> extends React.Component<IProps<Value>> {
       );
       this.initialYOffset = currentYOffset;
     }
-    this.afterIndex = binarySearch(this.topOffsets, itemVerticalCenter);
+    if (this.isDraggedItemOutOfBounds() && this.props.removableByMove) {
+      this.afterIndex = this.topOffsets.length + 1;
+    } else {
+      this.afterIndex = binarySearch(this.topOffsets, itemVerticalCenter);
+    }
     this.animateItems(
       this.afterIndex === -1 ? 0 : this.afterIndex,
       this.state.itemDragged,
@@ -340,17 +346,41 @@ class List<Value = string> extends React.Component<IProps<Value>> {
     });
   };
 
-  onEnd = (e: Event) => {
+  isDraggedItemOutOfBounds = () => {
+    const initialRect = this.getChildren()[
+      this.state.itemDragged
+    ].getBoundingClientRect();
+    const targetRect = this.ghostRef.current!.getBoundingClientRect();
+    if (Math.abs(initialRect.left - targetRect.left) > targetRect.width) {
+      if (this.state.itemDraggedOutOfBounds === -1) {
+        this.setState({ itemDraggedOutOfBounds: this.state.itemDragged });
+      }
+      return true;
+    }
+    if (this.state.itemDraggedOutOfBounds > -1) {
+      this.setState({ itemDraggedOutOfBounds: -1 });
+    }
+    return false;
+  };
+
+  onEnd = (e: TouchEvent & MouseEvent) => {
     e.cancelable && e.preventDefault();
     document.removeEventListener('mousemove', this.schdOnMouseMove);
     document.removeEventListener('touchmove', this.schdOnTouchMove);
     document.removeEventListener('mouseup', this.schdOnEnd);
     document.removeEventListener('touchup', this.schdOnEnd);
     document.removeEventListener('touchcancel', this.schdOnEnd);
-    if (this.afterIndex > -1 && this.state.itemDragged !== this.afterIndex) {
+
+    const isOutOfBounds = this.isDraggedItemOutOfBounds();
+    if (
+      (this.props.removableByMove && isOutOfBounds) ||
+      (this.afterIndex > -1 && this.state.itemDragged !== this.afterIndex)
+    ) {
       this.props.onChange({
         oldIndex: this.state.itemDragged,
-        newIndex: this.afterIndex
+        newIndex:
+          this.props.removableByMove && isOutOfBounds ? -1 : this.afterIndex,
+        targetRect: this.ghostRef.current!.getBoundingClientRect()
       });
     }
     this.getChildren().forEach(item => {
@@ -380,7 +410,8 @@ class List<Value = string> extends React.Component<IProps<Value>> {
           });
           this.props.onChange({
             oldIndex: selectedItem,
-            newIndex: this.needle
+            newIndex: this.needle,
+            targetRect: this.getChildren()[this.needle].getBoundingClientRect()
           });
           (this.getChildren()[this.needle] as HTMLElement).focus();
         }
@@ -488,7 +519,8 @@ class List<Value = string> extends React.Component<IProps<Value>> {
               props,
               index,
               isDragged: false,
-              isSelected
+              isSelected,
+              isOutOfBounds: false
             });
           }),
           isDragged: this.state.itemDragged > -1,
@@ -507,7 +539,8 @@ class List<Value = string> extends React.Component<IProps<Value>> {
               },
               index: this.state.itemDragged,
               isDragged: true,
-              isSelected: false
+              isSelected: false,
+              isOutOfBounds: this.state.itemDraggedOutOfBounds > -1
             }),
             document.body
           )}

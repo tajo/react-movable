@@ -24,6 +24,7 @@ export interface IProps<Value> {
     index?: number;
     isDragged: boolean;
     isSelected: boolean;
+    isOutOfBounds: boolean;
   }) => React.ReactNode;
   renderList: (props: {
     children: React.ReactNode;
@@ -33,8 +34,13 @@ export interface IProps<Value> {
     };
   }) => React.ReactNode;
   values: Value[];
-  onChange: (meta: { oldIndex: number; newIndex: number }) => void;
+  onChange: (meta: {
+    oldIndex: number;
+    newIndex: number;
+    targetRect: ClientRect;
+  }) => void;
   transitionDuration: number;
+  removableByMove: boolean;
   lockVertically: boolean;
   voiceover: IVoiceover;
 }
