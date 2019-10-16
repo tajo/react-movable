@@ -425,11 +425,11 @@ class List<Value = string> extends React.Component<IProps<Value>> {
       this.props.removableByMove && this.isDraggedItemOutOfBounds();
     if (
       removeItem ||
-      (this.afterIndex > -1 && this.state.itemDragged !== this.afterIndex)
+      (this.afterIndex > -2 && this.state.itemDragged !== this.afterIndex)
     ) {
       this.props.onChange({
         oldIndex: this.state.itemDragged,
-        newIndex: removeItem ? -1 : this.afterIndex,
+        newIndex: removeItem ? -1 : Math.max(this.afterIndex, 0),
         targetRect: this.ghostRef.current!.getBoundingClientRect()
       });
     }
