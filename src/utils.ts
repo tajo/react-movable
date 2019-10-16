@@ -32,6 +32,7 @@ export function transformItem(
   offsetY: number | null = 0,
   offsetX: number | null = 0
 ) {
+  if (!element) return;
   if (offsetY === null || offsetX === null) {
     (element as HTMLElement).style.removeProperty('transform');
     return;
@@ -43,10 +44,16 @@ export function isItemTransformed(element: Element) {
   return !!(element as HTMLElement).style.transform;
 }
 
-export function setItemTransition(element: Element, duration: number) {
-  (element as HTMLElement).style[
-    'transition-duration' as any
-  ] = `${duration}ms`;
+export function setItemTransition(
+  element: Element,
+  duration: number,
+  timing?: string
+) {
+  if (element) {
+    (element as HTMLElement).style[
+      'transition' as any
+    ] = `transform ${duration}ms${timing ? ` ${timing}` : ''}`;
+  }
 }
 
 // returns the "slot" for the targetValue, aka where it should go
