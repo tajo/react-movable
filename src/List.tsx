@@ -21,6 +21,9 @@ class List<Value = string> extends React.Component<IProps<Value>> {
   itemTranslateOffsets: number[] = [];
   initialYOffset = 0;
   lastScroll = 0;
+  lastYOffset = 0;
+  lastListYOffset = 0;
+  dropTimeout?: number;
   needle = -1;
   afterIndex = -2;
   state = {
@@ -135,6 +138,10 @@ class List<Value = string> extends React.Component<IProps<Value>> {
   };
 
   onMouseOrTouchStart = (e: MouseEvent & TouchEvent) => {
+    if (this.dropTimeout) {
+      window.clearTimeout(this.dropTimeout);
+      this.finishDrop();
+    }
     const isTouch = isTouchEvent(e);
     if (!isTouch && e.button !== 0) return;
     const index = this.getTargetIndex(e as any);
@@ -196,6 +203,8 @@ class List<Value = string> extends React.Component<IProps<Value>> {
     const targetStyles = window.getComputedStyle(target);
     this.calculateOffsets();
     this.initialYOffset = this.getYOffset();
+    this.lastYOffset = window.pageYOffset;
+    this.lastListYOffset = this.listRef.current!.scrollTop;
     this.setState({
       itemDragged: index,
       targetX:
@@ -371,15 +380,56 @@ class List<Value = string> extends React.Component<IProps<Value>> {
     document.removeEventListener('touchup', this.schdOnEnd);
     document.removeEventListener('touchcancel', this.schdOnEnd);
 
-    const isOutOfBounds = this.isDraggedItemOutOfBounds();
+    const removeItem =
+      this.props.removableByMove && this.isDraggedItemOutOfBounds();
+    if (!removeItem && this.props.transitionDuration > 0) {
+      // animate drop
+      schd(() => {
+        setItemTransition(
+          this.ghostRef.current!,
+          this.props.transitionDuration,
+          'cubic-bezier(.2,1,.1,1)'
+        );
+        if (this.afterIndex < 1 && this.state.itemDragged === 0) {
+          transformItem(this.ghostRef.current!, 0, 0);
+        } else {
+          transformItem(
+            this.ghostRef.current!,
+            // compensate window scroll
+            -(window.pageYOffset - this.lastYOffset) +
+              // compensate container scroll
+              -(this.listRef.current!.scrollTop - this.lastListYOffset) +
+              (this.state.itemDragged < this.afterIndex
+                ? this.itemTranslateOffsets
+                    .slice(this.state.itemDragged + 1, this.afterIndex + 1)
+                    .reduce((a, b) => a + b, 0)
+                : this.itemTranslateOffsets
+                    .slice(
+                      this.afterIndex < 0 ? 0 : this.afterIndex,
+                      this.state.itemDragged
+                    )
+                    .reduce((a, b) => a + b, 0) * -1),
+            0
+          );
+        }
+      })();
+    }
+    this.dropTimeout = window.setTimeout(
+      this.finishDrop,
+      removeItem ? 0 : this.props.transitionDuration
+    );
+  };
+
+  finishDrop = () => {
+    const removeItem =
+      this.props.removableByMove && this.isDraggedItemOutOfBounds();
     if (
-      (this.props.removableByMove && isOutOfBounds) ||
+      removeItem ||
       (this.afterIndex > -1 && this.state.itemDragged !== this.afterIndex)
     ) {
       this.props.onChange({
         oldIndex: this.state.itemDragged,
-        newIndex:
-          this.props.removableByMove && isOutOfBounds ? -1 : this.afterIndex,
+        newIndex: removeItem ? -1 : this.afterIndex,
         targetRect: this.ghostRef.current!.getBoundingClientRect()
       });
     }
