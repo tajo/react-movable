@@ -138,7 +138,7 @@ class List<Value = string> extends React.Component<IProps<Value>> {
   };
 
   onMouseOrTouchStart = (e: MouseEvent & TouchEvent) => {
-    if (this.dropTimeout) {
+    if (this.dropTimeout && this.state.itemDragged > -1) {
       window.clearTimeout(this.dropTimeout);
       this.finishDrop();
     }
@@ -382,7 +382,11 @@ class List<Value = string> extends React.Component<IProps<Value>> {
 
     const removeItem =
       this.props.removableByMove && this.isDraggedItemOutOfBounds();
-    if (!removeItem && this.props.transitionDuration > 0) {
+    if (
+      !removeItem &&
+      this.props.transitionDuration > 0 &&
+      this.afterIndex !== -2
+    ) {
       // animate drop
       schd(() => {
         setItemTransition(
@@ -416,7 +420,7 @@ class List<Value = string> extends React.Component<IProps<Value>> {
     }
     this.dropTimeout = window.setTimeout(
       this.finishDrop,
-      removeItem ? 0 : this.props.transitionDuration
+      removeItem || this.afterIndex === -2 ? 0 : this.props.transitionDuration
     );
   };
 
