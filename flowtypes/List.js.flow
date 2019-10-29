@@ -41,7 +41,17 @@ declare interface IListProps<Value> {
   }) => mixed;
   beforeDrag?: (params: {
     elements: HTMLElement[],
-    index: number
+    index: number,
+    targetRect: ClientRect
+  }) => mixed;
+  onMove?: (meta: {
+    clientX: number,
+    clientY: number,
+  }) => mixed;
+  afterDrag?: (params: {
+    elements: HTMLElement[],
+    index: number,
+    targetRect: ClientRect
   }) => mixed;
   transitionDuration?: number;
   removableByMove?: boolean;
