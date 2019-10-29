@@ -160,10 +160,12 @@ class List<Value = string> extends React.Component<IProps<Value>> {
       return;
     }
     e.preventDefault();
+    const elements = this.getChildren();
     this.props.beforeDrag &&
       this.props.beforeDrag({
-        elements: this.getChildren(),
-        index
+        elements,
+        index,
+        targetRect: elements[index].getBoundingClientRect()
       });
     if (isTouch) {
       const opts = { passive: false };

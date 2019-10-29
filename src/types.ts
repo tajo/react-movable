@@ -17,7 +17,7 @@ export interface IItemProps {
 }
 
 export interface IProps<Value> {
-  beforeDrag?: (params: { elements: Element[]; index: number }) => void;
+  beforeDrag?: (params: { elements: Element[]; index: number; targetRect: ClientRect }) => void;
   renderItem: (params: {
     value: Value;
     props: IItemProps;
