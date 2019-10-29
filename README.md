@@ -146,10 +146,27 @@ The List component is `stateless` and `controlled` so you need to implement this
 ### beforeDrag
 
 ```ts
-beforeDrag?: (params: { elements: Element[]; index: number }) => void;
+beforeDrag?: (params: { elements: Element[]; index: number; targetRect: ClientRect }) => void;
 ```
 
-Called when a valid drag is initiated. It provides a direct access to all list DOM elements and the index of dragged item. This can be useful when you need to do some upfront measurements like when building a [table with variable column widths](https://react-movable.netlify.com/?selectedKind=List&selectedStory=Table%20Auto%20Cell%20Widths).
+Called when a valid drag is initiated. It provides a direct access to all list DOM elements, the index and the ClientRect of the dragged item. This can be useful when you need to do some upfront measurements like when building a [table with variable column widths](https://react-movable.netlify.com/?selectedKind=List&selectedStory=Table%20Auto%20Cell%20Widths).
+
+### onMove
+
+```ts
+onMove?: (params: { clientX: number; clientY: number }) => void;
+```
+
+Called when item is being dragged with a cursor. It provides an object with current cursor position (clientX, clientY) as an argument. Since this callback is introduced to provide the cursor coordinates, it is not triggered when items are moved with keyboard shortcuts. For this case, the cursor position would be irrelevant.
+
+
+### afterDrag
+
+```ts
+afterDrag?: (params: { elements: Element[]; targetRect: ClientRect }) => void
+```
+
+Called when a valid drag is finished. It provides a direct access to all list DOM elements, the updated index and the ClientRect of the dragged item. This callback is called right before the `onChange` event.
 
 ### removableByMove
 
