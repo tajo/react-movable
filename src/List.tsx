@@ -242,6 +242,7 @@ class List<Value = string> extends React.Component<IProps<Value>> {
       clientY - this.state.initialY,
       this.props.lockVertically ? 0 : clientX - this.state.initialX
     );
+    this.props.onMove && this.props.onMove({ clientX, clientY });
     this.autoScrolling(clientY);
     this.moveOtherItems();
   };
