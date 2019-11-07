@@ -4,7 +4,7 @@ import { IItemProps } from '../src/types';
 
 const CustomItem = React.forwardRef(({ children, ...props }: IItemProps & {
     children: string,
-}, ref: React.LegacyRef<HTMLLIElement>) => (
+}, ref: React.Ref<HTMLLIElement>) => (
     <li
         ref={ref}
         {...props}
