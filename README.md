@@ -119,7 +119,7 @@ renderItem: (params: {
 - `isDragged` - `true` if the item is dragged, great for styling purposes
 - `isSelected` - `true` if the item is lifted with the `space`
 - `isOutOfBounds` - `true` if the item is dragged far left or right
-- `props` - it has multiple props that you need to spread over your item element
+- `props` - it has multiple props that you need to spread over your item element. Since one of these is `ref`, if you're spreading over a custom component, it must be wrapped in `React.forwardRef` like in the "Custom component" example.
 
 ### values
 
