@@ -293,7 +293,7 @@ I wrote an article about [Building a Drag and Drop List](https://baseweb.design/
 
 Also, gave a talk at React Advanced London: What a Drag (2019):
 
-<iframe width="560" height="315" src="https://www.youtube.com/embed/y_XkQ2qMTSA" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+[![React Advanced London: What a Drag](https://img.youtube.com/vi/y_XkQ2qMTSA/0.jpg)](https://www.youtube.com/watch?v=y_XkQ2qMTSA)
 
 ## Shoutouts 🙏
 
