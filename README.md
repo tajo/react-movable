@@ -287,6 +287,14 @@ yarn
 yarn storybook
 ```
 
+## Learning more
+
+I wrote an article about [Building a Drag and Drop List](https://baseweb.design/blog/drag-and-drop-list/).
+
+Also, gave a talk at React Advanced London: What a Drag (2019):
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/y_XkQ2qMTSA" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
 ## Shoutouts 🙏
 
 The popular React DnD libraries were already mentioned in the motivation part. Big shoutout to `react-beautiful-dnd` ❤️ ️ for supporting multiple great features and adding first-class support for accesibility! It was strongly used as an inspiration for `react-movable`!
