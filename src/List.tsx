@@ -453,6 +453,9 @@ class List<Value = string> extends React.Component<IProps<Value>> {
   onKeyDown = (e: React.KeyboardEvent) => {
     const selectedItem = this.state.selectedItem;
     const index = this.getTargetIndex(e);
+    if (checkIfInteractive(e.target as any, e.currentTarget)) {
+      return;
+    }
     if (index === -1) return;
     if (e.key === ' ') {
       e.preventDefault();

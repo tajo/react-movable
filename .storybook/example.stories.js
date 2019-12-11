@@ -13,6 +13,7 @@ import LockVertically from '../examples/LockVertically';
 import VaryingHeights from '../examples/VaryingHeights';
 import ScrollingWindow from '../examples/ScrollingWindow';
 import ScrollingContainer from '../examples/ScrollingContainer';
+import InteractiveItems from '../examples/InteractiveItems';
 import CustomComponent from '../examples/CustomComponent';
 
 storiesOf('List', module)
@@ -29,4 +30,5 @@ storiesOf('List', module)
   .add('Varying heights', () => <VaryingHeights />)
   .add('Scrolling window', () => <ScrollingWindow />)
   .add('Scrolling container', () => <ScrollingContainer />)
+  .add('Interactive items', () => <InteractiveItems />)
   .add('Custom component', () => <CustomComponent />);

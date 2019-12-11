@@ -1,14 +1,14 @@
-import { configure, addDecorator } from '@storybook/react';
-import { withOptions } from '@storybook/addon-options';
+import { configure, addParameters } from '@storybook/react';
 
-addDecorator(
-  withOptions({
-    name: 'react-movable',
-    url: 'https://github.com/tajo/react-movable',
-    showAddonPanel: false,
-    showSearchBox: false
-  })
-);
+addParameters({
+  options: {
+    theme: {
+      brandTitle: 'react-movable',
+      brandUrl: 'https://github.com/tajo/react-movable'
+    },
+    showPanel: false
+  }
+});
 
 function loadStories() {
   require('./example.stories.js');
