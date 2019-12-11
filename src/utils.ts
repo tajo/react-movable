@@ -101,9 +101,13 @@ export function checkIfInteractive(target: Element, rootElement: Element) {
     'textarea',
     'select',
     'option',
+    'optgroup',
+    'video',
+    'audio',
     'button',
     'a'
   ];
+  const DISABLED_ROLES = ['button', 'link', 'checkbox', 'tab'];
   while (target !== rootElement) {
     if (target.getAttribute('data-movable-handle')) {
       return false;
@@ -112,7 +116,13 @@ export function checkIfInteractive(target: Element, rootElement: Element) {
       return true;
     }
     const role = target.getAttribute('role');
-    if (role === 'button' || role === 'link') {
+    if (role && DISABLED_ROLES.includes(role.toLowerCase())) {
+      return true;
+    }
+    if (
+      target.tagName.toLowerCase() === 'label' &&
+      target.hasAttribute('for')
+    ) {
       return true;
     }
     if (target.tagName) target = target.parentElement!;
