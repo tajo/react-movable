@@ -7,22 +7,26 @@ import {
   binarySearch,
   schd,
   isTouchEvent,
-  checkIfInteractive
+  checkIfInteractive,
+  calcDragZoneHeight,
+  calcAcceleration,
 } from './utils';
 import { IItemProps, IProps, TEvent } from './types';
 
 const AUTOSCROLL_ACTIVE_OFFSET = 200;
-const AUTOSCROLL_SPEED_RATIO = 10;
+const AUTOSCROLL_MAX_ACCELERATION = 2; // 2px / sec^2 acceleration
 
 class List<Value = string> extends React.Component<IProps<Value>> {
   listRef = React.createRef<HTMLElement>();
   ghostRef = React.createRef<HTMLElement>();
   topOffsets: number[] = [];
   itemTranslateOffsets: number[] = [];
+  lastScrollingAnimationFrame = 0;
   initialYOffset = 0;
   lastScroll = 0;
   lastYOffset = 0;
   lastListYOffset = 0;
+  scrollStartTime = 0;
   dropTimeout?: number;
   needle = -1;
   afterIndex = -2;
@@ -37,7 +41,7 @@ class List<Value = string> extends React.Component<IProps<Value>> {
     targetHeight: 0,
     targetWidth: 0,
     liveText: '',
-    scrollingSpeed: 0,
+    scrollingAcceleration: 0,
     scrollWindow: false
   };
   schdOnMouseMove: (e: MouseEvent) => void;
@@ -60,10 +64,10 @@ class List<Value = string> extends React.Component<IProps<Value>> {
     document.addEventListener('mousedown', this.onMouseOrTouchStart as any);
   }
 
-  componentDidUpdate(_prevProps: any, prevState: { scrollingSpeed: number }) {
+  componentDidUpdate(_prevProps: any, prevState: { scrollingAcceleration: number }) {
     if (
-      prevState.scrollingSpeed !== this.state.scrollingSpeed &&
-      prevState.scrollingSpeed === 0
+      prevState.scrollingAcceleration !== this.state.scrollingAcceleration &&
+      prevState.scrollingAcceleration === 0
     ) {
       this.doScrolling();
     }
@@ -75,18 +79,21 @@ class List<Value = string> extends React.Component<IProps<Value>> {
   }
 
   doScrolling = () => {
-    const { scrollingSpeed, scrollWindow } = this.state;
+    const { scrollingAcceleration, scrollWindow } = this.state;
     const listEl = this.listRef.current!;
-    window.requestAnimationFrame(() => {
+    window.cancelAnimationFrame(this.lastScrollingAnimationFrame);
+    this.lastScrollingAnimationFrame = window.requestAnimationFrame(() => {
+      const timeElapsedInSeconds = (Date.now() - this.scrollStartTime) / 1000;
+      const speed = Math.round(scrollingAcceleration * timeElapsedInSeconds);
       if (scrollWindow) {
         window.scrollTo(
           window.pageXOffset,
-          window.pageYOffset + scrollingSpeed * 1.5
+          window.pageYOffset + scrollingAcceleration
         );
       } else {
-        listEl.scrollTop += scrollingSpeed;
+        listEl.scrollTop += scrollingAcceleration;
       }
-      if (scrollingSpeed !== 0) {
+      if (scrollingAcceleration !== 0) {
         this.doScrolling();
       }
     });
@@ -205,6 +212,7 @@ class List<Value = string> extends React.Component<IProps<Value>> {
     this.initialYOffset = this.getYOffset();
     this.lastYOffset = window.pageYOffset;
     this.lastListYOffset = this.listRef.current!.scrollTop;
+    this.scrollStartTime = Date.now();
     this.setState({
       itemDragged: index,
       targetX:
@@ -278,48 +286,70 @@ class List<Value = string> extends React.Component<IProps<Value>> {
     } = this.listRef.current!.getBoundingClientRect();
     const viewportHeight =
       window.innerHeight || document.documentElement.clientHeight;
+    const dragZoneHeight = calcDragZoneHeight(viewportHeight, AUTOSCROLL_ACTIVE_OFFSET);
     // autoscrolling for the window (down)
     if (
       bottom > viewportHeight &&
-      viewportHeight - clientY < AUTOSCROLL_ACTIVE_OFFSET
+      viewportHeight - clientY < dragZoneHeight
     ) {
+      const distanceFromBottomZoneLine = dragZoneHeight - (viewportHeight - clientY);
       this.setState({
-        scrollingSpeed: Math.round(
-          (AUTOSCROLL_ACTIVE_OFFSET - (viewportHeight - clientY)) /
-            AUTOSCROLL_SPEED_RATIO
+        scrollingAcceleration: calcAcceleration(
+          distanceFromBottomZoneLine,
+          dragZoneHeight,
+          AUTOSCROLL_MAX_ACCELERATION,
+          'positive',
+          this.state.scrollingAcceleration,
         ),
         scrollWindow: true
       });
       // autoscrolling for the window (up)
-    } else if (top < 0 && clientY < AUTOSCROLL_ACTIVE_OFFSET) {
+    } else if (top < 0 && clientY < dragZoneHeight) {
+      const distanceFromTopZoneLine = dragZoneHeight - clientY;
       this.setState({
-        scrollingSpeed: Math.round(
-          (AUTOSCROLL_ACTIVE_OFFSET - clientY) / -AUTOSCROLL_SPEED_RATIO
+        scrollingAcceleration: calcAcceleration(
+          distanceFromTopZoneLine,
+          dragZoneHeight,
+          AUTOSCROLL_MAX_ACCELERATION,
+          'negative',
+          this.state.scrollingAcceleration,
         ),
         scrollWindow: true
       });
     } else {
-      if (this.state.scrollWindow && this.state.scrollingSpeed !== 0) {
-        this.setState({ scrollingSpeed: 0, scrollWindow: false });
+      if (this.state.scrollWindow && this.state.scrollingAcceleration !== 0) {
+        this.setState({ scrollingAcceleration: 0, scrollWindow: false });
       }
       // autoscrolling for containers with overflow
       if (height + 20 < this.listRef.current!.scrollHeight) {
-        let scrollingSpeed = 0;
-        if (clientY - top < AUTOSCROLL_ACTIVE_OFFSET) {
-          scrollingSpeed = Math.round(
-            (AUTOSCROLL_ACTIVE_OFFSET - (clientY - top)) /
-              -AUTOSCROLL_SPEED_RATIO
+        let scrollingAcceleration = 0;
+        if (clientY - top < dragZoneHeight) {
+          const distanceFromTopZoneLine = dragZoneHeight - (clientY - top);
+          scrollingAcceleration = calcAcceleration(
+            distanceFromTopZoneLine,
+            dragZoneHeight,
+            AUTOSCROLL_MAX_ACCELERATION,
+            'negative',
+            this.state.scrollingAcceleration,
           );
-        } else if (bottom - clientY < AUTOSCROLL_ACTIVE_OFFSET) {
-          scrollingSpeed = Math.round(
-            (AUTOSCROLL_ACTIVE_OFFSET - (bottom - clientY)) /
-              AUTOSCROLL_SPEED_RATIO
+        } else if (bottom - clientY < dragZoneHeight) {
+          const distanceFromBottomZoneLine = dragZoneHeight - (bottom - clientY);
+          scrollingAcceleration = calcAcceleration(
+            distanceFromBottomZoneLine,
+            dragZoneHeight,
+            AUTOSCROLL_MAX_ACCELERATION,
+            'positive',
+            this.state.scrollingAcceleration,
           );
         }
-        if (this.state.scrollingSpeed !== scrollingSpeed) {
-          this.setState({ scrollingSpeed });
+        if (this.state.scrollingAcceleration !== scrollingAcceleration) {
+          this.setState({ scrollingAcceleration });
         }
       }
+    }
+    // reset scrollStartTime if scroll speed is zero
+    if (this.state.scrollingAcceleration === 0) {
+      this.scrollStartTime = Date.now();
     }
   };
 
@@ -441,7 +471,7 @@ class List<Value = string> extends React.Component<IProps<Value>> {
       setItemTransition(item, 0);
       transformItem(item, null);
     });
-    this.setState({ itemDragged: -1, scrollingSpeed: 0 });
+    this.setState({ itemDragged: -1, scrollingAcceleration: 0 });
     this.afterIndex = -2;
     // sometimes the scroll gets messed up after the drop, fix:
     if (this.lastScroll > 0) {

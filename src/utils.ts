@@ -129,3 +129,25 @@ export function checkIfInteractive(target: Element, rootElement: Element) {
   }
   return false;
 }
+
+// consider 20% area top and 20% area bottom of view port as drag zones.
+export const calcDragZoneHeight = (viewportHeight: number, maxSize: number) =>
+  Math.min(
+    Math.round( viewportHeight * 0.2),
+    maxSize,
+  );
+
+export const calcAcceleration = (
+  distance: number,
+  maxDistance: number,
+  edgeAcceleration: number, // max acceleration at the edge of the dragzone
+  direction: "positive" | "negative",
+  oldSpeed: number,
+) => {
+  const newSpeed = (distance / maxDistance * edgeAcceleration) * (direction === 'negative' ? -1 : 1);
+  // if direction of scroll switches, then slow down to zero.
+  if ((newSpeed > 0 && oldSpeed < 0) || (newSpeed < 0 && oldSpeed > 0)) {
+    return 0;
+  }
+  return newSpeed;
+};
