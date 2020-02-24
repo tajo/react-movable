@@ -14,7 +14,7 @@ import {
 import { IItemProps, IProps, TEvent } from './types';
 
 const AUTOSCROLL_ACTIVE_OFFSET = 200;
-const AUTOSCROLL_MAX_ACCELERATION = 2; // 2px / sec^2 acceleration
+const AUTOSCROLL_MAX_ACCELERATION = 5; // 5px / sec^2 acceleration
 
 class List<Value = string> extends React.Component<IProps<Value>> {
   listRef = React.createRef<HTMLElement>();
