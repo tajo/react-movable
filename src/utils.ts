@@ -144,7 +144,9 @@ export const calcAcceleration = (
   direction: "positive" | "negative",
   oldSpeed: number,
 ) => {
-  const newSpeed = (distance / maxDistance * edgeAcceleration) * (direction === 'negative' ? -1 : 1);
+  const directionMultiplier = direction === 'negative' ? -1 : 1;
+  const cappedDistance = Math.min(distance, maxDistance);
+  const newSpeed = (cappedDistance / maxDistance * edgeAcceleration) * directionMultiplier;
   // if direction of scroll switches, then slow down to zero.
   if ((newSpeed > 0 && oldSpeed < 0) || (newSpeed < 0 && oldSpeed > 0)) {
     return 0;
