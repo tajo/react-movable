@@ -88,10 +88,10 @@ class List<Value = string> extends React.Component<IProps<Value>> {
       if (scrollWindow) {
         window.scrollTo(
           window.pageXOffset,
-          window.pageYOffset + scrollingAcceleration
+          window.pageYOffset + speed
         );
       } else {
-        listEl.scrollTop += scrollingAcceleration;
+        listEl.scrollTop += speed;
       }
       if (scrollingAcceleration !== 0) {
         this.doScrolling();
