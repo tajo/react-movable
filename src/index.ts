@@ -1,4 +1,5 @@
 import List from './List';
 import { arrayMove, arrayRemove } from './utils';
 
-export { List, arrayMove, arrayRemove };
+export * from './types';
+export { List, arrayMove, arrayRemove};
