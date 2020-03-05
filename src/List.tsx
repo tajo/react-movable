@@ -547,7 +547,6 @@ class List<Value = string> extends React.Component<IProps<Value>> {
       left: this.state.targetX,
       width: this.state.targetWidth,
       height: this.state.targetHeight,
-      display: 'block',
       position: 'fixed',
       marginTop: 0
     } as React.CSSProperties;
