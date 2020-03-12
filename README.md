@@ -297,6 +297,8 @@ The popular React DnD libraries were already mentioned in the motivation part. B
 
 Big thanks to [BrowserStack](https://www.browserstack.com) for letting the maintainers use their service to debug browser issues.
 
+And [Netlify](https://www.netlify.com/) for free hosting.
+
 ## Author
 
 Vojtech Miksu 2019, [miksu.cz](https://miksu.cz), [@vmiksu](https://twitter.com/vmiksu)
