@@ -151,7 +151,7 @@ class List<Value = string> extends React.Component<IProps<Value>> {
       (this.props.values[index] && this.props.values[index].disabled)
     )
       return;
-    const listItemTouched = this.getChildren()[index];
+    const listItemTouched = this.getChildren()[index] as HTMLElement;
     const handle = listItemTouched.querySelector('[data-movable-handle]');
     if (handle && !handle.contains(e.target as any)) {
       return;
@@ -167,6 +167,7 @@ class List<Value = string> extends React.Component<IProps<Value>> {
       });
     if (isTouch) {
       const opts = { passive: false };
+      listItemTouched.style.touchAction = 'none';
       document.addEventListener('touchend', this.schdOnEnd, opts);
       document.addEventListener('touchmove', this.schdOnTouchMove, opts);
       document.addEventListener('touchcancel', this.schdOnEnd, opts);
@@ -380,6 +381,10 @@ class List<Value = string> extends React.Component<IProps<Value>> {
     document.removeEventListener('touchup', this.schdOnEnd);
     document.removeEventListener('touchcancel', this.schdOnEnd);
 
+    const listItemTouched = this.getChildren()[
+      this.state.itemDragged
+    ] as HTMLElement;
+    listItemTouched.style.touchAction = '';
     const removeItem =
       this.props.removableByMove && this.isDraggedItemOutOfBounds();
     if (
@@ -534,7 +539,6 @@ class List<Value = string> extends React.Component<IProps<Value>> {
   render() {
     const baseStyle = {
       userSelect: 'none',
-      touchAction: 'none',
       WebkitUserSelect: 'none',
       MozUserSelect: 'none',
       msUserSelect: 'none',
