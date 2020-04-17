@@ -43,6 +43,7 @@ export interface IProps<Value> {
   removableByMove: boolean;
   lockVertically: boolean;
   voiceover: IVoiceover;
+  container?: Element;
 }
 
 export type TEvent = React.MouseEvent | React.TouchEvent | React.KeyboardEvent;

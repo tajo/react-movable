@@ -15,6 +15,7 @@ import ScrollingWindow from '../examples/ScrollingWindow';
 import ScrollingContainer from '../examples/ScrollingContainer';
 import InteractiveItems from '../examples/InteractiveItems';
 import CustomComponent from '../examples/CustomComponent';
+import CustomContainer from '../examples/CustomContainer';
 
 storiesOf('List', module)
   .add('Basic', () => <Basic />)
@@ -31,4 +32,5 @@ storiesOf('List', module)
   .add('Scrolling window', () => <ScrollingWindow />)
   .add('Scrolling container', () => <ScrollingContainer />)
   .add('Interactive items', () => <InteractiveItems />)
-  .add('Custom component', () => <CustomComponent />);
+  .add('Custom component', () => <CustomComponent />)
+  .add('Custom container', () => <CustomContainer />);
