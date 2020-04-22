@@ -384,7 +384,9 @@ class List<Value = string> extends React.Component<IProps<Value>> {
     const listItemTouched = this.getChildren()[
       this.state.itemDragged
     ] as HTMLElement;
-    listItemTouched.style.touchAction = '';
+    if (listItemTouched && listItemTouched.style) {
+      listItemTouched.style.touchAction = '';
+    }
     const removeItem =
       this.props.removableByMove && this.isDraggedItemOutOfBounds();
     if (
