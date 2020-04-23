@@ -13,7 +13,6 @@ const Basic: React.FC<{
     'Item 5',
     'Item 6'
   ]);
-  console.log(container);
 
   return (
     <div
