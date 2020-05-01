@@ -47,6 +47,6 @@ declare interface IListProps<Value> {
   removableByMove?: boolean;
   lockVertically?: boolean;
   voiceover?: IVoiceover;
-  container?: Element;
+  container?: Element | null;
 }
 declare export default class List extends React$Component<IListProps<*>> {}
