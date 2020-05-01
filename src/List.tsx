@@ -598,7 +598,7 @@ class List<Value = string> extends React.Component<IProps<Value>> {
               isSelected: false,
               isOutOfBounds: this.state.itemDraggedOutOfBounds > -1
             }),
-            document.body
+            this.props.container || document.body
           )}
         <div
           aria-live="assertive"

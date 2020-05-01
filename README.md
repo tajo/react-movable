@@ -183,6 +183,12 @@ voiceover: {
 
 In order to support screen reader users, `react-movable` is triggering different messages when user is interacting with the list. There is already a set of [English messages](https://github.com/tajo/react-movable/blob/master/src/List.tsx#L77-L89) included but you can override it with this prop.
 
+## container
+```ts
+container?: Element;
+```
+Provide custom DOM element where moved item will be rendered.
+
 ## `arrayMove` and `arrayRemove`
 
 There are also additional two helper functions being exported:
