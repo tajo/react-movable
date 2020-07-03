@@ -612,7 +612,7 @@ class List<Value = string> extends React.Component<IProps<Value>> {
             border: '0px',
             padding: '0px',
             overflow: 'hidden',
-            clip: 'react(0px, 0px, 0px, 0px)',
+            clip: 'rect(0px, 0px, 0px, 0px)',
             clipPath: 'inset(100%)'
           }}
         >
