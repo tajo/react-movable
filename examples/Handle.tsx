@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { List, arrayMove, arrayRemove } from '../src/index';
 
-const HandleIcon = () => (
+export const HandleIcon = () => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
     width="24"
@@ -23,7 +23,7 @@ const HandleIcon = () => (
   </svg>
 );
 
-const buttonStyles = {
+export const buttonStyles = {
   border: 'none',
   margin: 0,
   padding: 0,
