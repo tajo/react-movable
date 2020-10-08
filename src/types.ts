@@ -16,29 +16,40 @@ export interface IItemProps {
   ref?: React.RefObject<any>;
 }
 
+export interface RenderItemParams<Value> {
+  value: Value;
+  props: IItemProps;
+  index?: number;
+  isDragged: boolean;
+  isSelected: boolean;
+  isOutOfBounds: boolean;
+}
+
+export interface RenderListParams {
+  children: React.ReactNode;
+  isDragged: boolean;
+  props: {
+    ref: React.RefObject<any>;
+  };
+}
+
+export interface BeforeDragParams {
+  elements: Element[];
+  index: number
+}
+
+export interface OnChangeMeta {
+  oldIndex: number;
+  newIndex: number;
+  targetRect: ClientRect;
+}
+
 export interface IProps<Value> {
-  beforeDrag?: (params: { elements: Element[]; index: number }) => void;
-  renderItem: (params: {
-    value: Value;
-    props: IItemProps;
-    index?: number;
-    isDragged: boolean;
-    isSelected: boolean;
-    isOutOfBounds: boolean;
-  }) => React.ReactNode;
-  renderList: (props: {
-    children: React.ReactNode;
-    isDragged: boolean;
-    props: {
-      ref: React.RefObject<any>;
-    };
-  }) => React.ReactNode;
+  beforeDrag?: (params: BeforeDragParams) => void;
+  renderItem: (params: RenderItemParams<Value>) => React.ReactNode;
+  renderList: (props: RenderListParams) => React.ReactNode;
   values: Value[];
-  onChange: (meta: {
-    oldIndex: number;
-    newIndex: number;
-    targetRect: ClientRect;
-  }) => void;
+  onChange: (meta: OnChangeMeta) => void;
   transitionDuration: number;
   removableByMove: boolean;
   lockVertically: boolean;
