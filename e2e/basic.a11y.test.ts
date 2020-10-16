@@ -99,3 +99,20 @@ test('cancel the move of first item to second position', async () => {
   await page.mouse.click(1, 1);
   expect(await page.screenshot()).toMatchImageSnapshot();
 });
+
+test('cancel the move of first item to second with mouse click', async () => {
+  await page.keyboard.press('Tab');
+  await page.keyboard.press('Space');
+  await page.keyboard.press('ArrowDown');
+  await page.mouse.click(1, 1);
+  expect(await getListItems(page as any)).toEqual([
+    'Item 1',
+    'Item 2',
+    'Item 3',
+    'Item 4',
+    'Item 5',
+    'Item 6'
+  ]);
+  await page.mouse.click(1, 1);
+  expect(await page.screenshot()).toMatchImageSnapshot();
+});
