@@ -149,8 +149,13 @@ class List<Value = string> extends React.Component<IProps<Value>> {
       index === -1 ||
       // @ts-ignore
       (this.props.values[index] && this.props.values[index].disabled)
-    )
+    ) {
+      if (this.state.selectedItem !== -1) {
+        this.setState({ selectedItem: -1 });
+        this.finishDrop();
+      }
       return;
+    }
     const listItemTouched = this.getChildren()[index] as HTMLElement;
     const handle = listItemTouched.querySelector('[data-movable-handle]');
     if (handle && !handle.contains(e.target as any)) {
