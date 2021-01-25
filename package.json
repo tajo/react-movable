@@ -97,5 +97,9 @@
       "node"
     ],
     "preset": "jest-puppeteer"
+  },
+  "volta": {
+    "node": "14.15.4",
+    "yarn": "1.22.10"
   }
 }
