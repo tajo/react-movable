@@ -15,11 +15,9 @@
   "license": "MIT",
   "scripts": {
     "build": "rm -rf lib && tsc --outDir lib && cp flowtypes/* lib && rm -rf lib/examples && mv lib/src/* lib && rm -rf lib/src && rm lib/*.test.* && rm lib/*.stories.*",
-    "build-ladle": "ladle build",
     "jest:e2e": "jest --runInBand",
     "jest:e2e:update": "jest --runInBand -u e2e",
-    "ladle": "ladle serve",
-    "ladle:ci": "ladle serve --output stream",
+    "ladle:ci": "ladle serve --output stream --open none",
     "test": "yarn typecheck && yarn test:e2e && yarn test:unit",
     "test:e2e": "start-server-and-test ladle:ci http-get://localhost:61000 jest:e2e",
     "test:e2e:dev": "E2E=dev yarn jest:e2e",

@@ -143,7 +143,7 @@ The List component is `stateless` and `controlled` so you need to implement this
 beforeDrag?: (params: { elements: Element[]; index: number }) => void;
 ```
 
-Called when a valid drag is initiated. It provides a direct access to all list DOM elements and the index of dragged item. This can be useful when you need to do some upfront measurements like when building a [table with variable column widths](https://react-movable.netlify.com/?selectedKind=List&selectedStory=Table%20Auto%20Cell%20Widths).
+Called when a valid drag is initiated. It provides a direct access to all list DOM elements and the index of dragged item. This can be useful when you need to do some upfront measurements like when building a [table with variable column widths](https://react-movable.netlify.app/?story=list--table-auto-cell-widths).
 
 ### removableByMove
 
@@ -151,7 +151,7 @@ Called when a valid drag is initiated. It provides a direct access to all list D
 removableByMove: boolean;
 ```
 
-Default is `false`. When set to `true` and an item is dragged far left or far right (out of bounds), the original gap disappears (animated) and following item drop will cause `onChange` being called with `newIndex = -1`. You can use that to remove the item from your `values` state. [Example](https://react-movable.netlify.com/?selectedKind=List&selectedStory=Removable%20by%20move).
+Default is `false`. When set to `true` and an item is dragged far left or far right (out of bounds), the original gap disappears (animated) and following item drop will cause `onChange` being called with `newIndex = -1`. You can use that to remove the item from your `values` state. [Example](https://react-movable.netlify.com/?story=list--removable-by-move).
 
 ### transitionDuration
 
@@ -184,9 +184,11 @@ voiceover: {
 In order to support screen reader users, `react-movable` is triggering different messages when user is interacting with the list. There is already a set of [English messages](https://github.com/tajo/react-movable/blob/master/src/List.tsx#L77-L89) included but you can override it with this prop.
 
 ## container
+
 ```ts
 container?: Element;
 ```
+
 Provide custom DOM element where moved item will be rendered.
 
 ## `arrayMove` and `arrayRemove`
@@ -252,11 +254,9 @@ All tests are automatically ran in Travis CI with headless chromium. This way, t
 Do you want to run them in the `dev` mode (slows down operations, opens the browser)?
 
 ```bash
-yarn storybook #start the storybook server
+yarn ladle serve #start the ladle server
 yarn test:e2e:dev #run the e2e tests
 ```
-
-`CI` mode (storybook started on the background, quick, headless)
 
 ```bash
 yarn test:e2e
@@ -284,7 +284,7 @@ This is how you can spin up the dev environment:
 git clone https://github.com/tajo/react-movable
 cd react-movable
 yarn
-yarn storybook
+yarn ladle serve
 ```
 
 ## Learning more
