@@ -14,7 +14,7 @@
   "author": "Vojtech Miksu <vojtech@miksu.cz>",
   "license": "MIT",
   "scripts": {
-    "build": "rm -rf lib && tsc --outDir lib && cp flowtypes/* lib && rm lib/*.test.*",
+    "build": "rm -rf lib && tsc --outDir lib && cp flowtypes/* lib && rm -rf lib/examples && mv lib/src/* lib && rm -rf lib/src && rm lib/*.test.* && rm lib/*.stories.*",
     "build-ladle": "ladle build",
     "jest:e2e": "jest --runInBand",
     "jest:e2e:update": "jest --runInBand -u e2e",
