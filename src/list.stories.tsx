@@ -1,3 +1,4 @@
+import * as React from 'react';
 import BasicExample from '../examples/Basic';
 import TableExample from '../examples/Table';
 import TableAutoExample from '../examples/TableAuto';
