@@ -21,7 +21,7 @@ test('dnd the second item out the bounds to be removed', async () => {
   await page.mouse.down();
   await page.mouse.move(828, 222);
   await page.mouse.up();
-  await page.waitFor(300);
+  await page.waitForTimeout(300);
   expect(await getListItems(page as any)).toEqual([
     'You can remove items by moving them far left or right. Also, onChange always gives you the getBoundingClientRect of the dropped item.',
     'Item 3',

@@ -12,21 +12,21 @@ test('scroll down', async () => {
   await page.mouse.move(190, 140);
   await page.mouse.down();
   await page.mouse.move(190, 690);
-  await page.waitFor(200);
+  await page.waitForTimeout(200);
   await page.mouse.up();
   const pageYOffset = await page.evaluate(() => window.pageYOffset);
   expect(pageYOffset).toBeGreaterThan(0);
 });
 
-test('scroll up', async () => {
+test.only('scroll up', async () => {
   await trackMouse(page as any);
   const list = await page.$('#root ul');
   await page.evaluate(() => window.scrollTo(0, 300));
   await page.mouse.move(190, 641);
   await page.mouse.down();
   await page.mouse.move(190, 100);
-  await page.waitFor(200);
+  await page.waitForTimeout(200);
   await page.mouse.up();
   const pageYOffset = await page.evaluate(() => window.pageYOffset);
-  expect(pageYOffset).toBeLessThan(300);
+  expect(pageYOffset).toBeLessThan(301);
 });

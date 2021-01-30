@@ -3,7 +3,7 @@
     "target": "es5",
     "module": "commonjs",
     "lib": ["esnext", "dom"],
-    "jsx": "react",
+    "jsx": "react-jsx",
     "declaration": true,
     "moduleResolution": "node",
     "esModuleInterop": true,
@@ -13,5 +13,5 @@
     "forceConsistentCasingInFileNames": true,
     "resolveJsonModule": true
   },
-  "include": ["src"]
+  "include": ["src", "examples"]
 }

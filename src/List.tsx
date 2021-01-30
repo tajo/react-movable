@@ -124,16 +124,16 @@ class List<Value = string> extends React.Component<IProps<Value>> {
 
   calculateOffsets = () => {
     this.topOffsets = this.getChildren().map(
-      item => item.getBoundingClientRect().top
+      (item) => item.getBoundingClientRect().top
     );
-    this.itemTranslateOffsets = this.getChildren().map(item =>
+    this.itemTranslateOffsets = this.getChildren().map((item) =>
       getTranslateOffset(item)
     );
   };
 
   getTargetIndex = (e: TEvent) => {
     return this.getChildren().findIndex(
-      child => child === e.target || child.contains(e.target as Node)
+      (child) => child === e.target || child.contains(e.target as Node)
     );
   };
 
@@ -267,7 +267,7 @@ class List<Value = string> extends React.Component<IProps<Value>> {
     // adjust offsets if scrolling happens during the item movement
     if (this.initialYOffset !== currentYOffset) {
       this.topOffsets = this.topOffsets.map(
-        offset => offset - (currentYOffset - this.initialYOffset)
+        (offset) => offset - (currentYOffset - this.initialYOffset)
       );
       this.initialYOffset = currentYOffset;
     }
@@ -450,7 +450,7 @@ class List<Value = string> extends React.Component<IProps<Value>> {
         targetRect: this.ghostRef.current!.getBoundingClientRect()
       });
     }
-    this.getChildren().forEach(item => {
+    this.getChildren().forEach((item) => {
       setItemTransition(item, 0);
       transformItem(item, null);
     });
@@ -474,7 +474,7 @@ class List<Value = string> extends React.Component<IProps<Value>> {
       e.preventDefault();
       if (selectedItem === index) {
         if (selectedItem !== this.needle) {
-          this.getChildren().forEach(item => {
+          this.getChildren().forEach((item) => {
             setItemTransition(item, 0);
             transformItem(item, null);
           });
@@ -529,7 +529,7 @@ class List<Value = string> extends React.Component<IProps<Value>> {
       });
     }
     if (e.key === 'Escape' && selectedItem > -1) {
-      this.getChildren().forEach(item => {
+      this.getChildren().forEach((item) => {
         setItemTransition(item, 0);
         transformItem(item, null);
       });

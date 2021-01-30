@@ -9,25 +9,25 @@ export enum Examples {
 }
 
 export const getTestUrl = (example: Examples): string => {
-  const PORT = process.env.E2E === 'dev' ? 9010 : 9011;
+  const PORT = 61000;
   switch (example) {
     case Examples.BASIC:
-      return `http://localhost:${PORT}/iframe.html?selectedKind=List&selectedStory=Basic`;
+      return `http://localhost:${PORT}/?story=list--basic&mode=preview`;
     case Examples.HEIGHTS:
-      return `http://localhost:${PORT}/iframe.html?selectedKind=List&selectedStory=Varying%20heights`;
+      return `http://localhost:${PORT}/?story=list--varying-heights&mode=preview`;
     case Examples.SCROLLING_CONTAINER:
-      return `http://localhost:${PORT}/iframe.html?selectedKind=List&selectedStory=Scrolling%20container`;
+      return `http://localhost:${PORT}/?story=list--scrolling-container&mode=preview`;
     case Examples.SCROLLING_WINDOW:
-      return `http://localhost:${PORT}/iframe.html?selectedKind=List&selectedStory=Scrolling%20window`;
+      return `http://localhost:${PORT}/?story=list--scrolling-window&mode=preview`;
     case Examples.REMOVABLE:
-      return `http://localhost:${PORT}/iframe.html?selectedKind=List&selectedStory=Removable%20by%20move`;
+      return `http://localhost:${PORT}/?story=list--removable-by-move&mode=preview`;
   }
 };
 
 export const getListItems = async (page: puppeteer.Page) => {
   const items = await page.$$('#root li');
   return await Promise.all(
-    items.map(item => page.evaluate(el => el.innerText, item))
+    items.map((item) => page.evaluate((el) => el.innerText, item))
   );
 };
 
@@ -149,6 +149,9 @@ const hideCursor = () => {
 const fontStyles = () => {
   const styleElement = document.createElement('style');
   styleElement.innerHTML = `
+  body {
+    margin: 8px;
+  }
   li {
     font-weight: normal;
     font-style: normal;
