@@ -26,9 +26,14 @@ export const getTestUrl = (example: Examples): string => {
 
 export const getListItems = async (page: puppeteer.Page) => {
   const items = await page.$$('#root li');
+  await page.waitForTimeout(200);
   return await Promise.all(
     items.map((item) => page.evaluate((el) => el.innerText, item))
   );
+};
+
+export const waitForList = async (page: puppeteer.Page) => {
+  await page.waitForSelector(`#root li`);
 };
 
 export const makeDnd = async (

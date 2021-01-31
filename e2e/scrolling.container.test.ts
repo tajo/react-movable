@@ -1,10 +1,11 @@
-import { Examples, getTestUrl, trackMouse } from './utils';
+import { Examples, getTestUrl, trackMouse, waitForList } from './utils';
 
 jest.setTimeout(10000);
 
 beforeEach(async () => {
   await page.goto(getTestUrl(Examples.SCROLLING_CONTAINER));
   await page.setViewport({ width: 400, height: 800 });
+  await waitForList(page);
 });
 
 test('scroll down', async () => {

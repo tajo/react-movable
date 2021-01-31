@@ -5,7 +5,8 @@ import {
   untrackMouse,
   addFontStyles,
   getListItems,
-  makeDnd
+  makeDnd,
+  waitForList
 } from './utils';
 
 jest.setTimeout(10000);
@@ -25,6 +26,7 @@ beforeEach(async () => {
   await page.setViewport({ width: 400, height: 800 });
   await addFontStyles(page as any);
   await addFontStyles(page as any);
+  await waitForList(page);
 });
 
 test('dnd the first item to second position', async () => {
