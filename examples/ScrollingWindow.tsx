@@ -3,8 +3,14 @@ import { List, arrayMove } from '../src/index';
 
 const ScrollingWindow: React.FC = () => {
   const [items, setItems] = React.useState(
-    Array.from(Array(100).keys()).map(val => `Item ${val}`)
+    Array.from(Array(100).keys()).map((val) => `Item ${val}`)
   );
+  React.useEffect(() => {
+    document.documentElement.setAttribute('data-scroll', 'single');
+    return () => {
+      document.documentElement.removeAttribute('data-scroll');
+    };
+  });
   return (
     <div
       style={{
