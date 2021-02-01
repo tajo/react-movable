@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { List, arrayMove } from '../src/index';
-import { IItemProps } from '../src/types';
+import type { IItemProps } from '../src/types';
 
 const CustomItem = React.forwardRef(
   (

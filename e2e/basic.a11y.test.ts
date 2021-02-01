@@ -1,5 +1,11 @@
 import * as puppeteer from 'puppeteer';
-import { Examples, getTestUrl, getListItems, addFontStyles } from './utils';
+import {
+  Examples,
+  getTestUrl,
+  getListItems,
+  addFontStyles,
+  waitForList
+} from './utils';
 
 jest.setTimeout(10000);
 
@@ -7,6 +13,7 @@ beforeEach(async () => {
   await page.goto(getTestUrl(Examples.BASIC));
   await page.setViewport({ width: 400, height: 800 });
   await addFontStyles(page as any);
+  await waitForList(page);
 });
 
 test('move the first item to second position', async () => {
