@@ -1171,10 +1171,10 @@
     "@types/yargs" "^15.0.0"
     chalk "^4.0.0"
 
-"@ladle/cli@^0.0.5":
-  version "0.0.5"
-  resolved "https://registry.yarnpkg.com/@ladle/cli/-/cli-0.0.5.tgz#3bd9b99a3e10858e205abf523ea1030eb1b0f6ea"
-  integrity sha512-6mS9E3aBr80J+QOTpSBsBr3xwNj8sYgwzkhYrJPRr3wM1WUIQmoja7ZB16QywxskPu/m3Y725fYaItPBVqmt5Q==
+"@ladle/cli@^0.0.6":
+  version "0.0.6"
+  resolved "https://registry.yarnpkg.com/@ladle/cli/-/cli-0.0.6.tgz#45a6e3b725ad4b19ec4a9a6be1c99b8e93745ca4"
+  integrity sha512-0wgyPfHzlwEpiFoAeX14YCpreXvKjNpxS7+CEe8R6c2zXEHQeaoMoOyChTrUDM0gt28SND1BwGBi80uv/HBMnQ==
   dependencies:
     "@babel/plugin-proposal-class-properties" "^7.12.1"
     "@babel/preset-env" "^7.12.11"
