@@ -1349,10 +1349,10 @@
     "@types/yargs" "^15.0.0"
     chalk "^4.0.0"
 
-"@ladle/react@^0.0.10":
-  version "0.0.10"
-  resolved "https://registry.yarnpkg.com/@ladle/react/-/react-0.0.10.tgz#dbc4068171284ae93d45396280d471340999f8f0"
-  integrity sha512-Ve72aRSJ5X2nVGjzp+gljZQPO7VniVzak17YMQDfmmQ1ft4XNlUdp8OvwzjMCcJcoMkoOR49/5c8Fj9bfW18/g==
+"@ladle/react@0.0.11":
+  version "0.0.11"
+  resolved "https://registry.yarnpkg.com/@ladle/react/-/react-0.0.11.tgz#e2aa542928614937550ce67a5ca9ebcd10c30aba"
+  integrity sha512-sAZ4WuNGtG+K2KTIY0aL1n3tpXiLkfvBdXRYyBv9QmuyPjAPhOOQ7UoPr5x8OmxUihskX4CyeXD7iDkdbsWCeg==
   dependencies:
     "@babel/plugin-proposal-class-properties" "^7.12.1"
     "@babel/preset-env" "^7.12.11"
