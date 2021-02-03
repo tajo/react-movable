@@ -15,14 +15,14 @@ test('scroll down', async () => {
   await page.mouse.move(190, 690);
   await page.waitForTimeout(200);
   await page.mouse.up();
-  const list = await page.$('#root ul');
+  const list = await page.$('#ladle-root ul');
   const scrollTop = await page.evaluate((el) => el.scrollTop, list);
   expect(scrollTop).toBeGreaterThan(0);
 });
 
 test('scroll up', async () => {
   await trackMouse(page as any);
-  const list = await page.$('#root ul');
+  const list = await page.$('#ladle-root ul');
   await page.evaluate((el) => (el.scrollTop = 300), list);
   await page.mouse.move(190, 641);
   await page.mouse.down();
