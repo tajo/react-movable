@@ -21,7 +21,7 @@ test('scroll down', async () => {
 
 test.only('scroll up', async () => {
   await trackMouse(page as any);
-  const list = await page.$('#root ul');
+  const list = await page.$('#ladle-root ul');
   await page.evaluate(() => window.scrollTo(0, 300));
   await page.mouse.move(190, 641);
   await page.mouse.down();

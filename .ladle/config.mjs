@@ -5,7 +5,7 @@ export default {
       enabled: false
     },
     mode: {
-      enabled: false
+      defaultState: 'single-scroll'
     }
   }
 };

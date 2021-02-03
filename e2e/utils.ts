@@ -25,7 +25,7 @@ export const getTestUrl = (example: Examples): string => {
 };
 
 export const getListItems = async (page: puppeteer.Page) => {
-  const items = await page.$$('#root li');
+  const items = await page.$$('#ladle-root li');
   await page.waitForTimeout(200);
   return await Promise.all(
     items.map((item) => page.evaluate((el) => el.innerText, item))
@@ -33,7 +33,7 @@ export const getListItems = async (page: puppeteer.Page) => {
 };
 
 export const waitForList = async (page: puppeteer.Page) => {
-  await page.waitForSelector(`#root li`);
+  await page.waitForSelector(`#ladle-root li`);
 };
 
 export const makeDnd = async (
@@ -48,7 +48,7 @@ export const makeDnd = async (
   await mouse.up();
   // make sure that originally dragged item is visible (rendered)
   // in a new place
-  await page.waitForSelector(`#root li:nth-child(${from})`, {
+  await page.waitForSelector(`#ladle-root li:nth-child(${from})`, {
     visible: true
   });
 };
