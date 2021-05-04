@@ -453,6 +453,7 @@ class List<Value = string> extends React.Component<IProps<Value>> {
     this.getChildren().forEach((item) => {
       setItemTransition(item, 0);
       transformItem(item, null);
+      (item as HTMLElement).style.touchAction = '';
     });
     this.setState({ itemDragged: -1, scrollingSpeed: 0 });
     this.afterIndex = -2;
