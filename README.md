@@ -268,7 +268,6 @@ yarn test:e2e
 - **Firefox** (latest, mac, windows)
 - **Safari** (latest, mac, iOS)
 - **Edge** (latest, windows)
-- **MSIE 11** (windows)
 
 ## Users
 
