@@ -8,8 +8,8 @@ import {
   schd,
   isTouchEvent,
   checkIfInteractive
-} from './utils';
-import { IItemProps, IProps, TEvent } from './types';
+} from './utils.js';
+import type { IItemProps, IProps, TEvent } from './types.js';
 
 const AUTOSCROLL_ACTIVE_OFFSET = 200;
 const AUTOSCROLL_SPEED_RATIO = 10;
@@ -284,11 +284,8 @@ class List<Value = string> extends React.Component<IProps<Value>> {
   };
 
   autoScrolling = (clientY: number) => {
-    const {
-      top,
-      bottom,
-      height
-    } = this.listRef.current!.getBoundingClientRect();
+    const { top, bottom, height } =
+      this.listRef.current!.getBoundingClientRect();
     const viewportHeight =
       window.innerHeight || document.documentElement.clientHeight;
     // autoscrolling for the window (down)
@@ -369,9 +366,8 @@ class List<Value = string> extends React.Component<IProps<Value>> {
   };
 
   isDraggedItemOutOfBounds = () => {
-    const initialRect = this.getChildren()[
-      this.state.itemDragged
-    ].getBoundingClientRect();
+    const initialRect =
+      this.getChildren()[this.state.itemDragged].getBoundingClientRect();
     const targetRect = this.ghostRef.current!.getBoundingClientRect();
     if (Math.abs(initialRect.left - targetRect.left) > targetRect.width) {
       if (this.state.itemDraggedOutOfBounds === -1) {
