@@ -92,6 +92,11 @@ export const schd = (fn: Function) => {
       fn(...lastArgs);
     });
   };
+  wrapperFn.cancel = () => {
+    if (frameId) {
+      cancelAnimationFrame(frameId);
+    }
+  };
   return wrapperFn;
 };
 
