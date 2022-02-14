@@ -72,6 +72,9 @@ class List<Value = string> extends React.Component<IProps<Value>> {
   componentWillUnmount() {
     document.removeEventListener('touchstart', this.onMouseOrTouchStart as any);
     document.removeEventListener('mousedown', this.onMouseOrTouchStart as any);
+    if (this.dropTimeout) {
+      window.clearTimeout(this.dropTimeout);
+    }
   }
 
   doScrolling = () => {
