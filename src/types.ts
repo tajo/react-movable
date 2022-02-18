@@ -35,7 +35,7 @@ export interface RenderListParams {
 
 export interface BeforeDragParams {
   elements: Element[];
-  index: number
+  index: number;
 }
 
 export interface OnChangeMeta {
@@ -51,6 +51,8 @@ export interface IProps<Value> {
   values: Value[];
   onChange: (meta: OnChangeMeta) => void;
   transitionDuration: number;
+  autoscrollActiveOffset: number;
+  autoscrollSpeedRatio: number;
   removableByMove: boolean;
   lockVertically: boolean;
   voiceover: IVoiceover;

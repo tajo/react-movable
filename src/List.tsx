@@ -11,9 +11,6 @@ import {
 } from './utils.js';
 import type { IItemProps, IProps, TEvent } from './types.js';
 
-const AUTOSCROLL_ACTIVE_OFFSET = 200;
-const AUTOSCROLL_SPEED_RATIO = 10;
-
 class List<Value = string> extends React.Component<IProps<Value>> {
   listRef = React.createRef<HTMLElement>();
   ghostRef = React.createRef<HTMLElement>();
@@ -104,6 +101,8 @@ class List<Value = string> extends React.Component<IProps<Value>> {
 
   static defaultProps = {
     transitionDuration: 300,
+    autoscrollActiveOffset: 200,
+    autoscrollSpeedRatio: 10,
     lockVertically: false,
     removableByMove: false,
     voiceover: {
@@ -288,23 +287,24 @@ class List<Value = string> extends React.Component<IProps<Value>> {
       this.listRef.current!.getBoundingClientRect();
     const viewportHeight =
       window.innerHeight || document.documentElement.clientHeight;
+    const { autoscrollActiveOffset, autoscrollSpeedRatio } = this.props;
     // autoscrolling for the window (down)
     if (
       bottom > viewportHeight &&
-      viewportHeight - clientY < AUTOSCROLL_ACTIVE_OFFSET
+      viewportHeight - clientY < autoscrollActiveOffset
     ) {
       this.setState({
         scrollingSpeed: Math.round(
-          (AUTOSCROLL_ACTIVE_OFFSET - (viewportHeight - clientY)) /
-            AUTOSCROLL_SPEED_RATIO
+          (autoscrollActiveOffset - (viewportHeight - clientY)) /
+            autoscrollSpeedRatio
         ),
         scrollWindow: true
       });
       // autoscrolling for the window (up)
-    } else if (top < 0 && clientY < AUTOSCROLL_ACTIVE_OFFSET) {
+    } else if (top < 0 && clientY < autoscrollActiveOffset) {
       this.setState({
         scrollingSpeed: Math.round(
-          (AUTOSCROLL_ACTIVE_OFFSET - clientY) / -AUTOSCROLL_SPEED_RATIO
+          (autoscrollActiveOffset - clientY) / -autoscrollSpeedRatio
         ),
         scrollWindow: true
       });
@@ -315,15 +315,13 @@ class List<Value = string> extends React.Component<IProps<Value>> {
       // autoscrolling for containers with overflow
       if (height + 20 < this.listRef.current!.scrollHeight) {
         let scrollingSpeed = 0;
-        if (clientY - top < AUTOSCROLL_ACTIVE_OFFSET) {
+        if (clientY - top < autoscrollActiveOffset) {
           scrollingSpeed = Math.round(
-            (AUTOSCROLL_ACTIVE_OFFSET - (clientY - top)) /
-              -AUTOSCROLL_SPEED_RATIO
+            (autoscrollActiveOffset - (clientY - top)) / -autoscrollSpeedRatio
           );
-        } else if (bottom - clientY < AUTOSCROLL_ACTIVE_OFFSET) {
+        } else if (bottom - clientY < autoscrollActiveOffset) {
           scrollingSpeed = Math.round(
-            (AUTOSCROLL_ACTIVE_OFFSET - (bottom - clientY)) /
-              AUTOSCROLL_SPEED_RATIO
+            (autoscrollActiveOffset - (bottom - clientY)) / autoscrollSpeedRatio
           );
         }
         if (this.state.scrollingSpeed !== scrollingSpeed) {
