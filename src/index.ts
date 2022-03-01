@@ -1,5 +1,5 @@
-import List from './List.js';
-import { arrayMove, arrayRemove } from './utils.js';
+import List from './List';
+import { arrayMove, arrayRemove } from './utils';
 import type {
   IItemProps,
   RenderItemParams,
@@ -8,7 +8,7 @@ import type {
   OnChangeMeta,
   IProps,
   TEvent
-} from './types.js';
+} from './types';
 
 export { List, arrayMove, arrayRemove };
 export type {
