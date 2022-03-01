@@ -8,7 +8,7 @@ import {
   schd,
   isTouchEvent,
   checkIfInteractive
-} from './utils.js';
+} from './utils';
 import type { IItemProps, IProps, TEvent } from './types';
 
 const AUTOSCROLL_ACTIVE_OFFSET = 200;
