@@ -37,7 +37,9 @@ export function transformItem(
     (element as HTMLElement).style.removeProperty('transform');
     return;
   }
-  (element as HTMLElement).style.transform = `translate(${offsetX}px, ${offsetY}px)`;
+  (
+    element as HTMLElement
+  ).style.transform = `translate(${offsetX}px, ${offsetY}px)`;
 }
 
 export function isItemTransformed(element: Element) {

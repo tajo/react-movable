@@ -8,8 +8,8 @@ import {
   schd,
   isTouchEvent,
   checkIfInteractive
-} from './utils.js';
-import type { IItemProps, IProps, TEvent } from './types.js';
+} from './utils';
+import type { IItemProps, IProps, TEvent } from './types';
 
 const AUTOSCROLL_ACTIVE_OFFSET = 200;
 const AUTOSCROLL_SPEED_RATIO = 10;
