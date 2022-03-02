@@ -40,9 +40,9 @@ class List<Value = string> extends React.Component<IProps<Value>> {
     scrollingSpeed: 0,
     scrollWindow: false
   };
-  schdOnMouseMove: (e: MouseEvent) => void;
-  schdOnTouchMove: (e: TouchEvent) => void;
-  schdOnEnd: (e: Event) => void;
+  schdOnMouseMove: { (e: MouseEvent): void; cancel(): void; };
+  schdOnTouchMove: { (e: TouchEvent): void; cancel(): void; };
+  schdOnEnd: { (e: Event): void; cancel(): void; };
 
   constructor(props: IProps<Value>) {
     super(props);
@@ -72,6 +72,12 @@ class List<Value = string> extends React.Component<IProps<Value>> {
   componentWillUnmount() {
     document.removeEventListener('touchstart', this.onMouseOrTouchStart as any);
     document.removeEventListener('mousedown', this.onMouseOrTouchStart as any);
+    if (this.dropTimeout) {
+      window.clearTimeout(this.dropTimeout);
+    }
+    this.schdOnMouseMove.cancel();
+    this.schdOnTouchMove.cancel();
+    this.schdOnEnd.cancel();
   }
 
   doScrolling = () => {
