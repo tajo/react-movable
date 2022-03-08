@@ -1,5 +1,5 @@
-import List from './List';
-import { arrayMove, arrayRemove } from './utils';
+import List from './List.js';
+import { arrayMove, arrayRemove } from './utils.js';
 import type {
   IItemProps,
   RenderItemParams,
