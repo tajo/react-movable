@@ -8,8 +8,8 @@ import {
   schd,
   isTouchEvent,
   checkIfInteractive
-} from './utils';
-import type { IItemProps, IProps, TEvent } from './types';
+} from './utils.js';
+import type { IItemProps, IProps, TEvent } from './types.js';
 
 const AUTOSCROLL_ACTIVE_OFFSET = 200;
 const AUTOSCROLL_SPEED_RATIO = 10;
@@ -40,9 +40,9 @@ class List<Value = string> extends React.Component<IProps<Value>> {
     scrollingSpeed: 0,
     scrollWindow: false
   };
-  schdOnMouseMove: { (e: MouseEvent): void; cancel(): void; };
-  schdOnTouchMove: { (e: TouchEvent): void; cancel(): void; };
-  schdOnEnd: { (e: Event): void; cancel(): void; };
+  schdOnMouseMove: { (e: MouseEvent): void; cancel(): void };
+  schdOnTouchMove: { (e: TouchEvent): void; cancel(): void };
+  schdOnEnd: { (e: Event): void; cancel(): void };
 
   constructor(props: IProps<Value>) {
     super(props);
