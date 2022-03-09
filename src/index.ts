@@ -8,7 +8,7 @@ import type {
   OnChangeMeta,
   IProps,
   TEvent
-} from './types';
+} from './types.js';
 
 export { List, arrayMove, arrayRemove };
 export type {
