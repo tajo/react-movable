@@ -36,7 +36,7 @@ export interface RenderListParams {
 
 export interface BeforeDragParams {
   elements: Element[];
-  index: number
+  index: number;
 }
 
 export interface OnChangeMeta {
@@ -56,6 +56,7 @@ export interface IProps<Value> {
   lockVertically: boolean;
   voiceover: IVoiceover;
   container?: Element | null;
+  getNeedle?: (needle: number | null) => void;
 }
 
 export type TEvent = React.MouseEvent | React.TouchEvent | React.KeyboardEvent;
