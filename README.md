@@ -94,6 +94,7 @@ renderItem: (params: {
   isDragged: boolean;
   isSelected: boolean;
   isOutOfBounds: boolean;
+  itemDragged: number;
   props: {
     key?: number;
     tabIndex?: number;
@@ -113,6 +114,7 @@ renderItem: (params: {
 - `isDragged` - `true` if the item is dragged, great for styling purposes
 - `isSelected` - `true` if the item is lifted with the `space`
 - `isOutOfBounds` - `true` if the item is dragged far left or right
+- `itemDragged` - `number` index of the item being dragged
 - `props` - it has multiple props that you need to spread over your item element. Since one of these is `ref`, if you're spreading over a custom component, it must be wrapped in `React.forwardRef` like in the "Custom component" example.
 
 ### values
@@ -190,6 +192,14 @@ container?: Element;
 ```
 
 Provide custom DOM element where moved item will be rendered.
+
+## getNeedle
+
+```ts
+getNeedle?: (needle: string) => void;
+```
+
+Provides a way to access the intended drop index (needle) while dragging
 
 ## `arrayMove` and `arrayRemove`
 
