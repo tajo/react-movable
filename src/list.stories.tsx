@@ -12,6 +12,7 @@ import LockVerticallyExample from '../examples/LockVertically';
 import VaryingHeightsExample from '../examples/VaryingHeights';
 import ScrollingWindowExample from '../examples/ScrollingWindow';
 import ScrollingContainerExample from '../examples/ScrollingContainer';
+import ScrollingContainerShortExample from '../examples/ScrollingContainerShort';
 import InteractiveItemsExample from '../examples/InteractiveItems';
 import CustomComponentExample from '../examples/CustomComponent';
 import CustomContainerExample from '../examples/CustomContainer';
@@ -30,6 +31,7 @@ export const LockVertically = () => <LockVerticallyExample />;
 export const VaryingHeights = () => <VaryingHeightsExample />;
 export const ScrollingWindow = () => <ScrollingWindowExample />;
 export const ScrollingContainer = () => <ScrollingContainerExample />;
+export const ScrollingContainerShort = () => <ScrollingContainerShortExample />;
 export const ScrollingContainerWithHandle = () => (
   <ScrollingContainerHandleExample />
 );
