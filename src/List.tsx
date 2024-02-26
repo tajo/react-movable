@@ -13,6 +13,7 @@ import type { IItemProps, IProps, TEvent } from './types.js';
 
 const AUTOSCROLL_ACTIVE_OFFSET = 200;
 const AUTOSCROLL_SPEED_RATIO = 10;
+const AUTOSCROLL_DELTA_THRESHOLD = 10;
 
 class List<Value = string> extends React.Component<IProps<Value>> {
   listRef = React.createRef<HTMLElement>();
@@ -259,7 +260,7 @@ class List<Value = string> extends React.Component<IProps<Value>> {
       clientY - this.state.initialY,
       this.props.lockVertically ? 0 : clientX - this.state.initialX
     );
-    this.autoScrolling(clientY);
+    this.autoScrolling(clientY, clientY - this.state.initialY);
     this.moveOtherItems();
   };
 
@@ -289,7 +290,7 @@ class List<Value = string> extends React.Component<IProps<Value>> {
     );
   };
 
-  autoScrolling = (clientY: number) => {
+  autoScrolling = (clientY: number, delta: number) => {
     const { top, bottom, height } =
       this.listRef.current!.getBoundingClientRect();
     const viewportHeight =
@@ -297,7 +298,8 @@ class List<Value = string> extends React.Component<IProps<Value>> {
     // autoscrolling for the window (down)
     if (
       bottom > viewportHeight &&
-      viewportHeight - clientY < AUTOSCROLL_ACTIVE_OFFSET
+      viewportHeight - clientY < AUTOSCROLL_ACTIVE_OFFSET &&
+      delta > AUTOSCROLL_DELTA_THRESHOLD
     ) {
       this.setState({
         scrollingSpeed: Math.round(
@@ -307,7 +309,11 @@ class List<Value = string> extends React.Component<IProps<Value>> {
         scrollWindow: true
       });
       // autoscrolling for the window (up)
-    } else if (top < 0 && clientY < AUTOSCROLL_ACTIVE_OFFSET) {
+    } else if (
+      top < 0 &&
+      clientY < AUTOSCROLL_ACTIVE_OFFSET &&
+      delta < -AUTOSCROLL_DELTA_THRESHOLD
+    ) {
       this.setState({
         scrollingSpeed: Math.round(
           (AUTOSCROLL_ACTIVE_OFFSET - clientY) / -AUTOSCROLL_SPEED_RATIO
@@ -321,12 +327,20 @@ class List<Value = string> extends React.Component<IProps<Value>> {
       // autoscrolling for containers with overflow
       if (height + 20 < this.listRef.current!.scrollHeight) {
         let scrollingSpeed = 0;
-        if (clientY - top < AUTOSCROLL_ACTIVE_OFFSET) {
+        // (up)
+        if (
+          clientY - top < AUTOSCROLL_ACTIVE_OFFSET &&
+          delta < -AUTOSCROLL_DELTA_THRESHOLD
+        ) {
           scrollingSpeed = Math.round(
             (AUTOSCROLL_ACTIVE_OFFSET - (clientY - top)) /
               -AUTOSCROLL_SPEED_RATIO
           );
-        } else if (bottom - clientY < AUTOSCROLL_ACTIVE_OFFSET) {
+          // (down)
+        } else if (
+          bottom - clientY < AUTOSCROLL_ACTIVE_OFFSET &&
+          delta > AUTOSCROLL_DELTA_THRESHOLD
+        ) {
           scrollingSpeed = Math.round(
             (AUTOSCROLL_ACTIVE_OFFSET - (bottom - clientY)) /
               AUTOSCROLL_SPEED_RATIO
