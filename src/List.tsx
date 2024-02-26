@@ -302,9 +302,14 @@ class List<Value = string> extends React.Component<IProps<Value>> {
       delta > AUTOSCROLL_DELTA_THRESHOLD
     ) {
       this.setState({
-        scrollingSpeed: Math.round(
-          (AUTOSCROLL_ACTIVE_OFFSET - (viewportHeight - clientY)) /
-            AUTOSCROLL_SPEED_RATIO
+        scrollingSpeed: Math.min(
+          Math.round(
+            (AUTOSCROLL_ACTIVE_OFFSET - (viewportHeight - clientY)) /
+              AUTOSCROLL_SPEED_RATIO
+          ),
+          Math.round(
+            (delta - AUTOSCROLL_DELTA_THRESHOLD) / AUTOSCROLL_SPEED_RATIO
+          )
         ),
         scrollWindow: true
       });
@@ -315,8 +320,13 @@ class List<Value = string> extends React.Component<IProps<Value>> {
       delta < -AUTOSCROLL_DELTA_THRESHOLD
     ) {
       this.setState({
-        scrollingSpeed: Math.round(
-          (AUTOSCROLL_ACTIVE_OFFSET - clientY) / -AUTOSCROLL_SPEED_RATIO
+        scrollingSpeed: Math.max(
+          Math.round(
+            (AUTOSCROLL_ACTIVE_OFFSET - clientY) / -AUTOSCROLL_SPEED_RATIO
+          ),
+          Math.round(
+            (delta + AUTOSCROLL_DELTA_THRESHOLD) / AUTOSCROLL_SPEED_RATIO
+          )
         ),
         scrollWindow: true
       });
@@ -332,18 +342,28 @@ class List<Value = string> extends React.Component<IProps<Value>> {
           clientY - top < AUTOSCROLL_ACTIVE_OFFSET &&
           delta < -AUTOSCROLL_DELTA_THRESHOLD
         ) {
-          scrollingSpeed = Math.round(
-            (AUTOSCROLL_ACTIVE_OFFSET - (clientY - top)) /
-              -AUTOSCROLL_SPEED_RATIO
+          scrollingSpeed = Math.max(
+            Math.round(
+              (AUTOSCROLL_ACTIVE_OFFSET - (clientY - top)) /
+                -AUTOSCROLL_SPEED_RATIO
+            ),
+            Math.round(
+              (delta + AUTOSCROLL_DELTA_THRESHOLD) / AUTOSCROLL_SPEED_RATIO
+            )
           );
           // (down)
         } else if (
           bottom - clientY < AUTOSCROLL_ACTIVE_OFFSET &&
           delta > AUTOSCROLL_DELTA_THRESHOLD
         ) {
-          scrollingSpeed = Math.round(
-            (AUTOSCROLL_ACTIVE_OFFSET - (bottom - clientY)) /
-              AUTOSCROLL_SPEED_RATIO
+          scrollingSpeed = Math.min(
+            Math.round(
+              (AUTOSCROLL_ACTIVE_OFFSET - (bottom - clientY)) /
+                AUTOSCROLL_SPEED_RATIO
+            ),
+            Math.round(
+              (delta - AUTOSCROLL_DELTA_THRESHOLD) / AUTOSCROLL_SPEED_RATIO
+            )
           );
         }
         if (this.state.scrollingSpeed !== scrollingSpeed) {
