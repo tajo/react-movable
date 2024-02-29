@@ -114,7 +114,7 @@ export function checkIfInteractive(target: Element, rootElement: Element) {
     'button',
     'a'
   ];
-  const DISABLED_ROLES = ['button', 'link', 'checkbox', 'tab'];
+  const DISABLED_ROLES = ['button', 'link', 'checkbox', 'radio', 'switch', 'tab'];
   while (target !== rootElement) {
     if (target.getAttribute('data-movable-handle')) {
       return false;
