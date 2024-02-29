@@ -379,6 +379,7 @@ class List<Value = string> extends React.Component<IProps<Value>> {
     offset: number,
     animateMovedItem: boolean = false
   ) => {
+    this.props.getNeedle?.(needle);
     this.getChildren().forEach((item, i) => {
       setItemTransition(item, this.props.transitionDuration);
       if (movedItem === i && animateMovedItem) {
@@ -474,6 +475,7 @@ class List<Value = string> extends React.Component<IProps<Value>> {
   };
 
   finishDrop = () => {
+    this.props.getNeedle?.(null);
     const removeItem =
       this.props.removableByMove && this.isDraggedItemOutOfBounds();
     if (
@@ -625,7 +627,8 @@ class List<Value = string> extends React.Component<IProps<Value>> {
               index,
               isDragged: false,
               isSelected,
-              isOutOfBounds: false
+              isOutOfBounds: false,
+              itemDragged: this.state.itemDragged
             });
           }),
           isDragged: this.state.itemDragged > -1,
@@ -645,7 +648,8 @@ class List<Value = string> extends React.Component<IProps<Value>> {
               index: this.state.itemDragged,
               isDragged: true,
               isSelected: false,
-              isOutOfBounds: this.state.itemDraggedOutOfBounds > -1
+              isOutOfBounds: this.state.itemDraggedOutOfBounds > -1,
+              itemDragged: this.state.itemDragged
             }),
             this.props.container || document.body
           )}
