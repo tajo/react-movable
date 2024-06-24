@@ -26,7 +26,7 @@ export const getTestUrl = (example: Examples): string => {
 
 export const getListItems = async (page: puppeteer.Page) => {
   const items = await page.$$('#ladle-root li');
-  await page.waitForTimeout(200);
+  await new Promise((r) => setTimeout(r, 200));
   return await Promise.all(
     items.map((item) => page.evaluate((el) => el.innerText, item))
   );

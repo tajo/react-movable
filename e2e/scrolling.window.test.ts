@@ -13,7 +13,7 @@ test('scroll down', async () => {
   await page.mouse.move(190, 140);
   await page.mouse.down();
   await page.mouse.move(190, 690);
-  await page.waitForTimeout(200);
+  await new Promise((r) => setTimeout(r, 200));
   await page.mouse.up();
   const pageYOffset = await page.evaluate(() => window.pageYOffset);
   expect(pageYOffset).toBeGreaterThan(0);
@@ -26,7 +26,7 @@ test.only('scroll up', async () => {
   await page.mouse.move(190, 641);
   await page.mouse.down();
   await page.mouse.move(190, 100);
-  await page.waitForTimeout(200);
+  await new Promise((r) => setTimeout(r, 200));
   await page.mouse.up();
   const pageYOffset = await page.evaluate(() => window.pageYOffset);
   expect(pageYOffset).toBeLessThan(301);
