@@ -5,7 +5,9 @@ export enum Examples {
   HEIGHTS,
   SCROLLING_CONTAINER,
   SCROLLING_WINDOW,
-  REMOVABLE
+  REMOVABLE,
+  DISABLED_ITEMS,
+  DISABLED_LIST
 }
 
 export const getTestUrl = (example: Examples): string => {
@@ -21,6 +23,10 @@ export const getTestUrl = (example: Examples): string => {
       return `http://localhost:${PORT}/?story=list--scrolling-window&mode=preview`;
     case Examples.REMOVABLE:
       return `http://localhost:${PORT}/?story=list--removable-by-move&mode=preview`;
+    case Examples.DISABLED_ITEMS:
+      return `http://localhost:${PORT}/?story=list--disabled-items&mode=preview`;
+    case Examples.DISABLED_LIST:
+      return `http://localhost:${PORT}/?story=list--disabled-list&mode=preview`;
   }
 };
 

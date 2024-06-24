@@ -93,6 +93,7 @@ renderItem: (params: {
   index?: number;
   isDragged: boolean;
   isSelected: boolean;
+  isDisabled: boolean;
   isOutOfBounds: boolean;
   props: {
     key?: number;
@@ -106,11 +107,12 @@ renderItem: (params: {
 }) => React.ReactNode;
 ```
 
-`renderItem` prop to define your item element. **Your function gets 5 parameters and should return a React component**:
+`renderItem` prop to define your item element. **Your function gets these parameters and should return a React component**:
 
 - `value` - an item of the array you passed into the `values` prop
 - `index` - the item index (order)
 - `isDragged` - `true` if the item is dragged, great for styling purposes
+- `isDisabled` - `true` if the list is disabled or `value.disabled` is `true`, great for styling purposes
 - `isSelected` - `true` if the item is lifted with the `space`
 - `isOutOfBounds` - `true` if the item is dragged far left or right
 - `props` - it has multiple props that you need to spread over your item element. Since one of these is `ref`, if you're spreading over a custom component, it must be wrapped in `React.forwardRef` like in the "Custom component" example.
@@ -168,6 +170,14 @@ lockVertically: boolean;
 ```
 
 If `true`, the dragged element can move only vertically when being dragged.
+
+### disabled
+
+```ts
+disabled: boolean;
+```
+
+If `true`, none of the items in the list will be draggable.
 
 ### voiceover
 
