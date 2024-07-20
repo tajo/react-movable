@@ -22,6 +22,7 @@ export interface RenderItemParams<Value> {
   index?: number;
   isDragged: boolean;
   isSelected: boolean;
+  isDisabled: boolean;
   isOutOfBounds: boolean;
 }
 
@@ -35,7 +36,7 @@ export interface RenderListParams {
 
 export interface BeforeDragParams {
   elements: Element[];
-  index: number
+  index: number;
 }
 
 export interface OnChangeMeta {
@@ -45,6 +46,7 @@ export interface OnChangeMeta {
 }
 
 export interface IProps<Value> {
+  disabled?: boolean;
   beforeDrag?: (params: BeforeDragParams) => void;
   renderItem: (params: RenderItemParams<Value>) => React.ReactNode;
   renderList: (props: RenderListParams) => React.ReactNode;

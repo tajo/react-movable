@@ -154,6 +154,7 @@ class List<Value = string> extends React.Component<IProps<Value>> {
     const index = this.getTargetIndex(e as any);
     if (
       index === -1 ||
+      this.props.disabled ||
       // @ts-ignore
       (this.props.values[index] && this.props.values[index].disabled)
     ) {
@@ -605,9 +606,13 @@ class List<Value = string> extends React.Component<IProps<Value>> {
           children: this.props.values.map((value, index) => {
             const isHidden = index === this.state.itemDragged;
             const isSelected = index === this.state.selectedItem;
-            const isDisabled =
-              // @ts-ignore
-              this.props.values[index] && this.props.values[index].disabled;
+            const isDisabled = Boolean(
+              this.props.disabled ||
+                (this.props.values[index] &&
+                  typeof this.props.values[index] === 'object' &&
+                  // @ts-expect-error value doesn't necessarily have a `disabled` property
+                  this.props.values[index].disabled)
+            );
             const props: IItemProps = {
               key: index,
               tabIndex: isDisabled ? -1 : 0,
@@ -625,7 +630,8 @@ class List<Value = string> extends React.Component<IProps<Value>> {
               index,
               isDragged: false,
               isSelected,
-              isOutOfBounds: false
+              isOutOfBounds: false,
+              isDisabled
             });
           }),
           isDragged: this.state.itemDragged > -1,
@@ -645,6 +651,7 @@ class List<Value = string> extends React.Component<IProps<Value>> {
               index: this.state.itemDragged,
               isDragged: true,
               isSelected: false,
+              isDisabled: false,
               isOutOfBounds: this.state.itemDraggedOutOfBounds > -1
             }),
             this.props.container || document.body

@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { List, arrayMove } from '../src/index';
 
-const Disabled: React.FC = () => {
+const DisabledItems: React.FC = () => {
   const [items, setItems] = React.useState([
     { label: 'Item 1' },
     { label: 'Item 2' },
@@ -33,7 +33,7 @@ const Disabled: React.FC = () => {
             {children}
           </ul>
         )}
-        renderItem={({ value, props, isDragged, isSelected }) => (
+        renderItem={({ value, props, isDragged, isSelected, isDisabled }) => (
           <li
             {...props}
             style={{
@@ -41,23 +41,15 @@ const Disabled: React.FC = () => {
               padding: '1.5em',
               margin: '0.5em 0em',
               listStyleType: 'none',
-              cursor: isDragged
-                ? 'grabbing'
-                : value.disabled
-                ? 'default'
-                : 'grab',
+              cursor: isDragged ? 'grabbing' : isDisabled ? 'default' : 'grab',
               border: '2px solid #CCC',
               boxShadow: '3px 3px #AAA',
-              color: value.disabled ? '#888' : '#333',
+              color: isDisabled ? '#888' : '#333',
               borderRadius: '5px',
-              outline: value.disabled ? 'none' : undefined,
+              outline: isDisabled ? 'none' : undefined,
               fontFamily: 'Arial, "Helvetica Neue", Helvetica, sans-serif',
               backgroundColor:
-                isDragged || isSelected
-                  ? '#EEE'
-                  : value.disabled
-                  ? '#EEE'
-                  : '#FFF'
+                isDragged || isSelected ? '#EEE' : isDisabled ? '#EEE' : '#FFF'
             }}
           >
             {value.label}
@@ -68,4 +60,4 @@ const Disabled: React.FC = () => {
   );
 };
 
-export default Disabled;
+export default DisabledItems;
