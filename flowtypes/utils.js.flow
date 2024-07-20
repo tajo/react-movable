@@ -1,3 +1,0 @@
-// @flow
-declare export function arrayMove<T>(array: T[], from: number, to: number): T[];
-declare export function arrayRemove<T>(array: T[], index: number): T[];

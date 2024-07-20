@@ -1,5 +1,5 @@
-import * as React from 'react';
-import * as ReactDOM from 'react-dom';
+import * as React from "react";
+import * as ReactDOM from "react-dom";
 import {
   getTranslateOffset,
   transformItem,
@@ -7,9 +7,9 @@ import {
   binarySearch,
   schd,
   isTouchEvent,
-  checkIfInteractive
-} from './utils.js';
-import type { IItemProps, IProps, TEvent } from './types.js';
+  checkIfInteractive,
+} from "./utils.js";
+import type { IItemProps, IProps, TEvent } from "./types.js";
 
 const AUTOSCROLL_ACTIVE_OFFSET = 200;
 const AUTOSCROLL_SPEED_RATIO = 10;
@@ -37,9 +37,9 @@ class List<Value = string> extends React.Component<IProps<Value>> {
     targetY: 0,
     targetHeight: 0,
     targetWidth: 0,
-    liveText: '',
+    liveText: "",
     scrollingSpeed: 0,
-    scrollWindow: false
+    scrollWindow: false,
   };
   schdOnMouseMove: { (e: MouseEvent): void; cancel(): void };
   schdOnTouchMove: { (e: TouchEvent): void; cancel(): void };
@@ -54,11 +54,11 @@ class List<Value = string> extends React.Component<IProps<Value>> {
 
   componentDidMount() {
     this.calculateOffsets();
-    document.addEventListener('touchstart', this.onMouseOrTouchStart as any, {
+    document.addEventListener("touchstart", this.onMouseOrTouchStart as any, {
       passive: false,
-      capture: false
+      capture: false,
     });
-    document.addEventListener('mousedown', this.onMouseOrTouchStart as any);
+    document.addEventListener("mousedown", this.onMouseOrTouchStart as any);
   }
 
   componentDidUpdate(_prevProps: any, prevState: { scrollingSpeed: number }) {
@@ -71,8 +71,8 @@ class List<Value = string> extends React.Component<IProps<Value>> {
   }
 
   componentWillUnmount() {
-    document.removeEventListener('touchstart', this.onMouseOrTouchStart as any);
-    document.removeEventListener('mousedown', this.onMouseOrTouchStart as any);
+    document.removeEventListener("touchstart", this.onMouseOrTouchStart as any);
+    document.removeEventListener("mousedown", this.onMouseOrTouchStart as any);
     if (this.dropTimeout) {
       window.clearTimeout(this.dropTimeout);
     }
@@ -88,7 +88,7 @@ class List<Value = string> extends React.Component<IProps<Value>> {
       if (scrollWindow) {
         window.scrollTo(
           window.pageXOffset,
-          window.pageYOffset + scrollingSpeed * 1.5
+          window.pageYOffset + scrollingSpeed * 1.5,
         );
       } else {
         listEl.scrollTop += scrollingSpeed;
@@ -104,7 +104,7 @@ class List<Value = string> extends React.Component<IProps<Value>> {
       return Array.from(this.listRef.current.children);
     }
     console.warn(
-      'No items found in the List container. Did you forget to pass & spread the `props` param in renderList?'
+      "No items found in the List container. Did you forget to pass & spread the `props` param in renderList?",
     );
     return [];
   };
@@ -120,27 +120,27 @@ class List<Value = string> extends React.Component<IProps<Value>> {
         `You have lifted item at position ${position}. Press j to move down, k to move up, space bar to drop and escape to cancel.`,
       moved: (position: number, up: boolean) =>
         `You have moved the lifted item ${
-          up ? 'up' : 'down'
+          up ? "up" : "down"
         } to position ${position}. Press j to move down, k to move up, space bar to drop and escape to cancel.`,
       dropped: (from: number, to: number) =>
         `You have dropped the item. It has moved from position ${from} to ${to}.`,
       canceled: (position: number) =>
-        `You have cancelled the movement. The item has returned to its starting position of ${position}.`
-    }
+        `You have cancelled the movement. The item has returned to its starting position of ${position}.`,
+    },
   };
 
   calculateOffsets = () => {
     this.topOffsets = this.getChildren().map(
-      (item) => item.getBoundingClientRect().top
+      (item) => item.getBoundingClientRect().top,
     );
     this.itemTranslateOffsets = this.getChildren().map((item) =>
-      getTranslateOffset(item)
+      getTranslateOffset(item),
     );
   };
 
   getTargetIndex = (e: TEvent) => {
     return this.getChildren().findIndex(
-      (child) => child === e.target || child.contains(e.target as Node)
+      (child) => child === e.target || child.contains(e.target as Node),
     );
   };
 
@@ -165,7 +165,7 @@ class List<Value = string> extends React.Component<IProps<Value>> {
       return;
     }
     const listItemTouched = this.getChildren()[index] as HTMLElement;
-    const handle = listItemTouched.querySelector('[data-movable-handle]');
+    const handle = listItemTouched.querySelector("[data-movable-handle]");
     if (handle && !handle.contains(e.target as any)) {
       return;
     }
@@ -176,30 +176,30 @@ class List<Value = string> extends React.Component<IProps<Value>> {
     this.props.beforeDrag &&
       this.props.beforeDrag({
         elements: this.getChildren(),
-        index
+        index,
       });
     if (isTouch) {
       const opts = { passive: false };
-      listItemTouched.style.touchAction = 'none';
-      document.addEventListener('touchend', this.schdOnEnd, opts);
-      document.addEventListener('touchmove', this.schdOnTouchMove, opts);
-      document.addEventListener('touchcancel', this.schdOnEnd, opts);
+      listItemTouched.style.touchAction = "none";
+      document.addEventListener("touchend", this.schdOnEnd, opts);
+      document.addEventListener("touchmove", this.schdOnTouchMove, opts);
+      document.addEventListener("touchcancel", this.schdOnEnd, opts);
     } else {
-      document.addEventListener('mousemove', this.schdOnMouseMove);
-      document.addEventListener('mouseup', this.schdOnEnd);
+      document.addEventListener("mousemove", this.schdOnMouseMove);
+      document.addEventListener("mouseup", this.schdOnEnd);
 
       const listItemDragged = this.getChildren()[
         this.state.itemDragged
       ] as HTMLElement;
       if (listItemDragged && listItemDragged.style) {
-        listItemDragged.style.touchAction = '';
+        listItemDragged.style.touchAction = "";
       }
     }
     this.onStart(
       listItemTouched,
       isTouch ? e.touches[0].clientX : e.clientX,
       isTouch ? e.touches[0].clientY : e.clientY,
-      index
+      index,
     );
   };
 
@@ -214,7 +214,7 @@ class List<Value = string> extends React.Component<IProps<Value>> {
     target: HTMLElement,
     clientX: number,
     clientY: number,
-    index: number
+    index: number,
   ) => {
     if (this.state.selectedItem > -1) {
       this.setState({ selectedItem: -1 });
@@ -229,12 +229,12 @@ class List<Value = string> extends React.Component<IProps<Value>> {
     this.setState({
       itemDragged: index,
       targetX:
-        targetRect.left - parseInt(targetStyles['margin-left' as any], 10),
-      targetY: targetRect.top - parseInt(targetStyles['margin-top' as any], 10),
+        targetRect.left - parseInt(targetStyles["margin-left" as any], 10),
+      targetY: targetRect.top - parseInt(targetStyles["margin-top" as any], 10),
       targetHeight: targetRect.height,
       targetWidth: targetRect.width,
       initialX: clientX,
-      initialY: clientY
+      initialY: clientY,
     });
   };
 
@@ -259,7 +259,7 @@ class List<Value = string> extends React.Component<IProps<Value>> {
     transformItem(
       this.ghostRef.current!,
       clientY - this.state.initialY,
-      this.props.lockVertically ? 0 : clientX - this.state.initialX
+      this.props.lockVertically ? 0 : clientX - this.state.initialX,
     );
     this.autoScrolling(clientY, clientY - this.state.initialY);
     this.moveOtherItems();
@@ -269,13 +269,13 @@ class List<Value = string> extends React.Component<IProps<Value>> {
     const targetRect = this.ghostRef.current!.getBoundingClientRect();
     const itemVerticalCenter = targetRect.top + targetRect.height / 2;
     const offset = getTranslateOffset(
-      this.getChildren()[this.state.itemDragged]
+      this.getChildren()[this.state.itemDragged],
     );
     const currentYOffset = this.getYOffset();
     // adjust offsets if scrolling happens during the item movement
     if (this.initialYOffset !== currentYOffset) {
       this.topOffsets = this.topOffsets.map(
-        (offset) => offset - (currentYOffset - this.initialYOffset)
+        (offset) => offset - (currentYOffset - this.initialYOffset),
       );
       this.initialYOffset = currentYOffset;
     }
@@ -287,7 +287,7 @@ class List<Value = string> extends React.Component<IProps<Value>> {
     this.animateItems(
       this.afterIndex === -1 ? 0 : this.afterIndex,
       this.state.itemDragged,
-      offset
+      offset,
     );
   };
 
@@ -306,13 +306,13 @@ class List<Value = string> extends React.Component<IProps<Value>> {
         scrollingSpeed: Math.min(
           Math.round(
             (AUTOSCROLL_ACTIVE_OFFSET - (viewportHeight - clientY)) /
-              AUTOSCROLL_SPEED_RATIO
+              AUTOSCROLL_SPEED_RATIO,
           ),
           Math.round(
-            (delta - AUTOSCROLL_DELTA_THRESHOLD) / AUTOSCROLL_SPEED_RATIO
-          )
+            (delta - AUTOSCROLL_DELTA_THRESHOLD) / AUTOSCROLL_SPEED_RATIO,
+          ),
         ),
-        scrollWindow: true
+        scrollWindow: true,
       });
       // autoscrolling for the window (up)
     } else if (
@@ -323,13 +323,13 @@ class List<Value = string> extends React.Component<IProps<Value>> {
       this.setState({
         scrollingSpeed: Math.max(
           Math.round(
-            (AUTOSCROLL_ACTIVE_OFFSET - clientY) / -AUTOSCROLL_SPEED_RATIO
+            (AUTOSCROLL_ACTIVE_OFFSET - clientY) / -AUTOSCROLL_SPEED_RATIO,
           ),
           Math.round(
-            (delta + AUTOSCROLL_DELTA_THRESHOLD) / AUTOSCROLL_SPEED_RATIO
-          )
+            (delta + AUTOSCROLL_DELTA_THRESHOLD) / AUTOSCROLL_SPEED_RATIO,
+          ),
         ),
-        scrollWindow: true
+        scrollWindow: true,
       });
     } else {
       if (this.state.scrollWindow && this.state.scrollingSpeed !== 0) {
@@ -346,11 +346,11 @@ class List<Value = string> extends React.Component<IProps<Value>> {
           scrollingSpeed = Math.max(
             Math.round(
               (AUTOSCROLL_ACTIVE_OFFSET - (clientY - top)) /
-                -AUTOSCROLL_SPEED_RATIO
+                -AUTOSCROLL_SPEED_RATIO,
             ),
             Math.round(
-              (delta + AUTOSCROLL_DELTA_THRESHOLD) / AUTOSCROLL_SPEED_RATIO
-            )
+              (delta + AUTOSCROLL_DELTA_THRESHOLD) / AUTOSCROLL_SPEED_RATIO,
+            ),
           );
           // (down)
         } else if (
@@ -360,11 +360,11 @@ class List<Value = string> extends React.Component<IProps<Value>> {
           scrollingSpeed = Math.min(
             Math.round(
               (AUTOSCROLL_ACTIVE_OFFSET - (bottom - clientY)) /
-                AUTOSCROLL_SPEED_RATIO
+                AUTOSCROLL_SPEED_RATIO,
             ),
             Math.round(
-              (delta - AUTOSCROLL_DELTA_THRESHOLD) / AUTOSCROLL_SPEED_RATIO
-            )
+              (delta - AUTOSCROLL_DELTA_THRESHOLD) / AUTOSCROLL_SPEED_RATIO,
+            ),
           );
         }
         if (this.state.scrollingSpeed !== scrollingSpeed) {
@@ -378,7 +378,7 @@ class List<Value = string> extends React.Component<IProps<Value>> {
     needle: number,
     movedItem: number,
     offset: number,
-    animateMovedItem: boolean = false
+    animateMovedItem: boolean = false,
   ) => {
     this.getChildren().forEach((item, i) => {
       setItemTransition(item, this.props.transitionDuration);
@@ -394,7 +394,7 @@ class List<Value = string> extends React.Component<IProps<Value>> {
                 .reduce((a, b) => a + b, 0)
             : this.itemTranslateOffsets
                 .slice(needle, movedItem)
-                .reduce((a, b) => a + b, 0) * -1
+                .reduce((a, b) => a + b, 0) * -1,
         );
       } else if (movedItem < needle && i > movedItem && i <= needle) {
         transformItem(item, -offset);
@@ -424,11 +424,11 @@ class List<Value = string> extends React.Component<IProps<Value>> {
 
   onEnd = (e: TouchEvent & MouseEvent) => {
     e.cancelable && e.preventDefault();
-    document.removeEventListener('mousemove', this.schdOnMouseMove);
-    document.removeEventListener('touchmove', this.schdOnTouchMove);
-    document.removeEventListener('mouseup', this.schdOnEnd);
-    document.removeEventListener('touchup', this.schdOnEnd);
-    document.removeEventListener('touchcancel', this.schdOnEnd);
+    document.removeEventListener("mousemove", this.schdOnMouseMove);
+    document.removeEventListener("touchmove", this.schdOnTouchMove);
+    document.removeEventListener("mouseup", this.schdOnEnd);
+    document.removeEventListener("touchup", this.schdOnEnd);
+    document.removeEventListener("touchcancel", this.schdOnEnd);
 
     const removeItem =
       this.props.removableByMove && this.isDraggedItemOutOfBounds();
@@ -442,7 +442,7 @@ class List<Value = string> extends React.Component<IProps<Value>> {
         setItemTransition(
           this.ghostRef.current!,
           this.props.transitionDuration,
-          'cubic-bezier(.2,1,.1,1)'
+          "cubic-bezier(.2,1,.1,1)",
         );
         if (this.afterIndex < 1 && this.state.itemDragged === 0) {
           transformItem(this.ghostRef.current!, 0, 0);
@@ -460,17 +460,17 @@ class List<Value = string> extends React.Component<IProps<Value>> {
                 : this.itemTranslateOffsets
                     .slice(
                       this.afterIndex < 0 ? 0 : this.afterIndex,
-                      this.state.itemDragged
+                      this.state.itemDragged,
                     )
                     .reduce((a, b) => a + b, 0) * -1),
-            0
+            0,
           );
         }
       })();
     }
     this.dropTimeout = window.setTimeout(
       this.finishDrop,
-      removeItem || this.afterIndex === -2 ? 0 : this.props.transitionDuration
+      removeItem || this.afterIndex === -2 ? 0 : this.props.transitionDuration,
     );
   };
 
@@ -484,13 +484,13 @@ class List<Value = string> extends React.Component<IProps<Value>> {
       this.props.onChange({
         oldIndex: this.state.itemDragged,
         newIndex: removeItem ? -1 : Math.max(this.afterIndex, 0),
-        targetRect: this.ghostRef.current!.getBoundingClientRect()
+        targetRect: this.ghostRef.current!.getBoundingClientRect(),
       });
     }
     this.getChildren().forEach((item) => {
       setItemTransition(item, 0);
       transformItem(item, null);
-      (item as HTMLElement).style.touchAction = '';
+      (item as HTMLElement).style.touchAction = "";
     });
     this.setState({ itemDragged: -1, scrollingSpeed: 0 });
     this.afterIndex = -2;
@@ -508,7 +508,7 @@ class List<Value = string> extends React.Component<IProps<Value>> {
       return;
     }
     if (index === -1) return;
-    if (e.key === ' ') {
+    if (e.key === " ") {
       e.preventDefault();
       if (selectedItem === index) {
         if (selectedItem !== this.needle) {
@@ -519,7 +519,7 @@ class List<Value = string> extends React.Component<IProps<Value>> {
           this.props.onChange({
             oldIndex: selectedItem,
             newIndex: this.needle,
-            targetRect: this.getChildren()[this.needle].getBoundingClientRect()
+            targetRect: this.getChildren()[this.needle].getBoundingClientRect(),
           });
           (this.getChildren()[this.needle] as HTMLElement).focus();
         }
@@ -527,21 +527,21 @@ class List<Value = string> extends React.Component<IProps<Value>> {
           selectedItem: -1,
           liveText: this.props.voiceover.dropped(
             selectedItem + 1,
-            this.needle + 1
-          )
+            this.needle + 1,
+          ),
         });
         this.needle = -1;
       } else {
         this.setState({
           selectedItem: index,
-          liveText: this.props.voiceover.lifted(index + 1)
+          liveText: this.props.voiceover.lifted(index + 1),
         });
         this.needle = index;
         this.calculateOffsets();
       }
     }
     if (
-      (e.key === 'ArrowDown' || e.key === 'j') &&
+      (e.key === "ArrowDown" || e.key === "j") &&
       selectedItem > -1 &&
       this.needle < this.props.values.length - 1
     ) {
@@ -550,11 +550,11 @@ class List<Value = string> extends React.Component<IProps<Value>> {
       this.needle++;
       this.animateItems(this.needle, selectedItem, offset, true);
       this.setState({
-        liveText: this.props.voiceover.moved(this.needle + 1, false)
+        liveText: this.props.voiceover.moved(this.needle + 1, false),
       });
     }
     if (
-      (e.key === 'ArrowUp' || e.key === 'k') &&
+      (e.key === "ArrowUp" || e.key === "k") &&
       selectedItem > -1 &&
       this.needle > 0
     ) {
@@ -563,33 +563,33 @@ class List<Value = string> extends React.Component<IProps<Value>> {
       this.needle--;
       this.animateItems(this.needle, selectedItem, offset, true);
       this.setState({
-        liveText: this.props.voiceover.moved(this.needle + 1, true)
+        liveText: this.props.voiceover.moved(this.needle + 1, true),
       });
     }
-    if (e.key === 'Escape' && selectedItem > -1) {
+    if (e.key === "Escape" && selectedItem > -1) {
       this.getChildren().forEach((item) => {
         setItemTransition(item, 0);
         transformItem(item, null);
       });
       this.setState({
         selectedItem: -1,
-        liveText: this.props.voiceover.canceled(selectedItem + 1)
+        liveText: this.props.voiceover.canceled(selectedItem + 1),
       });
       this.needle = -1;
     }
-    if ((e.key === 'Tab' || e.key === 'Enter') && selectedItem > -1) {
+    if ((e.key === "Tab" || e.key === "Enter") && selectedItem > -1) {
       e.preventDefault();
     }
   };
 
   render() {
     const baseStyle = {
-      userSelect: 'none',
-      WebkitUserSelect: 'none',
-      MozUserSelect: 'none',
-      msUserSelect: 'none',
-      boxSizing: 'border-box',
-      position: 'relative'
+      userSelect: "none",
+      WebkitUserSelect: "none",
+      MozUserSelect: "none",
+      msUserSelect: "none",
+      boxSizing: "border-box",
+      position: "relative",
     } as React.CSSProperties;
     const ghostStyle = {
       ...baseStyle,
@@ -597,8 +597,8 @@ class List<Value = string> extends React.Component<IProps<Value>> {
       left: this.state.targetX,
       width: this.state.targetWidth,
       height: this.state.targetHeight,
-      position: 'fixed',
-      marginTop: 0
+      position: "fixed",
+      marginTop: 0,
     } as React.CSSProperties;
     return (
       <React.Fragment>
@@ -609,20 +609,20 @@ class List<Value = string> extends React.Component<IProps<Value>> {
             const isDisabled = Boolean(
               this.props.disabled ||
                 (this.props.values[index] &&
-                  typeof this.props.values[index] === 'object' &&
+                  typeof this.props.values[index] === "object" &&
                   // @ts-expect-error value doesn't necessarily have a `disabled` property
-                  this.props.values[index].disabled)
+                  this.props.values[index].disabled),
             );
             const props: IItemProps = {
               key: index,
               tabIndex: isDisabled ? -1 : 0,
-              'aria-roledescription': this.props.voiceover.item(index + 1),
+              "aria-roledescription": this.props.voiceover.item(index + 1),
               onKeyDown: this.onKeyDown,
               style: {
                 ...baseStyle,
-                visibility: isHidden ? 'hidden' : undefined,
-                zIndex: isSelected ? 5000 : 0
-              } as React.CSSProperties
+                visibility: isHidden ? "hidden" : undefined,
+                zIndex: isSelected ? 5000 : 0,
+              } as React.CSSProperties,
             };
             return this.props.renderItem({
               value,
@@ -631,13 +631,13 @@ class List<Value = string> extends React.Component<IProps<Value>> {
               isDragged: false,
               isSelected,
               isOutOfBounds: false,
-              isDisabled
+              isDisabled,
             });
           }),
           isDragged: this.state.itemDragged > -1,
           props: {
-            ref: this.listRef
-          }
+            ref: this.listRef,
+          },
         })}
         {this.state.itemDragged > -1 &&
           ReactDOM.createPortal(
@@ -646,30 +646,30 @@ class List<Value = string> extends React.Component<IProps<Value>> {
               props: {
                 ref: this.ghostRef,
                 style: ghostStyle,
-                onWheel: this.onWheel
+                onWheel: this.onWheel,
               },
               index: this.state.itemDragged,
               isDragged: true,
               isSelected: false,
               isDisabled: false,
-              isOutOfBounds: this.state.itemDraggedOutOfBounds > -1
+              isOutOfBounds: this.state.itemDraggedOutOfBounds > -1,
             }),
-            this.props.container || document.body
+            this.props.container || document.body,
           )}
         <div
           aria-live="assertive"
           role="log"
           aria-atomic="true"
           style={{
-            position: 'absolute',
-            width: '1px',
-            height: '1px',
-            margin: '-1px',
-            border: '0px',
-            padding: '0px',
-            overflow: 'hidden',
-            clip: 'rect(0px, 0px, 0px, 0px)',
-            clipPath: 'inset(100%)'
+            position: "absolute",
+            width: "1px",
+            height: "1px",
+            margin: "-1px",
+            border: "0px",
+            padding: "0px",
+            overflow: "hidden",
+            clip: "rect(0px, 0px, 0px, 0px)",
+            clipPath: "inset(100%)",
           }}
         >
           {this.state.liveText}

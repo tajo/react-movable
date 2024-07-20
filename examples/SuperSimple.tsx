@@ -1,14 +1,14 @@
-import * as React from 'react';
-import { List, arrayMove } from '../src/index';
+import * as React from "react";
+import { List, arrayMove } from "../src/index";
 
 const SuperSimple: React.FC = () => {
   const [items, setItems] = React.useState([
-    'Item 1',
-    'Item 2',
-    'Item 3',
-    'Item 4',
-    'Item 5',
-    'Item 6'
+    "Item 1",
+    "Item 2",
+    "Item 3",
+    "Item 4",
+    "Item 5",
+    "Item 6",
   ]);
   return (
     <List
@@ -17,7 +17,11 @@ const SuperSimple: React.FC = () => {
         setItems(arrayMove(items, oldIndex, newIndex))
       }
       renderList={({ children, props }) => <ul {...props}>{children}</ul>}
-      renderItem={({ value, props }) => <li {...props}>{value}</li>}
+      renderItem={({ value, props }) => (
+        <li {...props} key={props.key}>
+          {value}
+        </li>
+      )}
     />
   );
 };

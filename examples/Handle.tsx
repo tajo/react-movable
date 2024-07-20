@@ -1,5 +1,5 @@
-import * as React from 'react';
-import { List, arrayMove, arrayRemove } from '../src/index';
+import * as React from "react";
+import { List, arrayMove, arrayRemove } from "../src/index";
 
 export const HandleIcon = () => (
   <svg
@@ -24,33 +24,33 @@ export const HandleIcon = () => (
 );
 
 export const buttonStyles = {
-  border: 'none',
+  border: "none",
   margin: 0,
   padding: 0,
-  width: 'auto',
-  overflow: 'visible',
-  cursor: 'pointer',
-  background: 'transparent'
+  width: "auto",
+  overflow: "visible",
+  cursor: "pointer",
+  background: "transparent",
 };
 
 const Handle: React.FC = () => {
   const [items, setItems] = React.useState([
-    'Item 1',
-    'Item 2',
-    'Item 3',
-    'Item 4',
-    'Item 5',
-    'Item 6'
+    "Item 1",
+    "Item 2",
+    "Item 3",
+    "Item 4",
+    "Item 5",
+    "Item 6",
   ]);
 
   return (
     <div
       style={{
-        maxWidth: '300px',
-        margin: '0px auto',
-        backgroundColor: '#F7F7F7',
-        padding: '3em',
-        textAlign: 'center'
+        maxWidth: "300px",
+        margin: "0px auto",
+        backgroundColor: "#F7F7F7",
+        padding: "3em",
+        textAlign: "center",
       }}
     >
       <List
@@ -62,8 +62,8 @@ const Handle: React.FC = () => {
           <ul
             {...props}
             style={{
-              padding: '0em 0em 1em 0em',
-              cursor: isDragged ? 'grabbing' : 'inherit'
+              padding: "0em 0em 1em 0em",
+              cursor: isDragged ? "grabbing" : "inherit",
             }}
           >
             {children}
@@ -72,24 +72,25 @@ const Handle: React.FC = () => {
         renderItem={({ value, props, isDragged, isSelected }) => (
           <li
             {...props}
+            key={props.key}
             style={{
               ...props.style,
-              padding: '1.5em',
-              margin: '0.5em 0em',
-              listStyleType: 'none',
-              border: '2px solid #CCC',
-              boxShadow: '3px 3px #AAA',
-              color: '#333',
-              borderRadius: '5px',
-              cursor: isDragged ? 'grabbing' : 'inherit',
+              padding: "1.5em",
+              margin: "0.5em 0em",
+              listStyleType: "none",
+              border: "2px solid #CCC",
+              boxShadow: "3px 3px #AAA",
+              color: "#333",
+              borderRadius: "5px",
+              cursor: isDragged ? "grabbing" : "inherit",
               fontFamily: 'Arial, "Helvetica Neue", Helvetica, sans-serif',
-              backgroundColor: isDragged || isSelected ? '#EEE' : '#FFF'
+              backgroundColor: isDragged || isSelected ? "#EEE" : "#FFF",
             }}
           >
             <div
               style={{
-                display: 'flex',
-                alignItems: 'center'
+                display: "flex",
+                alignItems: "center",
               }}
             >
               {/* 
@@ -101,8 +102,8 @@ const Handle: React.FC = () => {
                 data-movable-handle
                 style={{
                   ...buttonStyles,
-                  cursor: isDragged ? 'grabbing' : 'grab',
-                  marginRight: '3em'
+                  cursor: isDragged ? "grabbing" : "grab",
+                  marginRight: "3em",
                 }}
                 tabIndex={-1}
               >

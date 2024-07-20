@@ -14,8 +14,8 @@ export function getTranslateOffset(element: Element) {
   const style = window.getComputedStyle(element);
   return (
     Math.max(
-      parseInt(style['margin-top' as any], 10),
-      parseInt(style['margin-bottom' as any], 10)
+      parseInt(style["margin-top" as any], 10),
+      parseInt(style["margin-bottom" as any], 10),
     ) + element.getBoundingClientRect().height
   );
 }
@@ -30,11 +30,11 @@ export function isTouchEvent(event: TouchEvent & MouseEvent) {
 export function transformItem(
   element: Element,
   offsetY: number | null = 0,
-  offsetX: number | null = 0
+  offsetX: number | null = 0,
 ) {
   if (!element) return;
   if (offsetY === null || offsetX === null) {
-    (element as HTMLElement).style.removeProperty('transform');
+    (element as HTMLElement).style.removeProperty("transform");
     return;
   }
   (
@@ -49,12 +49,12 @@ export function isItemTransformed(element: Element) {
 export function setItemTransition(
   element: Element,
   duration: number,
-  timing?: string
+  timing?: string,
 ) {
   if (element) {
     (element as HTMLElement).style[
-      'transition' as any
-    ] = `transform ${duration}ms${timing ? ` ${timing}` : ''}`;
+      "transition" as any
+    ] = `transform ${duration}ms${timing ? ` ${timing}` : ""}`;
   }
 }
 
@@ -104,31 +104,38 @@ export const schd = (fn: Function) => {
 
 export function checkIfInteractive(target: Element, rootElement: Element) {
   const DISABLED_ELEMENTS = [
-    'input',
-    'textarea',
-    'select',
-    'option',
-    'optgroup',
-    'video',
-    'audio',
-    'button',
-    'a'
+    "input",
+    "textarea",
+    "select",
+    "option",
+    "optgroup",
+    "video",
+    "audio",
+    "button",
+    "a",
   ];
-  const DISABLED_ROLES = ['button', 'link', 'checkbox', 'radio', 'switch', 'tab'];
+  const DISABLED_ROLES = [
+    "button",
+    "link",
+    "checkbox",
+    "radio",
+    "switch",
+    "tab",
+  ];
   while (target !== rootElement) {
-    if (target.getAttribute('data-movable-handle')) {
+    if (target.getAttribute("data-movable-handle")) {
       return false;
     }
     if (DISABLED_ELEMENTS.includes(target.tagName.toLowerCase())) {
       return true;
     }
-    const role = target.getAttribute('role');
+    const role = target.getAttribute("role");
     if (role && DISABLED_ROLES.includes(role.toLowerCase())) {
       return true;
     }
     if (
-      target.tagName.toLowerCase() === 'label' &&
-      target.hasAttribute('for')
+      target.tagName.toLowerCase() === "label" &&
+      target.hasAttribute("for")
     ) {
       return true;
     }

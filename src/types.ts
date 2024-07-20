@@ -9,7 +9,7 @@ interface IVoiceover {
 export interface IItemProps {
   key?: number;
   tabIndex?: number;
-  'aria-roledescription'?: string;
+  "aria-roledescription"?: string;
   onKeyDown?: (e: React.KeyboardEvent) => void;
   onWheel?: (e: React.WheelEvent) => void;
   style?: React.CSSProperties;

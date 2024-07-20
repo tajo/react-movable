@@ -5,26 +5,26 @@
 [![Build Status](https://travis-ci.org/tajo/react-movable.svg?branch=master)](https://travis-ci.org/tajo/react-movable)
 [![size](https://img.shields.io/bundlephobia/minzip/react-movable.svg?style=flat)](https://bundlephobia.com/result?p=react-movable)
 
-![Basic list](https://raw.githubusercontent.com/tajo/react-movable/master/assets/react-movable.gif?raw=true)
+![Basic list](https://raw.githubusercontent.com/tajo/react-movable/main/assets/react-movable.gif?raw=true)
 
 [![Edit Basic react-movable](https://codesandbox.io/static/img/play-codesandbox.svg)](https://codesandbox.io/s/k1mrwyr9l3)
 
-[See all the other examples](https://react-movable.netlify.com) and [their source code](https://github.com/tajo/react-movable/tree/master/examples)!
+[See all the other examples](https://react-movable.pages.dev) and [their source code](https://github.com/tajo/react-movable/tree/main/examples)!
 
 ## Installation
 
 ```
-yarn add react-movable
+pnpm add react-movable
 ```
 
 ## Usage
 
 ```tsx
-import * as React from 'react';
-import { List, arrayMove } from 'react-movable';
+import * as React from "react";
+import { List, arrayMove } from "react-movable";
 
 const SuperSimple: React.FC = () => {
-  const [items, setItems] = React.useState(['Item 1', 'Item 2', 'Item 3']);
+  const [items, setItems] = React.useState(["Item 1", "Item 2", "Item 3"]);
   return (
     <List
       values={items}
@@ -55,7 +55,7 @@ const SuperSimple: React.FC = () => {
 - Optional lock of the horizontal axis when dragging
 - Typescript and Flow type definitions
 - **No dependencies, less than 4kB (gzipped)**
-- Coverage by [e2e puppeteer tests](#end-to-end-testing)
+- Coverage by [e2e playwright tests](#end-to-end-testing)
 
 ## Keyboard support
 
@@ -98,7 +98,7 @@ renderItem: (params: {
   props: {
     key?: number;
     tabIndex?: number;
-    'aria-roledescription'?: string;
+    "aria-roledescription"?: string;
     onKeyDown?: (e: React.KeyboardEvent) => void;
     onWheel?: (e: React.WheelEvent) => void;
     style?: React.CSSProperties;
@@ -153,7 +153,7 @@ Called when a valid drag is initiated. It provides a direct access to all list D
 removableByMove: boolean;
 ```
 
-Default is `false`. When set to `true` and an item is dragged far left or far right (out of bounds), the original gap disappears (animated) and following item drop will cause `onChange` being called with `newIndex = -1`. You can use that to remove the item from your `values` state. [Example](https://react-movable.netlify.com/?story=list--removable-by-move).
+Default is `false`. When set to `true` and an item is dragged far left or far right (out of bounds), the original gap disappears (animated) and following item drop will cause `onChange` being called with `newIndex = -1`. You can use that to remove the item from your `values` state. [Example](https://react-movable.pages.dev/?story=list--removable-by-move).
 
 ### transitionDuration
 
@@ -191,7 +191,7 @@ voiceover: {
 }
 ```
 
-In order to support screen reader users, `react-movable` is triggering different messages when user is interacting with the list. There is already a set of [English messages](https://github.com/tajo/react-movable/blob/master/src/List.tsx#L77-L89) included but you can override it with this prop.
+In order to support screen reader users, `react-movable` is triggering different messages when user is interacting with the list. There is already a set of [English messages](https://github.com/tajo/react-movable/blob/main/src/List.tsx#L77-L89) included but you can override it with this prop.
 
 ## container
 
@@ -253,23 +253,16 @@ Other feature requests will be thoroughly vetted. Again, the primary goal is to 
 
 Instead of that, `react-movable` is thoroughly tested by end to end tests powered by [puppeteer](https://github.com/GoogleChrome/puppeteer). It tests all user interactions:
 
-- [drag and drop](https://github.com/tajo/react-movable/blob/master/e2e/basic.test.ts) of items by mouse (same and different heights)
-- [keyboard controls](https://github.com/tajo/react-movable/blob/master/e2e/basic.a11y.test.ts) (moving items around)
-- [auto scrolling for containers](https://github.com/tajo/react-movable/blob/master/e2e/scrolling.container.test.ts)
-- [auto scrolling for the window](https://github.com/tajo/react-movable/blob/master/e2e/scrolling.window.test.ts)
+- [drag and drop](https://github.com/tajo/react-movable/blob/main/e2e/basic.test.ts) of items by mouse (same and different heights)
+- [keyboard controls](https://github.com/tajo/react-movable/blob/main/e2e/basic.a11y.test.ts) (moving items around)
+- [auto scrolling for containers](https://github.com/tajo/react-movable/blob/main/e2e/scrolling.container.test.ts)
+- [auto scrolling for the window](https://github.com/tajo/react-movable/blob/main/e2e/scrolling.window.test.ts)
 - [visual regression testing](https://github.com/americanexpress/jest-image-snapshot)
 
-All tests are automatically ran in Travis CI with headless chromium. This way, the public API is well tested, including pixel-perfect positioning. Also, the tests are pretty fast, reliable and very descriptive.
-
-Do you want to run them in the `dev` mode (slows down operations, opens the browser)?
+All tests are automatically ran in Github Actions with headless chromium. This way, the public API is well tested, including pixel-perfect positioning. Also, the tests are pretty fast, reliable and very descriptive. Running them locally is easy:
 
 ```bash
-yarn ladle serve #start the ladle server
-yarn test:e2e:dev #run the e2e tests
-```
-
-```bash
-yarn test:e2e
+pnpm test:e2e
 ```
 
 ## Browser support
@@ -292,8 +285,10 @@ This is how you can spin up the dev environment:
 ```
 git clone https://github.com/tajo/react-movable
 cd react-movable
-yarn
-yarn ladle serve
+pnpm install
+pnpm ladle serve
+pnpm test
+pnpm typecheck
 ```
 
 ## Learning more
@@ -308,12 +303,6 @@ Also, gave a talk at React Advanced London: What a Drag (2019):
 
 The popular React DnD libraries were already mentioned in the motivation part. Big shoutout to `react-beautiful-dnd` ❤️ ️ for supporting multiple great features and adding first-class support for accessibility! It was strongly used as an inspiration for `react-movable`!
 
-<img src="https://raw.githubusercontent.com/tajo/react-movable/master/assets/browserstack-logo.png?raw=true" height="80" title="BrowserStack Logo" alt="BrowserStack Logo" />
-
-Big thanks to [BrowserStack](https://www.browserstack.com) for letting the maintainers use their service to debug browser issues.
-
-And [Netlify](https://www.netlify.com/) for free hosting.
-
 ## Author
 
-Vojtech Miksu 2019, [miksu.cz](https://miksu.cz), [@vmiksu](https://twitter.com/vmiksu)
+Vojtech Miksu 2024, [miksu.cz](https://miksu.cz), [@vmiksu](https://twitter.com/vmiksu)

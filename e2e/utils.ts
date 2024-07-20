@@ -1,4 +1,4 @@
-import * as puppeteer from 'puppeteer';
+import type { Page, Mouse } from "@playwright/test";
 
 export enum Examples {
   BASIC,
@@ -7,46 +7,47 @@ export enum Examples {
   SCROLLING_WINDOW,
   REMOVABLE,
   DISABLED_ITEMS,
-  DISABLED_LIST
+  DISABLED_LIST,
 }
 
 export const getTestUrl = (example: Examples): string => {
   const PORT = 61000;
   switch (example) {
     case Examples.BASIC:
-      return `http://localhost:${PORT}/?story=list--basic&mode=preview`;
+      return `/?story=list--basic&mode=preview`;
     case Examples.HEIGHTS:
-      return `http://localhost:${PORT}/?story=list--varying-heights&mode=preview`;
+      return `/?story=list--varying-heights&mode=preview`;
     case Examples.SCROLLING_CONTAINER:
-      return `http://localhost:${PORT}/?story=list--scrolling-container&mode=preview`;
+      return `/?story=list--scrolling-container&mode=preview`;
     case Examples.SCROLLING_WINDOW:
-      return `http://localhost:${PORT}/?story=list--scrolling-window&mode=preview`;
+      return `/?story=list--scrolling-window&mode=preview`;
     case Examples.REMOVABLE:
-      return `http://localhost:${PORT}/?story=list--removable-by-move&mode=preview`;
+      return `/?story=list--removable-by-move&mode=preview`;
     case Examples.DISABLED_ITEMS:
-      return `http://localhost:${PORT}/?story=list--disabled-items&mode=preview`;
+      return `/?story=list--disabled-items&mode=preview`;
     case Examples.DISABLED_LIST:
-      return `http://localhost:${PORT}/?story=list--disabled-list&mode=preview`;
+      return `/?story=list--disabled-list&mode=preview`;
   }
 };
 
-export const getListItems = async (page: puppeteer.Page) => {
-  const items = await page.$$('#ladle-root li');
+export const getListItems = async (page: Page) => {
+  const items = await page.$$("#ladle-root li");
   await new Promise((r) => setTimeout(r, 200));
   return await Promise.all(
-    items.map((item) => page.evaluate((el) => el.innerText, item))
+    items.map((item) => page.evaluate((el) => (el as any).innerText, item)),
   );
 };
 
-export const waitForList = async (page: puppeteer.Page) => {
+export const waitForList = async (page: Page) => {
   await page.waitForSelector(`#ladle-root li`);
 };
 
 export const makeDnd = async (
-  mouse: puppeteer.Mouse,
+  page: Page,
+  mouse: Mouse,
   from: number,
   to: number,
-  positions: number[][]
+  positions: number[][],
 ) => {
   await mouse.move(positions[from - 1][0], positions[from - 1][1]);
   await mouse.down();
@@ -55,29 +56,29 @@ export const makeDnd = async (
   // make sure that originally dragged item is visible (rendered)
   // in a new place
   await page.waitForSelector(`#ladle-root li:nth-child(${from})`, {
-    visible: true
+    state: "visible",
   });
 };
 
-export const trackMouse = async (page: puppeteer.Page) => {
+export const trackMouse = async (page: Page) => {
   await page.evaluate(showCursor);
 };
 
-export const untrackMouse = async (page: puppeteer.Page) => {
+export const untrackMouse = async (page: Page) => {
   await page.evaluate(hideCursor);
-  await page.waitForSelector('.mouse-helper', { hidden: true });
+  await page.waitForSelector(".mouse-helper", { state: "hidden" });
 };
 
-export const addFontStyles = async (page: puppeteer.Page) => {
+export const addFontStyles = async (page: Page) => {
   await page.evaluate(fontStyles);
 };
 
 // This injects a box into the page that moves with the mouse;
 // Useful for debugging
 const showCursor = () => {
-  const box = document.createElement('div');
-  box.classList.add('mouse-helper');
-  const styleElement = document.createElement('style');
+  const box = document.createElement("div");
+  box.classList.add("mouse-helper");
+  const styleElement = document.createElement("style");
   styleElement.innerHTML = `
   .mouse-helper {
     pointer-events: none;
@@ -117,36 +118,36 @@ const showCursor = () => {
   `;
 
   const onMouseMove = (event: MouseEvent) => {
-    box.style.left = event.pageX + 'px';
-    box.style.top = event.pageY + 'px';
+    box.style.left = event.pageX + "px";
+    box.style.top = event.pageY + "px";
     updateButtons(event.buttons);
   };
 
   const onMouseDown = (event: MouseEvent) => {
     updateButtons(event.buttons);
-    box.classList.add('button-' + event.which);
+    box.classList.add("button-" + event.which);
   };
 
   const onMouseUp = (event: MouseEvent) => {
     updateButtons(event.buttons);
-    box.classList.remove('button-' + event.which);
+    box.classList.remove("button-" + event.which);
   };
 
   document.head.appendChild(styleElement);
   document.body.appendChild(box);
-  document.addEventListener('mousemove', onMouseMove, true);
-  document.addEventListener('mousedown', onMouseDown, true);
-  document.addEventListener('mouseup', onMouseUp, true);
+  document.addEventListener("mousemove", onMouseMove, true);
+  document.addEventListener("mousedown", onMouseDown, true);
+  document.addEventListener("mouseup", onMouseUp, true);
   function updateButtons(buttons: any) {
     for (let i = 0; i < 5; i++)
       // @ts-ignore
-      box.classList.toggle('button-' + i, buttons & (1 << i));
+      box.classList.toggle("button-" + i, buttons & (1 << i));
   }
 };
 
 // make the cursor invisble, good for visual snaps
 const hideCursor = () => {
-  const styleElement = document.createElement('style');
+  const styleElement = document.createElement("style");
   styleElement.innerHTML = `
   .mouse-helper {
     display: none;
@@ -158,7 +159,7 @@ const hideCursor = () => {
 // This injects a box into the page that moves with the mouse;
 // Useful for debugging
 const fontStyles = () => {
-  const styleElement = document.createElement('style');
+  const styleElement = document.createElement("style");
   styleElement.innerHTML = `
   body {
     margin: 8px;

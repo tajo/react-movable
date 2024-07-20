@@ -1,5 +1,5 @@
-import * as React from 'react';
-import { List, arrayMove, arrayRemove } from '../src/index';
+import * as React from "react";
+import { List, arrayMove, arrayRemove } from "../src/index";
 
 const RemovableIcon = () => (
   <svg
@@ -22,33 +22,33 @@ const RemovableIcon = () => (
 );
 
 const buttonStyles = {
-  border: 'none',
+  border: "none",
   margin: 0,
   padding: 0,
-  width: 'auto',
-  overflow: 'visible',
-  cursor: 'pointer',
-  background: 'transparent'
+  width: "auto",
+  overflow: "visible",
+  cursor: "pointer",
+  background: "transparent",
 };
 
 const Removable: React.FC = () => {
   const [items, setItems] = React.useState([
-    'Item 1',
-    'Item 2',
-    'Item 3',
-    'Item 4',
-    'Item 5',
-    'Item 6'
+    "Item 1",
+    "Item 2",
+    "Item 3",
+    "Item 4",
+    "Item 5",
+    "Item 6",
   ]);
 
   return (
     <div
       style={{
-        maxWidth: '300px',
-        margin: '0px auto',
-        backgroundColor: '#F7F7F7',
-        padding: '3em',
-        textAlign: 'center'
+        maxWidth: "300px",
+        margin: "0px auto",
+        backgroundColor: "#F7F7F7",
+        padding: "3em",
+        textAlign: "center",
       }}
     >
       <List
@@ -60,8 +60,8 @@ const Removable: React.FC = () => {
           <ul
             {...props}
             style={{
-              padding: '0em 0em 1em 0em',
-              cursor: isDragged ? 'grabbing' : 'inherit'
+              padding: "0em 0em 1em 0em",
+              cursor: isDragged ? "grabbing" : "inherit",
             }}
           >
             {children}
@@ -70,34 +70,35 @@ const Removable: React.FC = () => {
         renderItem={({ value, props, index, isDragged, isSelected }) => (
           <li
             {...props}
+            key={props.key}
             style={{
               ...props.style,
-              padding: '1.5em',
-              margin: '0.5em 0em',
-              listStyleType: 'none',
-              border: '2px solid #CCC',
-              boxShadow: '3px 3px #AAA',
-              color: '#333',
-              borderRadius: '5px',
-              cursor: isDragged ? 'grabbing' : 'grab',
+              padding: "1.5em",
+              margin: "0.5em 0em",
+              listStyleType: "none",
+              border: "2px solid #CCC",
+              boxShadow: "3px 3px #AAA",
+              color: "#333",
+              borderRadius: "5px",
+              cursor: isDragged ? "grabbing" : "grab",
               fontFamily: 'Arial, "Helvetica Neue", Helvetica, sans-serif',
-              backgroundColor: isDragged || isSelected ? '#EEE' : '#FFF'
+              backgroundColor: isDragged || isSelected ? "#EEE" : "#FFF",
             }}
           >
             <div
               style={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'space-between'
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
               }}
             >
-              <div>{value}</div>{' '}
+              <div>{value}</div>{" "}
               <button
                 onClick={() => {
                   setItems(
-                    typeof index !== 'undefined'
+                    typeof index !== "undefined"
                       ? arrayRemove(items, index)
-                      : items
+                      : items,
                   );
                 }}
                 style={buttonStyles}
@@ -110,7 +111,7 @@ const Removable: React.FC = () => {
       />
       <button
         onClick={() =>
-          setItems(['Item 1', 'Item 2', 'Item 3', 'Item 4', 'Item 5', 'Item 6'])
+          setItems(["Item 1", "Item 2", "Item 3", "Item 4", "Item 5", "Item 6"])
         }
       >
         Reset

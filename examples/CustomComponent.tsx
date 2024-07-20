@@ -1,6 +1,6 @@
-import * as React from 'react';
-import { List, arrayMove } from '../src/index';
-import type { IItemProps } from '../src/types';
+import * as React from "react";
+import { List, arrayMove } from "../src/index";
+import type { IItemProps } from "../src/types";
 
 const CustomItem = React.forwardRef(
   (
@@ -10,22 +10,22 @@ const CustomItem = React.forwardRef(
     }: IItemProps & {
       children: string;
     },
-    ref: React.Ref<HTMLLIElement>
+    ref: React.Ref<HTMLLIElement>,
   ) => (
     <li ref={ref} {...props}>
       {children}
     </li>
-  )
+  ),
 );
 
 const CustomComponent: React.FC = () => {
   const [items, setItems] = React.useState([
-    'Item 1',
-    'Item 2',
-    'Item 3',
-    'Item 4',
-    'Item 5',
-    'Item 6'
+    "Item 1",
+    "Item 2",
+    "Item 3",
+    "Item 4",
+    "Item 5",
+    "Item 6",
   ]);
   return (
     <List
@@ -35,7 +35,9 @@ const CustomComponent: React.FC = () => {
       }
       renderList={({ children, props }) => <ul {...props}>{children}</ul>}
       renderItem={({ value, props }) => (
-        <CustomItem {...props}>{value}</CustomItem>
+        <CustomItem {...props} key={props.key}>
+          {value}
+        </CustomItem>
       )}
     />
   );

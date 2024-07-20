@@ -13,5 +13,5 @@
     "forceConsistentCasingInFileNames": true,
     "resolveJsonModule": true
   },
-  "include": ["src", "examples"]
+  "include": ["src", "examples", ".ladle", "playwright.config.ts"]
 }

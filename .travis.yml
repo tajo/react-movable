@@ -1,8 +1,0 @@
-language: node_js
-os:
-  - osx
-node_js:
-  - 'lts/*'
-script:
-  - yarn build
-  - yarn test -- --runInBand

@@ -1,3 +1,4 @@
+import { test, expect } from "@playwright/test";
 import {
   Examples,
   getTestUrl,
@@ -5,19 +6,21 @@ import {
   untrackMouse,
   addFontStyles,
   getListItems,
-  waitForList
-} from './utils';
+  waitForList,
+} from "./utils";
 
-jest.setTimeout(10000);
+test.use({
+  viewport: { width: 1030, height: 800 },
+});
 
-beforeEach(async () => {
+test.beforeEach(async ({ page }) => {
   await page.goto(getTestUrl(Examples.REMOVABLE));
-  await page.setViewport({ width: 1030, height: 800 });
+  await page.waitForSelector("[data-storyloaded]");
   await addFontStyles(page as any);
   await waitForList(page);
 });
 
-test('dnd the second item out the bounds to be removed', async () => {
+test("dnd the second item out the bounds to be removed", async ({ page }) => {
   await trackMouse(page as any);
   await page.mouse.move(517, 275);
   await page.mouse.down();
@@ -25,11 +28,11 @@ test('dnd the second item out the bounds to be removed', async () => {
   await page.mouse.up();
   await new Promise((r) => setTimeout(r, 300));
   expect(await getListItems(page as any)).toEqual([
-    'You can remove items by moving them far left or right. Also, onChange always gives you the getBoundingClientRect of the dropped item.',
-    'Item 3',
-    'Item 4',
-    'Item 5',
-    'Item 6'
+    "You can remove items by moving them far left or right. Also, onChange always gives you the getBoundingClientRect of the dropped item.",
+    "Item 3",
+    "Item 4",
+    "Item 5",
+    "Item 6",
   ]);
   await untrackMouse(page as any);
 });

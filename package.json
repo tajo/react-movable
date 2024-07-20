@@ -15,15 +15,10 @@
   "author": "Vojtech Miksu <vojtech@miksu.cz>",
   "license": "MIT",
   "scripts": {
-    "build": "rm -rf lib && tsc --outDir lib && cp flowtypes/* lib && rm -rf lib/examples && mv lib/src/* lib && rm -rf lib/src && rm lib/*.test.* && rm lib/*.stories.*",
-    "jest:e2e": "jest --runInBand",
-    "jest:e2e:update": "jest --runInBand -u e2e",
-    "ladle:ci": "ladle serve",
-    "test": "yarn typecheck && yarn test:e2e && yarn test:unit",
-    "test:e2e": "start-server-and-test ladle:ci http-get://localhost:61000 jest:e2e",
-    "test:e2e:dev": "E2E=dev yarn jest:e2e",
-    "test:e2e:update": "start-server-and-test ladle:ci http-get://localhost:61000 jest:e2e:update",
-    "test:unit": "jest src",
+    "build": "rm -rf lib && tsc --outDir lib && rm -rf lib/examples && mv lib/src/* lib && rm -rf lib/src && rm lib/*.test.* && rm lib/*.stories.*",
+    "test": "pnpm test:e2e && pnpm test:unit",
+    "test:e2e": "pnpm exec playwright test",
+    "test:unit": "vitest run src",
     "typecheck": "tsc --noEmit"
   },
   "tags": [
@@ -46,57 +41,17 @@
   ],
   "devDependencies": {
     "@ladle/react": "^4.1.0",
-    "@types/expect-puppeteer": "^5.0.6",
-    "@types/jest": "^29.5.12",
-    "@types/jest-environment-puppeteer": "5.0.6",
-    "@types/jest-image-snapshot": "^6.4.0",
-    "@types/node": "^20.14.8",
-    "@types/react": "~18.3.3",
-    "@types/react-dom": "~18.3.0",
-    "imgur": "^2.4.2",
-    "jest": "^29.7.0",
-    "jest-image-snapshot": "6.4.0",
-    "jest-puppeteer": "^10.0.1",
-    "puppeteer": "^22.12.0",
+    "@playwright/test": "^1.45.1",
+    "@types/node": "^20.14.11",
+    "@types/react": "^18.3.3",
+    "@types/react-dom": "^18.3.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "start-server-and-test": "^2.0.4",
-    "ts-jest": "^29.1.5",
-    "typescript": "5.5.2"
+    "typescript": "^5.5.3",
+    "vitest": "^2.0.3"
   },
   "peerDependencies": {
-    "react": ">=16.3",
-    "react-dom": ">=16.3"
-  },
-  "jest": {
-    "roots": [
-      "<rootDir>/src/",
-      "<rootDir>/e2e/"
-    ],
-    "transform": {
-      "^.+\\.tsx?$": "ts-jest"
-    },
-    "testRegex": "(/__tests__/.*|(\\.|/)(test|spec))\\.[jt]sx?$",
-    "setupFilesAfterEnv": [
-      "./setupTests.js"
-    ],
-    "reporters": [
-      "default",
-      "<rootDir>/image-reporter.cjs"
-    ],
-    "moduleFileExtensions": [
-      "ts",
-      "tsx",
-      "js",
-      "jsx",
-      "json",
-      "node"
-    ],
-    "preset": "jest-puppeteer"
-  },
-  "volta": {
-    "node": "20.14.0",
-    "yarn": "1.22.17"
-  },
-  "packageManager": "yarn@1.22.19+sha1.4ba7fc5c6e704fce2066ecbfb0b0d8976fe62447"
+    "react": "^18.0.0-0 || ^19.0.0-0",
+    "react-dom": "^18.0.0-0 || ^19.0.0-0"
+  }
 }

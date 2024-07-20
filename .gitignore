@@ -2,6 +2,8 @@ node_modules
 build
 npm-debug.log
 lib
-es
-yarn-error.log
 __diff_output__
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
