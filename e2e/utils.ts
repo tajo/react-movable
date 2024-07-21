@@ -11,7 +11,6 @@ export enum Examples {
 }
 
 export const getTestUrl = (example: Examples): string => {
-  const PORT = 61000;
   switch (example) {
     case Examples.BASIC:
       return `/?story=list--basic&mode=preview`;

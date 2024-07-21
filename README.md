@@ -2,14 +2,12 @@
 
 [![npm version](https://img.shields.io/npm/v/react-movable.svg?style=flat-square)](https://www.npmjs.com/package/react-movable)
 [![npm downloads](https://img.shields.io/npm/dm/react-movable.svg?style=flat-square)](https://www.npmjs.com/package/react-movable)
-[![Build Status](https://travis-ci.org/tajo/react-movable.svg?branch=master)](https://travis-ci.org/tajo/react-movable)
 [![size](https://img.shields.io/bundlephobia/minzip/react-movable.svg?style=flat)](https://bundlephobia.com/result?p=react-movable)
+<a href="https://stackblitz.com/edit/react-movable?file=src%2FApp.tsx"><img src="https://img.shields.io/badge/stackblitz-sandbox-orange" alt="stackblitz"></a>
 
 ![Basic list](https://raw.githubusercontent.com/tajo/react-movable/main/assets/react-movable.gif?raw=true)
 
-[![Edit Basic react-movable](https://codesandbox.io/static/img/play-codesandbox.svg)](https://codesandbox.io/s/k1mrwyr9l3)
-
-[See all the other examples](https://react-movable.pages.dev) and [their source code](https://github.com/tajo/react-movable/tree/main/examples)!
+[See all the other examples](https://react-movable.pages.dev) and [their source code](https://github.com/tajo/react-movable/tree/main/examples)! Try it out in the [Stackblitz sandbox](https://stackblitz.com/edit/react-movable?file=src%2FApp.tsx)!
 
 ## Installation
 

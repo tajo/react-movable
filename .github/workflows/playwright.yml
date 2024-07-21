@@ -6,7 +6,7 @@ on:
     branches: [main]
 jobs:
   test:
-    timeout-minutes: 60
+    timeout-minutes: 15
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -14,8 +14,6 @@ jobs:
         with:
           node-version: lts/*
       - uses: pnpm/action-setup@v4
-        with:
-          version: 9.1.4
       - name: Install dependencies
         run: pnpm install
       - name: Install Playwright Browsers

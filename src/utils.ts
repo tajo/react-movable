@@ -37,9 +37,8 @@ export function transformItem(
     (element as HTMLElement).style.removeProperty("transform");
     return;
   }
-  (
-    element as HTMLElement
-  ).style.transform = `translate(${offsetX}px, ${offsetY}px)`;
+  (element as HTMLElement).style.transform =
+    `translate(${offsetX}px, ${offsetY}px)`;
 }
 
 export function isItemTransformed(element: Element) {
@@ -52,9 +51,8 @@ export function setItemTransition(
   timing?: string,
 ) {
   if (element) {
-    (element as HTMLElement).style[
-      "transition" as any
-    ] = `transform ${duration}ms${timing ? ` ${timing}` : ""}`;
+    (element as HTMLElement).style["transition" as any] =
+      `transform ${duration}ms${timing ? ` ${timing}` : ""}`;
   }
 }
 

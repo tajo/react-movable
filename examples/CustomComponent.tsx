@@ -17,6 +17,7 @@ const CustomItem = React.forwardRef(
     </li>
   ),
 );
+CustomItem.displayName = "CustomItem";
 
 const CustomComponent: React.FC = () => {
   const [items, setItems] = React.useState([

@@ -8,27 +8,31 @@ const InteractiveItems: React.FC = () => {
   const [checkboxValue, setCheckboxValue] = React.useState(false);
   const elements = [
     <input
+      key="input"
       value={inputValue}
       onChange={(e) => {
         setInputValue(e.target.value);
       }}
     />,
     <textarea
+      key="textarea"
       value={taValue}
       onChange={(e) => {
         setTaValue(e.target.value);
       }}
     />,
-    <div>
+    <div key="button">
       <button>Item 3</button>
     </div>,
     <div
+      key="div"
       role="button"
       style={{ padding: "8px", cursor: "default", border: "1px solid black" }}
     >
       Div with the button role
     </div>,
     <select
+      key="select"
       name="pets"
       id="pet-select"
       value={selectValue}
@@ -38,7 +42,7 @@ const InteractiveItems: React.FC = () => {
       <option value="spider">Spider</option>
       <option value="goldfish">Goldfish</option>
     </select>,
-    <div>
+    <div key="input">
       <input
         id="checked"
         name="checked"
