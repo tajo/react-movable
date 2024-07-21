@@ -27,7 +27,8 @@
     "test:e2e": "pnpm exec playwright test",
     "test:unit": "vitest run src",
     "typecheck": "tsc --noEmit",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "release": "pnpm run build && changeset publish"
   },
   "tags": [
     "react"
