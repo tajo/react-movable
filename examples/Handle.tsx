@@ -1,5 +1,5 @@
 import * as React from "react";
-import { List, arrayMove, arrayRemove } from "../src/index";
+import { List, arrayMove } from "../src/index";
 
 export const HandleIcon = () => (
   <svg

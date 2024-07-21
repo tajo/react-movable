@@ -1,11 +1,11 @@
 export default {
-  mount: ['examples'],
+  mount: ["examples"],
   addons: {
     theme: {
-      enabled: false
+      enabled: false,
     },
     mode: {
-      defaultState: 'single-scroll'
-    }
-  }
+      defaultState: "single-scroll",
+    },
+  },
 };
