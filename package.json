@@ -63,7 +63,7 @@
     "eslint-config-prettier": "^9.0.0",
     "eslint-plugin-prettier": "^5.0.1",
     "eslint-plugin-react": "^7.33.2",
-    "husky": "^8.0.0",
+    "husky": "^9.0.11",
     "lint-staged": "^15.1.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
