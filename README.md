@@ -51,7 +51,6 @@ const SuperSimple: React.FC = () => {
 - **Smooth animations**, can be disabled
 - Varying heights of items supported
 - Optional lock of the horizontal axis when dragging
-- Typescript and Flow type definitions
 - **No dependencies, less than 4kB (gzipped)**
 - Coverage by [e2e playwright tests](#end-to-end-testing)
 
