@@ -144,6 +144,14 @@ beforeDrag?: (params: { elements: Element[]; index: number }) => void;
 
 Called when a valid drag is initiated. It provides a direct access to all list DOM elements and the index of dragged item. This can be useful when you need to do some upfront measurements like when building a [table with variable column widths](https://react-movable.netlify.app/?story=list--table-auto-cell-widths).
 
+### afterDrag
+
+```ts
+afterDrag?: (params: { elements: Element[]; oldIndex: number; newIndex: number }) => void;
+```
+
+Called when a drag is completed. It provides a direct access to all list DOM elements, the old as well as the new index of the dragged item. This can be useful when you need to perform some cleanup, e.g. in conjunction with `beforeDrag`. Please note this is different to `onChange`, which will _only_ fire when the drag results in a changed order.
+
 ### removableByMove
 
 ```ts

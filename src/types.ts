@@ -39,6 +39,12 @@ export interface BeforeDragParams {
   index: number;
 }
 
+export interface AfterDragParams {
+  elements: Element[];
+  oldIndex: number;
+  newIndex: number;
+}
+
 export interface OnChangeMeta {
   oldIndex: number;
   newIndex: number;
@@ -48,6 +54,7 @@ export interface OnChangeMeta {
 export interface IProps<Value> {
   disabled?: boolean;
   beforeDrag?: (params: BeforeDragParams) => void;
+  afterDrag?: (params: AfterDragParams) => void;
   renderItem: (params: RenderItemParams<Value>) => React.ReactNode;
   renderList: (props: RenderListParams) => React.ReactNode;
   values: Value[];

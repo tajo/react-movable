@@ -477,16 +477,26 @@ class List<Value = string> extends React.Component<IProps<Value>> {
   finishDrop = () => {
     const removeItem =
       this.props.removableByMove && this.isDraggedItemOutOfBounds();
-    if (
-      removeItem ||
-      (this.afterIndex > -2 && this.state.itemDragged !== this.afterIndex)
-    ) {
+    const oldIndex = this.state.itemDragged;
+    const hasChanged = this.afterIndex > -2 && oldIndex !== this.afterIndex;
+    const newIndex = hasChanged
+      ? removeItem
+        ? -1
+        : Math.max(this.afterIndex, 0)
+      : oldIndex;
+    if (removeItem || hasChanged) {
       this.props.onChange({
-        oldIndex: this.state.itemDragged,
-        newIndex: removeItem ? -1 : Math.max(this.afterIndex, 0),
+        oldIndex,
+        newIndex,
         targetRect: this.ghostRef.current!.getBoundingClientRect(),
       });
     }
+    this.props.afterDrag &&
+      this.props.afterDrag({
+        elements: this.getChildren(),
+        oldIndex,
+        newIndex,
+      });
     this.getChildren().forEach((item) => {
       setItemTransition(item, 0);
       transformItem(item, null);
