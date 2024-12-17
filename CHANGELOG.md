@@ -1,5 +1,11 @@
 # react-movable
 
+## 3.4.0
+
+### Minor Changes
+
+- [#114](https://github.com/tajo/react-movable/pull/114) [`15d8290`](https://github.com/tajo/react-movable/commit/15d8290ad79b45ce53bda4fb49c729a9ed7d88e4) Thanks [@leomelzer](https://github.com/leomelzer)! - feat: implement afterDrag
+
 ## 3.3.1
 
 ### Patch Changes
