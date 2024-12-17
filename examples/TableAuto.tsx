@@ -59,6 +59,9 @@ const TableAuto: React.FC = () => {
           );
           setWidths(widths);
         }}
+        afterDrag={() => {
+          setWidths([]);
+        }}
         values={items}
         onChange={({ oldIndex, newIndex }) =>
           setItems(arrayMove(items, oldIndex, newIndex))
