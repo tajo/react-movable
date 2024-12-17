@@ -42,7 +42,7 @@ export interface BeforeDragParams {
 export interface OnChangeMeta {
   oldIndex: number;
   newIndex: number;
-  targetRect: ClientRect;
+  targetRect: DOMRect;
 }
 
 export interface IProps<Value> {

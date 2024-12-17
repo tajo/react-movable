@@ -125,7 +125,7 @@ An array of values. The value can be a string or any more complex object. The le
 ### onChange
 
 ```ts
-onChange: (meta: { oldIndex: number; newIndex: number, targetRect: ClientRect }) => void
+onChange: (meta: { oldIndex: number; newIndex: number, targetRect: DOMRect }) => void
 ```
 
 Called when the item is dropped to a new location:
