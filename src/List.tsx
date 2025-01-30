@@ -484,31 +484,33 @@ class List<Value = string> extends React.Component<IProps<Value>> {
         ? -1
         : Math.max(this.afterIndex, 0)
       : oldIndex;
-    if (removeItem || hasChanged) {
-      this.props.onChange({
-        oldIndex,
-        newIndex,
-        targetRect: this.ghostRef.current!.getBoundingClientRect(),
+    const targetRect = this.ghostRef.current!.getBoundingClientRect();
+    this.setState({ itemDragged: -1, scrollingSpeed: 0 }, () => {
+      if (removeItem || hasChanged) {
+        this.props.onChange({
+          oldIndex,
+          newIndex,
+          targetRect: targetRect,
+        });
+      }
+      this.props.afterDrag &&
+        this.props.afterDrag({
+          elements: this.getChildren(),
+          oldIndex,
+          newIndex,
+        });
+      this.getChildren().forEach((item) => {
+        setItemTransition(item, 0);
+        transformItem(item, null);
+        (item as HTMLElement).style.touchAction = "";
       });
-    }
-    this.props.afterDrag &&
-      this.props.afterDrag({
-        elements: this.getChildren(),
-        oldIndex,
-        newIndex,
-      });
-    this.getChildren().forEach((item) => {
-      setItemTransition(item, 0);
-      transformItem(item, null);
-      (item as HTMLElement).style.touchAction = "";
+      this.afterIndex = -2;
+      // sometimes the scroll gets messed up after the drop, fix:
+      if (this.lastScroll > 0) {
+        this.listRef.current!.scrollTop = this.lastScroll;
+        this.lastScroll = 0;
+      }
     });
-    this.setState({ itemDragged: -1, scrollingSpeed: 0 });
-    this.afterIndex = -2;
-    // sometimes the scroll gets messed up after the drop, fix:
-    if (this.lastScroll > 0) {
-      this.listRef.current!.scrollTop = this.lastScroll;
-      this.lastScroll = 0;
-    }
   };
 
   onKeyDown = (e: React.KeyboardEvent) => {
