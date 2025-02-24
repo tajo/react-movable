@@ -1,6 +1,6 @@
 {
   "name": "react-movable",
-  "version": "3.4.0",
+  "version": "3.4.1",
   "type": "module",
   "description": "Drag and drop lists.",
   "main": "lib/index.js",
