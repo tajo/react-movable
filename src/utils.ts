@@ -120,6 +120,8 @@ export function checkIfInteractive(target: Element, rootElement: Element) {
     "switch",
     "tab",
   ];
+  if (!target || !rootElement) return false;
+
   while (target !== rootElement) {
     if (target.getAttribute("data-movable-handle")) {
       return false;
