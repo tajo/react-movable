@@ -1,5 +1,11 @@
 # react-movable
 
+## 3.4.1
+
+### Patch Changes
+
+- [#117](https://github.com/tajo/react-movable/pull/117) [`e6c3702`](https://github.com/tajo/react-movable/commit/e6c3702575e981b1a98287075854464a46e9cf63) Thanks [@darshan-uber](https://github.com/darshan-uber)! - add check for element presence in "checkIfInteractive" utility
+
 ## 3.4.0
 
 ### Minor Changes
