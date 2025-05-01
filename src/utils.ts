@@ -126,6 +126,9 @@ export function checkIfInteractive(target: Element, rootElement: Element) {
     if (!target) {
       return false;
     }
+    if (target.tagName === 'HTML') {
+      return false;
+    }
     if (target.getAttribute("data-movable-handle")) {
       return false;
     }
