@@ -142,7 +142,7 @@ The List component is `stateless` and `controlled` so you need to implement this
 beforeDrag?: (params: { elements: Element[]; index: number }) => void;
 ```
 
-Called when a valid drag is initiated. It provides a direct access to all list DOM elements and the index of dragged item. This can be useful when you need to do some upfront measurements like when building a [table with variable column widths](https://react-movable.netlify.app/?story=list--table-auto-cell-widths).
+Called when a valid drag is initiated. It provides a direct access to all list DOM elements and the index of dragged item. This can be useful when you need to do some upfront measurements like when building a [table with variable column widths](https://react-movable.pages.dev/?story=list--table-auto-cell-widths).
 
 ### afterDrag
 
